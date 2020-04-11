@@ -36,6 +36,7 @@ process versions {
 
 }
 
+// barcode and adapter trimming
 process qcat_trim {
 
     publishDir "${params.outputdir}/03-trimmed-fastq", mode: 'copy', pattern: '*.fastq.gz'
@@ -53,6 +54,7 @@ process qcat_trim {
 
 }
 
+// genome assembly
 process Canu {
 
     publishDir "${params.outputdir}/04-canu-assembly", mode: 'copy', pattern: '*.fasta'
@@ -79,6 +81,7 @@ process Canu {
 
 }
 
+// polishing step 1
 process racon {
 
     publishDir "${params.outputdir}/05-racon-polish", mode: 'copy', pattern: '*.fasta'
@@ -102,6 +105,7 @@ process racon {
     """
 }
 
+// polishing step 2
 process medaka {
 
     publishDir "${params.outputdir}/06-medaka-polish", mode: 'copy', pattern: '*.fasta'
