@@ -3,7 +3,7 @@ params.outputdir =     '/home/johannes/rdrive/Ascochyta_genomics-KAMPHL-SE07477/
 params.canu = '/opt/canu/current/Linux-amd64/bin/canu'
 
 // before running this script, you need to manually concatenate the demultiplexed fastq files. 
-// This script expects one fastq file. guppy can do the barcode demultiplexing during basecalling
+// This script expects one fastq file per genome. guppy can do the barcode demultiplexing during basecalling
 // now and creates lots of small fastq (or fastq.gz) files in folders called 'barcodeXX', where
 // 'XX' stands for the barcode number i.e. 'barcode06'
 // For this script to work and name everything correctly you need to concatenate all those files into one .fastq 
