@@ -22,16 +22,18 @@ process versions {
     """
     echo qcat: >> versions.txt
     qcat --version >> versions.txt
-    echo ----- >> versions.txt
+    echo --------------- >> versions.txt
     echo canu: >> versions.txt
     canu --version >> versions.txt
-    echo ----- >> versions.txt
+    echo --------------- >> versions.txt
+    echo minimap2: >> versions.txt
+    echo minimap2 --version >> versions.txt
+    echo --------------- >> versions.txt
     echo racon: >> versions.txt
     racon --version >> versions.txt
-    echo ----- >> versions.txt
+    echo --------------- >> versions.txt
     echo medaka: >> versions.txt
     medaka --version >> versions.txt
-
     """
 
 }
@@ -59,7 +61,7 @@ process Canu {
 
     publishDir "${params.outputdir}/04-canu-assembly", mode: 'copy', pattern: '*.fasta'
 
-    memory '30 GB'
+    memory '15 GB'
 
     input:
     set sampleID, 'input.fastq.gz' from canuAssembly
@@ -93,7 +95,7 @@ process racon {
     set sampleID, "${sampleID}.contigs.racon.fasta", 'input.fastq.gz' into medaka
 
     """
-    minimap 2 \
+    minimap2 \
     input.fasta \
     input.fastq.gz > minimap.racon.paf
 
