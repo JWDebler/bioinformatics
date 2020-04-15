@@ -27,7 +27,7 @@ process versions {
     canu --version >> versions.txt
     echo --------------- >> versions.txt
     echo minimap2: >> versions.txt
-    echo minimap2 --version >> versions.txt
+    minimap2 --version >> versions.txt
     echo --------------- >> versions.txt
     echo racon: >> versions.txt
     racon --version >> versions.txt
@@ -61,7 +61,7 @@ process Canu {
 
     publishDir "${params.outputdir}/04-canu-assembly", mode: 'copy', pattern: '*.fasta'
 
-    memory '15 GB'
+    memory '30 GB'
 
     input:
     set sampleID, 'input.fastq.gz' from canuAssembly
@@ -74,7 +74,6 @@ process Canu {
     -p ${sampleID} \
     -d ${sampleID} \
     genomeSize=45m \
-    minReadLength=500 \
     -nanopore input.fastq.gz
 
     cp ${sampleID}/*contigs.fasta ${sampleID}.contigs.fasta
