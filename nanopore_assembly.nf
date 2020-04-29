@@ -1,6 +1,6 @@
 
 // uncomment when running on PPG server
-params.sequencefiles = '/ppgdata/johannes/2020-04-02-nanopore-lentis/FastQ/*/*.fastq'
+params.sequencefiles = '/ppgdata/johannes/2020-04-02-nanopore-lentis/FastQ/*.fastq'
 params.outputdir =     '/home/johannes/rdrive/Ascochyta_genomics-KAMPHL-SE07477/johannes/notebook/2020-04-01_first_minION_run'
 
 // uncomment when running on nimbus
@@ -14,6 +14,9 @@ params.outputdir =     '/home/johannes/rdrive/Ascochyta_genomics-KAMPHL-SE07477/
 // 'XX' stands for the barcode number i.e. 'barcode06'
 // For this script to work and name everything correctly you need to concatenate all those files into one .fastq 
 // file, NOT fastq.gz!
+// There might be a problem of read duplication. To be sure run this bit of code over the concatenated fastq files
+//
+// for sample in `ls *.fastq | cut -f1 -d'.'`; do cat $sample.fastq | seqkit rmdup -n -o $sample.clean.fastq; done
 
 rawnanoporereads = Channel
 .fromPath(params.sequencefiles)
