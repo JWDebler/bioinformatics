@@ -1,6 +1,12 @@
+
+// uncomment when running on PPG server
 params.sequencefiles = '/ppgdata/johannes/2020-04-02-nanopore-lentis/FastQ/*/*.fastq'
-params.outputdir =     '/home/johannes/rdrive/Ascochyta_genomics-KAMPHL-SE07477/johannes/notebook/2020-04-01_first_minION_run/'
-params.canu = '/opt/canu/current/Linux-amd64/bin/canu'
+params.outputdir =     '/home/johannes/rdrive/Ascochyta_genomics-KAMPHL-SE07477/johannes/notebook/2020-04-01_first_minION_run'
+
+// uncomment when running on nimbus
+//params.input_basepath_nimbus = '/home/ubuntu/FastQ/*/*.fastq'
+//params.output_basepath_nimbus ='/home/ubuntu/2020-04-02_nanopore_basecalling/nextflow_output'
+
 
 // before running this script, you need to manually concatenate the demultiplexed fastq files. 
 // This script expects one fastq file per genome. guppy can do the barcode demultiplexing during basecalling
