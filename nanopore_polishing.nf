@@ -8,14 +8,11 @@ params.assemblies = "${params.basedir}04-canu-assembly/*.fasta"
 rawnanoporereads = Channel
 .fromPath(params.sequencefiles)
 .map { file -> [file.getSimpleName(), file]}
-.println()
 
 assemblies = Channel
 .fromPath(params.assemblies)
 .map { file -> [file.getSimpleName(), file]}
-.println()
 
-return
 assemblies
 .combine(rawnanoporereads, by: 0)
 .println()
