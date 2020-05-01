@@ -4,9 +4,8 @@
 //params.outputdir =     '/home/johannes/rdrive/Ascochyta_genomics-KAMPHL-SE07477/johannes/notebook/2020-04-01_first_minION_run'
 
 // uncomment when running on nimbus
-params.sequencefiles = '/home/ubuntu/FastQ/*.fastq'
+params.sequencefiles = '/home/ubuntu/2020-04-02_nanopore_basecalling/FastQ/*.fastq'
 params.outputdir ='/home/ubuntu/2020-04-02_nanopore_basecalling/nextflow_output'
-
 
 // before running this script, you need to manually concatenate the demultiplexed fastq files. 
 // This script expects one fastq file per genome. guppy can do the barcode demultiplexing during basecalling
