@@ -1,7 +1,7 @@
 
 
 params.basedir = '/home/ubuntu/2020-04-02_nanopore_basecalling/'
-params.sequencefiles = "${params.basedir}02-raw-fastq/*.fastq"
+params.sequencefiles = "${params.basedir}03-trimmed-fastq/*.fastq.gz"
 params.assemblies = "${params.basedir}04-canu-assembly/*.fasta"
 
 
@@ -15,7 +15,7 @@ assemblies = Channel
 
 assemblies
 .combine(rawnanoporereads, by: 0)
-
+.set { racon }
 
 
 process racon {
@@ -23,7 +23,7 @@ process racon {
     publishDir "${params.outputdir}/05-racon-polish", mode: 'copy', pattern: '*.fasta'
 
     input:
-    set sampleID, 'input.fasta', 'input.fastq.gz' from assemblies
+    set sampleID, 'input.fasta', 'input.fastq.gz' from racon
 
     output:
     set sampleID, "${sampleID}.contigs.racon.fasta", 'input.fastq.gz' into medaka
