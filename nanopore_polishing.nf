@@ -15,7 +15,6 @@ assemblies = Channel
 
 assemblies
 .combine(rawnanoporereads, by: 0)
-.println()
 
 
 
@@ -24,7 +23,7 @@ process racon {
     publishDir "${params.outputdir}/05-racon-polish", mode: 'copy', pattern: '*.fasta'
 
     input:
-    set sampleID, 'input.fasta', 'input.fastq.gz' from racon
+    set sampleID, 'input.fasta', 'input.fastq.gz' from assemblies
 
     output:
     set sampleID, "${sampleID}.contigs.racon.fasta", 'input.fastq.gz' into medaka
