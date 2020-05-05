@@ -17,6 +17,24 @@ assemblies
 .combine(rawnanoporereads, by: 0)
 .set { racon }
 
+process versions {
+    publishDir "${params.outputdir}/", mode: 'copy'
+
+    output:
+    file 'versions.txt'
+
+    """
+    echo minimap2: >> versions.txt
+    minimap2 --version >> versions.txt
+    echo --------------- >> versions.txt
+    echo racon: >> versions.txt
+    racon --version >> versions.txt
+    echo --------------- >> versions.txt
+    echo medaka: >> versions.txt
+    medaka --version >> versions.txt
+    """
+
+}
 
 process racon {
 
@@ -57,7 +75,7 @@ process medaka {
     -d input.fasta \
     -i input.fastq.gz \
     -o ${sampleID}_medaka_output \
-    -m r941_min_high_g351
+    -m r941_min_high_g360
 
     cp ${sampleID}_medaka_output/consensus.fasta ${sampleID}.contigs.racon.medaka.fasta
 
