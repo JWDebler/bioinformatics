@@ -18,7 +18,7 @@ assemblies
 .set { racon }
 
 process versions {
-    publishDir "${params.outputdir}/", mode: 'copy'
+    publishDir "${params.basedir}/", mode: 'copy'
 
     output:
     file 'versions.txt'
@@ -38,7 +38,7 @@ process versions {
 
 process racon {
 
-    publishDir "${params.outputdir}/05-racon-polish", mode: 'copy', pattern: '*.fasta'
+    publishDir "${params.basedir}/05-racon-polish", mode: 'copy', pattern: '*.fasta'
 
     input:
     set sampleID, 'input.fasta', 'input.fastq.gz' from racon
@@ -62,7 +62,7 @@ process racon {
 // polishing step 2
 process medaka {
 
-    publishDir "${params.outputdir}/06-medaka-polish", mode: 'copy', pattern: '*.fasta'
+    publishDir "${params.basedir}/06-medaka-polish", mode: 'copy', pattern: '*.fasta'
 
     input:
     set sampleID, 'input.fasta', 'input.fastq.gz' from medaka
