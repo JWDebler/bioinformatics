@@ -16,8 +16,6 @@ process busco {
     set id, "genome.fasta" from sequences
 
     output:
-    set id, "short_summary*.txt" into busco_output
-
     """
     cp genome.fasta ./test.fasta
     docker run -v \$(pwd):/busco_wd ezlabgva/busco:v4.0.5_cv1 busco \
@@ -47,7 +45,7 @@ process plotBuscoSummaries {
     """
     mkdir input_derp
     cp ${params.outdir}/*.txt input_derp/
-    docker run -v \$(pwd)/input_derp:/busco_wd ezlabgva/busco:v4.0.5_cv1 generate_plot.py -wd input_derp
+    docker run -v \$(pwd)/input_derp:/busco_wd ezlabgva/busco:v4.0.5_cv1 generate_plot.py -wd .
     cp input_derp/busco_figure.png .
     """
 }
