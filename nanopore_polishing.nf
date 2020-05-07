@@ -36,6 +36,7 @@ process versions {
 
 }
 
+// racon parameters as suggested by medaka authors https://github.com/nanoporetech/medaka
 process racon {
 
     publishDir "${params.basedir}/05-racon-polish", mode: 'copy', pattern: '*.fasta'
@@ -51,7 +52,7 @@ process racon {
     input.fasta \
     input.fastq.gz > minimap.racon.paf
 
-    racon \
+    racon -m 8 -x -6 -g -8 -w 500 \
     input.fastq.gz \
     minimap.racon.paf \
     input.fasta > ${sampleID}.contigs.racon.fasta

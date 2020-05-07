@@ -1,6 +1,6 @@
 params.workdir = "/home/johannes/rdrive/Ascochyta_genomics-KAMPHL-SE07477/johannes/notebook/2020-04-01_first_minION_run/06-medaka-polish"
 params.input = "${params.workdir}/*.fasta"
-params.outdir = "${params.workdir}/BUSCO_summaries/"
+params.outdir = "${params.workdir}/BUSCO_summaries"
 
 sequences = Channel
 .fromPath(params.input)
