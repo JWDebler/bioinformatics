@@ -11,7 +11,7 @@ if ( params.genomes ) {
     .tap{genomesFordos2unix}
 } else {
     log.info "No genomes supplied."
-    exit 1
+    exit 1sudo
 }
 
 
@@ -46,7 +46,7 @@ process addSpeciesNameTofastaHeadersContigs {
 
     """
     sed 's,>,>${sampleID}.,g' -i ${sampleID}.fasta
-    sed 's, .*\$,,g' -i ${sampleID}.fast  
+    sed 's, .*\$,,g' -i ${sampleID}.fasta  
 
     """
 }
