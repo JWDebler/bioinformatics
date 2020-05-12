@@ -1,20 +1,66 @@
+def helpMessage() {
+    log.info"""
+    # Nanopore genome polishing
+    A pipeline for polishing genomes assembled from Oxford Nanopore reads using Racon and Medaka.
+
+    ## Examples
+    ```
+    nextflow run nanopore_polishing.nf \
+      --genomes "04-canu-assembly/*.fasta" \
+      --trimmedReads "03-trimmed-fastq/*.fastq.gz"
+    ```
+
+    ## Parameters
+    --genomes <glob>
+        Required
+        A glob of the fasta genomes to be polished.
+        The basename of the file is used as the genome name.
+    --trimmedReads <glob>
+        Required
+        A glob of the fastq.gz files of the adapter and barcode trimmed reads.
+        The basename of the file needs to match the basename of the respective genome.
+    --outdir <path>
+        Default: `results_nanopore_polishing`
+        The directory to store the results in.
+
+    ## Exit codes
+    - 0: All ok.
+    - 1: Incomplete parameter inputs.
+    """.stripIndent()
+}
+
+if (params.help) {
+    helpMessage()
+    exit 0
+}
 
 
-params.basedir = '/home/ubuntu/2020-04-02_nanopore_basecalling/'
-params.sequencefiles = "${params.basedir}03-trimmed-fastq/*.fastq.gz"
-params.assemblies = "${params.basedir}04-canu-assembly/*.fasta"
+params.trimmedReads = false
+params.genomes = false
+params.outdir = "results_nanopore_polishing"
 
+if ( params.genomes ) {
+    genomes = Channel
+    .fromPath(params.genomes, checkIfExists: true, type: "file")
+    .map {file -> [file.simpleName, file]}
+    .tap { genomesForPolishing }
+} else {
+    log.info "No genomes supplied."
+    exit 1
+}
 
-rawnanoporereads = Channel
-.fromPath(params.sequencefiles)
-.map { file -> [file.getSimpleName(), file]}
+if ( params.trimmedReads ) {
+    trimmedReads = Channel
+    .fromPath(params.trimmedReads, checkIfExists: true, type: "file")
+    .map {file -> [file.simpleName, file]}
+    .tap { trimmedReadsForPolishing }
+} else {
+    log.info "No trimmed reads supplied."
+    exit 1
+}
 
-assemblies = Channel
-.fromPath(params.assemblies)
-.map { file -> [file.getSimpleName(), file]}
-
-assemblies
-.combine(rawnanoporereads, by: 0)
+genomesForPolishing
+.combine(trimmedReadsForPolishing, by: 0)
 .set { racon }
 
 process versions {

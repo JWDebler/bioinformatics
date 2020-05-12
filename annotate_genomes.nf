@@ -11,7 +11,7 @@ if ( params.genomes ) {
     .tap{genomesFordos2unix}
 } else {
     log.info "No genomes supplied."
-    exit 1sudo
+    exit 1
 }
 
 
