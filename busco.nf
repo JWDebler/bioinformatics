@@ -1,10 +1,53 @@
-params.workdir = "/home/ubuntu/2020-04-02_nanopore_basecalling/06-medaka-polish"
-params.input = "${params.workdir}/*.fasta"
-params.outdir = "${params.workdir}/BUSCO_summaries"
+def helpMessage() {
+    log.info"""
+    # Busco completeness pipeline
+    A pipeline to determine BUSCO completeness using BUSCO V4
 
-sequences = Channel
-.fromPath(params.input)
-.map{[it.getSimpleName(), it]}
+    ## Examples
+    nextflow run nanopore_polishing.nf \
+    --genomes "genomes/*.fasta" \
+    --database "ascomycota_odb10"
+    
+
+    ## Parameters
+    --genomes <glob>
+        Required
+        A glob of the fasta genomes to be polished.
+        The basename of the file is used as the genome name.
+
+    --database <string>
+        Optional
+        Default is "ascomycota_odb10"
+
+    --outdir <path>
+        Default: `results_busco`
+        The directory to store the results in.
+
+    ## Exit codes
+    - 0: All ok.
+    - 1: Incomplete parameter inputs.
+    """.stripIndent()
+}
+
+if (params.help) {
+    helpMessage()
+    exit 0
+}
+
+
+params.genomes = false
+params.outdir = "results_busco"
+params.database = "ascomycota_odb10"
+
+if ( params.genomes ) {
+    genomes = Channel
+    .fromPath(params.genomes, checkIfExists: true, type: "file")
+    .map {file -> [file.simpleName, file]}
+    .tap { genomesForBusco }
+} else {
+    log.info "No genomes supplied."
+    exit 1
+}
 
 // Busco doesn't seem to run if the input file is on rdrive, therefore I first create a local copy 'test.fasta'
 
@@ -13,7 +56,7 @@ process busco {
     publishDir "${params.outdir}/", mode: 'copy'
 
     input:
-    set id, "genome.fasta" from sequences
+    set id, "genome.fasta" from genomesForBusco
 
     output:
     """
@@ -21,7 +64,7 @@ process busco {
     docker run -v \$(pwd):/busco_wd ezlabgva/busco:v4.0.5_cv1 busco \
     -i test.fasta \
     -o ${id} \
-    -l ascomycota_odb10 \
+    -l ${params.database} \
     -m genome \
     -c 16 
     cp ${id}/short_summary*.txt .
