@@ -65,7 +65,7 @@ genomesForPolishing
 .set { racon }
 
 process versions {
-    publishDir "${params.basedir}/", mode: 'copy'
+    publishDir "${params.outdir}/", mode: 'copy'
 
     output:
     file 'versions.txt'
@@ -86,7 +86,7 @@ process versions {
 // racon parameters as suggested by medaka authors https://github.com/nanoporetech/medaka
 process racon {
 
-    publishDir "${params.basedir}/05-racon-polish", mode: 'copy', pattern: '*.fasta'
+    publishDir "${params.outdir}/05-racon-polish", mode: 'copy', pattern: '*.fasta'
 
     input:
     set sampleID, 'input.fasta', 'input.fastq.gz' from racon
@@ -110,7 +110,7 @@ process racon {
 // polishing step 2
 process medaka {
 
-    publishDir "${params.basedir}/06-medaka-polish", mode: 'copy', pattern: '*.fasta'
+    publishDir "${params.outdir}/06-medaka-polish", mode: 'copy', pattern: '*.fasta'
 
     input:
     set sampleID, 'input.fasta', 'input.fastq.gz' from medaka
