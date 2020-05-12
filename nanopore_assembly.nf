@@ -1,11 +1,16 @@
 
-// uncomment when running on PPG server
-//params.sequencefiles = '/ppgdata/johannes/2020-04-02-nanopore-lentis/FastQ/*.fastq'
-//params.outputdir =     '/home/johannes/rdrive/Ascochyta_genomics-KAMPHL-SE07477/johannes/notebook/2020-04-01_first_minION_run'
+params.sequencefiles = false
+params.outdir = "results_nanopore_assembly"
 
-// uncomment when running on nimbus
-params.sequencefiles = '/home/ubuntu/2020-04-02_nanopore_basecalling/FastQ/*.fastq'
-params.outputdir ='/home/ubuntu/2020-04-02_nanopore_basecalling/nextflow_output'
+if ( params.sequencefiles ) {
+    sequencefiles = Channel
+    .fromPath(params.sequencefiles, checkIfExists: true, type: "file")
+    .map {file -> [file.simpleName, file]}
+    .tap { rawnanoporereads }
+} else {
+    log.info "No sequencefiles supplied."
+    exit 1
+}
 
 // before running this script, you need to manually concatenate the demultiplexed fastq files. 
 // This script expects one fastq file per genome. guppy can do the barcode demultiplexing during basecalling
@@ -16,10 +21,6 @@ params.outputdir ='/home/ubuntu/2020-04-02_nanopore_basecalling/nextflow_output'
 // There might be a problem of read duplication. To be sure run this bit of code over the concatenated fastq files
 //
 // for sample in `ls *.fastq | cut -f1 -d'.'`; do cat $sample.fastq | seqkit rmdup -n -o $sample.clean.fastq; done
-
-rawnanoporereads = Channel
-.fromPath(params.sequencefiles)
-.map { file -> [file.getSimpleName(),file]}
 
 process versions {
     publishDir "${params.outputdir}/", mode: 'copy'
@@ -106,7 +107,7 @@ process racon {
     input.fasta \
     input.fastq.gz > minimap.racon.paf
 
-    racon \
+    racon -m 8 -x -6 -g -8 -w 500 \
     input.fastq.gz \
     minimap.racon.paf \
     input.fasta > ${sampleID}.contigs.racon.fasta
