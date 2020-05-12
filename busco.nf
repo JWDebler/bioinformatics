@@ -59,6 +59,7 @@ process busco {
     set id, "genome.fasta" from genomesForBusco
 
     output:
+    set id, "short_summary*.txt" into busco_output
     """
     cp genome.fasta ./test.fasta
     docker run -v \$(pwd):/busco_wd ezlabgva/busco:v4.0.5_cv1 busco \
