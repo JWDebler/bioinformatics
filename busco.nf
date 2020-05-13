@@ -19,6 +19,20 @@ def helpMessage() {
         Optional
         Default is "ascomycota_odb10"
 
+    --mode <string>
+        Optional
+        Default: genome
+        Available: transcriptome, proteins
+
+    --runtype <string>
+        Optional
+        Default: specific
+        Available: generic
+
+    --cores <int>
+        Optional
+        Default: 16
+
     --outdir <path>
         Default: `results_busco`
         The directory to store the results in.
@@ -38,6 +52,9 @@ if (params.help) {
 params.genomes = false
 params.outdir = "results_busco"
 params.database = "ascomycota_odb10"
+params.mode = "genome"
+params.runtype = "specific"
+params.cores = 16
 
 if ( params.genomes ) {
     genomes = Channel
@@ -59,15 +76,16 @@ process busco {
     set id, "genome.fasta" from genomesForBusco
 
     output:
-    set id, "short_summary*.txt" into busco_output
+    file "short_summary*.txt" into busco_output
     """
     cp genome.fasta ./test.fasta
     docker run -v \$(pwd):/busco_wd ezlabgva/busco:v4.0.5_cv1 busco \
     -i test.fasta \
     -o ${id} \
     -l ${params.database} \
-    -m genome \
-    -c 16 
+    -m ${params.mode} \
+    -rt ${params.runtype} \
+    -c ${params.cores} 
     cp ${id}/short_summary*.txt .
     """
 }
@@ -81,14 +99,14 @@ process plotBuscoSummaries {
     publishDir "${params.outdir}/", mode: 'copy'
 
     input:
-    file 'short_summary.txt' from all_busco_outputs
+    file all_busco_outputs
 
     output:
     file 'busco_figure.png'
     
     """
     mkdir input_derp
-    cp ${params.outdir}/*.txt input_derp/
+    cp $all_busco_outputs input_derp/
     docker run -v \$(pwd)/input_derp:/busco_wd ezlabgva/busco:v4.0.5_cv1 generate_plot.py -wd .
     cp input_derp/busco_figure.png .
     """
