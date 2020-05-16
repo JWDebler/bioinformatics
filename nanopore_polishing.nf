@@ -42,21 +42,21 @@ params.outdir = "results_nanopore_polishing"
 
 if ( params.genomes ) {
     genomes = Channel
-    .fromPath(params.genomes, checkIfExists: true, type: "file")
+    .fromPath(params.genomes, checkIfExists: true, type: "file", ['*.fasta'])
     .map {file -> [file.simpleName, file]}
     .tap { genomesForPolishing }
 } else {
-    println("No genomes supplied, did you include '*.fasta'?")
+    log.info "No genomes supplied, did you include '*.fasta'?"
     exit 1
 }
 
 if ( params.trimmedReads ) {
     trimmedReads = Channel
-    .fromPath(params.trimmedReads, checkIfExists: true, type: "file")
+    .fromPath(params.trimmedReads, checkIfExists: true, type: "file", ['*.fastq', '*.fastq.gz'])
     .map {file -> [file.simpleName, file]}
     .tap { trimmedReadsForPolishing }
 } else {
-    println("No trimmed reads supplied, did you include '*.fastq.gz'?")
+    log.info "No trimmed reads supplied, did you include '*.fastq.gz'?"
     exit 1
 }
 
