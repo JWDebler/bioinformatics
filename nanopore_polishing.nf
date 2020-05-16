@@ -116,7 +116,7 @@ process medaka {
     set sampleID, "${sampleID}.fasta", "${sampleID}.fastq.gz" from medaka
 
     output:
-    set sampleID, "${sampleID}.contigs.racon.medaka.fasta"meda, "${sampleID}.fastq.gz" into unknown
+    set sampleID, "${sampleID}.contigs.racon.medaka.fasta", "${sampleID}.fastq.gz" into unknown
 
     """
     medaka_consensus \
