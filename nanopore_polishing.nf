@@ -46,7 +46,7 @@ if ( params.genomes ) {
     .map {file -> [file.simpleName, file]}
     .tap { genomesForPolishing }
 } else {
-    log.info "No genomes supplied."
+    println("No genomes supplied, did you include '*.fasta'?")
     exit 1
 }
 
@@ -56,14 +56,13 @@ if ( params.trimmedReads ) {
     .map {file -> [file.simpleName, file]}
     .tap { trimmedReadsForPolishing }
 } else {
-    log.info "No trimmed reads supplied."
+    println("No trimmed reads supplied, did you include '*.fastq.gz'?")
     exit 1
 }
 
 genomesForPolishing
 .combine(trimmedReadsForPolishing, by: 0)
-.tap { racon }
-.println()
+.set { racon }
 
 process versions {
     publishDir "${params.outdir}/", mode: 'copy'
