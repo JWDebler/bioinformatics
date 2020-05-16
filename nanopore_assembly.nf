@@ -1,16 +1,5 @@
 
-params.sequencefiles = false
-params.outdir = "results_nanopore_assembly"
-
-if ( params.sequencefiles ) {
-    sequencefiles = Channel
-    .fromPath(params.sequencefiles, checkIfExists: true, type: "file")
-    .map {file -> [file.simpleName, file]}
-    .tap { rawnanoporereads }
-} else {
-    log.info "No sequencefiles supplied."
-    exit 1
-}
+pll 
 
 // before running this script, you need to manually concatenate the demultiplexed fastq files. 
 // This script expects one fastq file per genome. guppy can do the barcode demultiplexing during basecalling

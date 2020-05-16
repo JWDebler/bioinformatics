@@ -22,7 +22,7 @@ def helpMessage() {
 
     --outdir <path>
         Default: `results_nanopore_polishing`
-        The directory to store the results in.
+        The directory to store the results in.--g
 
     ## Exit codes
     - 0: All ok.
@@ -62,7 +62,8 @@ if ( params.trimmedReads ) {
 
 genomesForPolishing
 .combine(trimmedReadsForPolishing, by: 0)
-.set { racon }
+.tap { racon }
+.println()
 
 process versions {
     publishDir "${params.outdir}/", mode: 'copy'
