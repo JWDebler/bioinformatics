@@ -42,7 +42,7 @@ params.outdir = "results_nanopore_polishing"
 
 if ( params.genomes ) {
     genomes = Channel
-    .fromPath(params.genomes, checkIfExists: true, type: "file", ['*.fasta'])
+    .fromPath(params.genomes, checkIfExists: true, type: "file")
     .map {file -> [file.simpleName, file]}
     .tap { genomesForPolishing }
 } else {
@@ -52,7 +52,7 @@ if ( params.genomes ) {
 
 if ( params.trimmedReads ) {
     trimmedReads = Channel
-    .fromPath(params.trimmedReads, checkIfExists: true, type: "file", ['*.fastq', '*.fastq.gz'])
+    .fromPath(params.trimmedReads, checkIfExists: true, type: "file")
     .map {file -> [file.simpleName, file]}
     .tap { trimmedReadsForPolishing }
 } else {
@@ -129,3 +129,5 @@ process medaka {
 
     """
 }
+
+println("If nothing happened, did you inlcude '*.fasta' and '*.fastq.gz' in the --genomes and --trimmedReads options?")
