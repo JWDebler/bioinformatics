@@ -116,13 +116,14 @@ process medaka {
     set sampleID, "${sampleID}.fasta", "${sampleID}.fastq.gz" from medaka
 
     output:
-    set sampleID, "${sampleID}.contigs.racon.medaka.fasta", "${sampleID}.fastq.gz" into unknown
+    set sampleID, "${sampleID}.contigs.racon.medaka.fasta"meda, "${sampleID}.fastq.gz" into unknown
 
     """
     medaka_consensus \
     -d ${sampleID}.fasta \
     -i ${sampleID}.fastq.gz \
     -o ${sampleID}_medaka_output \
+    -- threads 14 \
     -m r941_min_high_g360
 
     cp ${sampleID}_medaka_output/consensus.fasta ${sampleID}.contigs.racon.medaka.fasta
