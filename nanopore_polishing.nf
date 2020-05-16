@@ -99,7 +99,7 @@ process racon {
     input.fasta \
     input.fastq.gz > minimap.racon.paf
 
-    racon -m 8 -x -6 -g -8 -w 500 \
+    racon -m 8 -x -6 -g -8 -w 500 -t 14\
     input.fastq.gz \
     minimap.racon.paf \
     input.fasta > ${sampleID}.contigs.racon.fasta
