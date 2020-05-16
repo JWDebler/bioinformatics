@@ -83,9 +83,6 @@ process versions {
 
 }
 
-println("If nothing happened, did you inlcude '*.fasta' and '*.fastq.gz' in the --genomes and --trimmedReads options?")
-log.info "If nothing happened, did you inlcude '*.fasta' and '*.fastq.gz' in the --genomes and --trimmedReads options? LOG"
-
 // racon parameters as suggested by medaka authors https://github.com/nanoporetech/medaka
 process racon {
 
@@ -133,3 +130,4 @@ process medaka {
     """
 }
 
+log.info "If nothing happened, did you inlcude '*.fasta' and '*.fastq.gz' in the --genomes and --trimmedReads options?"
