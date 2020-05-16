@@ -89,20 +89,20 @@ process racon {
     publishDir "${params.outdir}/05-racon-polish", mode: 'copy', pattern: '*.fasta'
 
     input:
-    set sampleID, 'input.fasta', 'input.fastq.gz' from racon
+    set sampleID, "${sampleID}.fasta", "${sampleID}.fastq.gz" from racon
 
     output:
-    set sampleID, "${sampleID}.contigs.racon.fasta", 'input.fastq.gz' into medaka
+    set sampleID, "${sampleID}.contigs.racon.fasta", "${sampleID}.fastq.gz" into medaka
 
     """
     minimap2 \
-    input.fasta \
-    input.fastq.gz > minimap.racon.paf
+    ${sampleID}.fasta \
+    ${sampleID}.fastq.gz > minimap.racon.paf
 
     racon -m 8 -x -6 -g -8 -w 500 -t 14\
-    input.fastq.gz \
+    ${sampleID}.fastq.gz \
     minimap.racon.paf \
-    input.fasta > ${sampleID}.contigs.racon.fasta
+    ${sampleID}.fasta > ${sampleID}.contigs.racon.fasta
 
     """
 }
@@ -113,15 +113,15 @@ process medaka {
     publishDir "${params.outdir}/06-medaka-polish", mode: 'copy', pattern: '*.fasta'
 
     input:
-    set sampleID, 'input.fasta', 'input.fastq.gz' from medaka
+    set sampleID, "${sampleID}.fasta", "${sampleID}.fastq.gz" from medaka
 
     output:
-    set sampleID, "${sampleID}.contigs.racon.medaka.fasta", 'input.fastq.gz' into unknown
+    set sampleID, "${sampleID}.contigs.racon.medaka.fasta", "${sampleID}.fastq.gz" into unknown
 
     """
     medaka_consensus \
-    -d input.fasta \
-    -i input.fastq.gz \
+    -d ${sampleID}.fasta \
+    -i ${sampleID}.fastq.gz \
     -o ${sampleID}_medaka_output \
     -m r941_min_high_g360
 
