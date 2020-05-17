@@ -75,11 +75,11 @@ process busco {
     cp ${sampleID}.fasta ./${sampleID}.local.fasta
     docker run -v \$(pwd):/busco_wd ezlabgva/busco:v4.0.5_cv1 busco \
     -i ${sampleID}.local.fasta \
-    -o ${id} \
+    -o ${sampleID} \
     -l ${params.database} \
     -m ${params.mode} \
     -c ${params.cores} 
-    cp ${id}/short_summary*.txt .
+    cp ${sampleID}/short_summary*.txt .
     """
 }
 
