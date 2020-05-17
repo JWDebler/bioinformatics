@@ -23,7 +23,7 @@ def helpMessage() {
         Optional
         Default: genome
         Available: transcriptome, proteins
-        
+
     --cores <int>
         Optional
         Default: 16
@@ -67,14 +67,14 @@ process busco {
     publishDir "${params.outdir}/", mode: 'copy'
 
     input:
-    set id, "genome.fasta" from genomesForBusco
+    set sampleID, "${sampleID}.fasta" from genomesForBusco
 
     output:
     file "short_summary*.txt" into busco_output
     """
-    cp genome.fasta ./test.fasta
+    cp ${sampleID}.fasta ./${sampleID}.local.fasta
     docker run -v \$(pwd):/busco_wd ezlabgva/busco:v4.0.5_cv1 busco \
-    -i test.fasta \
+    -i ${sampleID}.local.fasta \
     -o ${id} \
     -l ${params.database} \
     -m ${params.mode} \
