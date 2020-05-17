@@ -23,12 +23,7 @@ def helpMessage() {
         Optional
         Default: genome
         Available: transcriptome, proteins
-
-    --runtype <string>
-        Optional
-        Default: specific
-        Available: generic
-
+        
     --cores <int>
         Optional
         Default: 16
@@ -53,7 +48,6 @@ params.genomes = false
 params.outdir = "results_busco"
 params.database = "ascomycota_odb10"
 params.mode = "genome"
-params.runtype = "specific"
 params.cores = 16
 
 if ( params.genomes ) {
@@ -84,7 +78,6 @@ process busco {
     -o ${id} \
     -l ${params.database} \
     -m ${params.mode} \
-    -rt ${params.runtype} \
     -c ${params.cores} 
     cp ${id}/short_summary*.txt .
     """
