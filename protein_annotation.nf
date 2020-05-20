@@ -107,7 +107,7 @@ process interproscan {
   file "${id}.interproscan.tsv"
 
   """
-  interproscan.sh \
+  /opt/interproscan/current/interproscan.sh \
   --applications SignalP_EUK,Pfam,TMHMM,PANTHER,PRINTS,ProDom,ProSitePatterns,ProSiteProfiles,MobiDBLite\
   --cpu ${task.cpus} \
   --seqtype p \
