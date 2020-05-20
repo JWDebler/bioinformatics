@@ -70,10 +70,11 @@ process effectorP {
   file "${id}.effectorP.tsv"
 
   """
+  cp ${id}.input.fasta ${id}.local.input.fasta
   docker run -v \$(pwd):/data/ taniguti/effectorp2 python EffectorP_2.0/Scripts/EffectorP.py \
   -s \
   -o /data/${id}.effectorP.tsv \
-  -i /data/${id}.input.fasta
+  -i /data/${id}.local.input.fasta
   """
 }
 
