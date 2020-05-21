@@ -108,7 +108,7 @@ process interproscan {
 
   """
   /opt/interproscan/current/interproscan.sh \
-  --applications SignalP_EUK,Pfam,PANTHER,PRINTS,ProDom,ProSitePatterns,ProSiteProfiles,MobiDBLite\
+  --applications TMHMM,SignalP_EUK,Pfam,PANTHER,PRINTS,ProDom,ProSitePatterns,ProSiteProfiles,MobiDBLite\
   --cpu ${task.cpus} \
   --seqtype p \
   --disable-precalc \
