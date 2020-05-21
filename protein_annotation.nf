@@ -106,9 +106,10 @@ process interproscan {
   output:
   file "${id}.interproscan.tsv"
 
+// currently excluding MobiDBLite, as it fails with python3.8
   """
   /opt/interproscan/current/interproscan.sh \
-  --applications TMHMM,SignalP_EUK,Pfam,PANTHER,PRINTS,ProDom,ProSitePatterns,ProSiteProfiles,MobiDBLite\
+  --applications SignalP_EUK,Pfam,PANTHER,PRINTS,ProDom,ProSitePatterns,ProSiteProfiles\
   --cpu ${task.cpus} \
   --seqtype p \
   --disable-precalc \
