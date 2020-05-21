@@ -109,7 +109,7 @@ process interproscan {
 // currently excluding MobiDBLite, as it fails with python3.8 and TMHMM as there is a path problem somewhere
   """
   /opt/interproscan/current/interproscan.sh \
-  --applications MobiDBLite,SignalP_EUK,Pfam,PANTHER,PRINTS,ProDom,ProSitePatterns,ProSiteProfiles\
+  --applications SignalP_EUK,Pfam,PANTHER,PRINTS,ProDom,ProSitePatterns,ProSiteProfiles\
   --cpu ${task.cpus} \
   --seqtype p \
   --disable-precalc \

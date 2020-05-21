@@ -4,7 +4,7 @@ def helpMessage() {
     A pipeline to determine BUSCO completeness using BUSCO V4
 
     ## Examples
-    nextflow run nanopore_polishing.nf \
+    nextflow run busco.nf \
     --genomes "genomes/*.fasta" \
     --database "ascomycota_odb10"
     
