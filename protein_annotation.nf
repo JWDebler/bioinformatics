@@ -24,6 +24,12 @@ def helpMessage() {
     """.stripIndent()
 }
 
+if (params.help) {
+    helpMessage()
+    exit 0
+}
+
+
 params.proteome = false
 params.outdir = "proteome_annotation"
 
