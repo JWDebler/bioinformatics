@@ -1,8 +1,45 @@
 #!/usr/bin/env nextflow
 
+def helpMessage() {
+    log.info"""
+    # Gene annotaion with GeneMark-Es
+    A pipeline to do de novo gene annotation with GeneMark-ES
+
+    ## Examples
+    nextflow run annotate_genomes.nf \
+    --genomes "genomes/*.fasta"
+    
+
+    ## Parameters
+    --genomes <glob>
+        Required
+        A glob of the fasta genomes to be annotated.
+        The basename of the file is used as the genome name.
+
+    --cores <int>
+        Optional
+        Default: 14
+
+    --outdir <path>
+        Default: `results_genemark`
+        The directory to store the results in.
+
+    ## Exit codes
+    - 0: All ok.
+    - 1: Incomplete parameter inputs.
+    """.stripIndent()
+}
+
+if (params.help) {
+    helpMessage()
+    exit 0
+}
+
+
 params.genomes = false
-params.outdir = "results"
+params.outdir = "results_genemark"
 params.genemark = '/opt/genemark-ES/gmes_petap.pl'
+params.cores = 14
 
 if ( params.genomes ) {
     genomes = Channel
@@ -54,7 +91,6 @@ process addSpeciesNameTofastaHeadersContigs {
 //GenemarkES annotation
 process annotation_genemark {
     tag {sampleID}
-    cpus 14
     publishDir "${params.outdir}", mode: 'copy', pattern: '*.gtf'
 
     input:
@@ -64,7 +100,7 @@ process annotation_genemark {
     set sampleID, "${sampleID}.genemark.gtf", "${sampleID}.fasta" into genemarkOutput
 
     """
-    ${params.genemark} --ES --fungus --cores ${task.cpus} --sequence ${sampleID}.fasta
+    ${params.genemark} --ES --fungus --cores ${params.cores} --sequence ${sampleID}.fasta
     mv genemark.gtf ${sampleID}.genemark.gtf
     """
 }
