@@ -26,7 +26,13 @@ else:
 
 fasta = {}
 
-print("Reading ", input_file)
+print("Reading: ", input_file)
+
+#If file with same outputname exists, delete it first
+if os.path.isfile(output_file):
+    print("Outputfile already exists, overwriting")
+    os.unlink(output_file)
+
 
 with open(input_file) as file:
     input = csv.reader(file, delimiter='\t')
@@ -44,6 +50,6 @@ with open(input_file) as file:
             elif line[1] != '0':
                 fasta[id] += line[1]
 
-print("Creating ", output_file)
+print("Writing: ", output_file)
 for element in fasta:
     print('>'+element, '\n'+fasta[element], file=open(output_file,"a"))
