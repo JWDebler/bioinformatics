@@ -37,16 +37,20 @@ if os.path.isfile(output_file):
 with open(input_file) as file:
     input = csv.reader(file, delimiter='\t')
     for line in input:
+        #If something is in the first colum, use that as the identifier 
         if line[0] != "":
             id = line[0]
             fasta[id] = ''
+            #Some protein sequences contain the star symbol for stop codon, but interproscan crashes if this is still there
             if line[1][-1] == "*":
                 fasta[id] += line[1][:-1]
             else:
                 fasta[id] = line[1]
         elif line[1] != "":
+            #Some protein sequences contain the star symbol for stop codon, but interproscan crashes if this is still there
             if line[1][-1] == "*":
                 fasta[id] += line[1][:-1]
+            #For some reason some last lines contain a zero. This needs to go
             elif line[1] != '0':
                 fasta[id] += line[1]
 
