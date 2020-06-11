@@ -26,6 +26,8 @@ else:
 
 fasta = {}
 
+print("Reading ", input_file)
+
 with open(input_file) as file:
     input = csv.reader(file, delimiter='\t')
     for line in input:
@@ -42,5 +44,6 @@ with open(input_file) as file:
             elif line[1] != '0':
                 fasta[id] += line[1]
 
+print("Creating ", output_file)
 for element in fasta:
     print('>'+element, '\n'+fasta[element], file=open(output_file,"a"))
