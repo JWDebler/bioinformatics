@@ -22,12 +22,12 @@ def helpMessage() {
 
     --outdir <path>
         Default: `results_nanopore_polishing`
-        The directory to store the results in.--g
+        The directory to store the results in.
 
     ## Exit codes
     - 0: All ok.
     - 1: Incomplete parameter inputs.
-    """.stripIndent()
+    """
 }
 
 if (params.help) {
