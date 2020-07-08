@@ -1,6 +1,4 @@
 
-pll 
-
 // before running this script, you need to manually concatenate the demultiplexed fastq files. 
 // This script expects one fastq file per genome. guppy can do the barcode demultiplexing during basecalling
 // now and creates lots of small fastq (or fastq.gz) files in folders called 'barcodeXX', where

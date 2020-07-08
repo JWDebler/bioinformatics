@@ -27,7 +27,7 @@ def helpMessage() {
     ## Exit codes
     - 0: All ok.
     - 1: Incomplete parameter inputs.
-    """.stripIndent()
+    """
 }
 
 if (params.help) {
