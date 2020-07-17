@@ -1,0 +1,390 @@
+// Build your own Augustus model from RNAseq data and a reference genome assembly
+// according to: "Hoff KJ, Stanke M. Predicting Genes in Single Genomes with AUGUSTUS. Curr Protoc Bioinforma. 2019;65(1):1-54. doi:10.1002/cpbi.57"
+
+// Prerequisits: 
+// - Genome assembly
+// - RNAseq data
+
+def helpMessage() {
+    log.info"""
+    # A pipeline to build your own model for Augustus
+    based on RNAseq data and a genome assembly
+
+    ## Examples
+    nextflow run build_augustus_model_from_RNAseq.nf \
+    --genome "genome/*.fasta" \
+    --rnaseq ""
+    
+
+    ## Parameters
+    --genome <glob>
+        Required
+        A glob of the fasta genome to be used for model building.
+        The basename of the file is used as the genome name.
+
+    --cores <int>
+        Optional
+        Default: 14
+
+    --outdir <path>
+        Default: `results_augustus_model`
+        The directory to store the results in.
+
+    ## Exit codes
+    - 0: All ok.
+    - 1: Incomplete parameter inputs.
+    """
+}
+
+if (params.help) {
+    helpMessage()
+    exit 0
+}
+
+params.genome = false
+params.rnaseq = false
+params.outdir = "results_augustus_model"
+
+if ( params.genome ) {
+    genomes = Channel
+    .fromPath(params.genomes, checkIfExists: true, type: "file")
+    .map{file -> [file.simpleName, file]}
+    .tap{assemblies}
+    .tap{assembliesForAugustus}
+} else {
+    log.info "No genome supplied, did you include '*.fasta'?"
+    exit 1
+}
+
+if ( params.trimmedReads ) {
+    trimmedReads = Channel
+    .fromPath(params.trimmedReads, checkIfExists: true, type: "file")
+    .map {file -> [file.simpleName, file]}
+    .tap { trimmedReadsForPolishing }
+} else {
+    log.info "No trimmed reads supplied, did you include '*.fastq.gz'?"
+    exit 1
+}
+
+params.workdir = '/home/ubuntu/2020-07-16_augustus'
+params.genomes = "${params.workdir}/genomes/*.f*a"
+params.srrids = "${params.workdir}/rabieiSRRs.txt"
+params.outdir = "${params.workdir}/output"
+
+
+
+Channel
+.fromPath(params.srrids)
+.splitText()
+.map{it -> it.trim()}
+.set{srrIDsTrimmed}
+
+Channel
+.fromPath(params.genomes)
+
+
+process dumpfastq {
+  publishDir "${params.outdir}/01-fastq", mode: 'copy'
+
+  input:
+    val id from srrIDsTrimmed
+
+  output:
+    set id, "*.fastq" into fastqDumpForAlignment
+
+  """
+  fastq-dump  $id
+  """
+}
+
+fastqDumpForAlignment
+.collect()
+.flatten()
+.collate(2)
+.set{fastqDumpForAlignmentAll}
+
+
+process indexAssemblyHisat2 {
+  tag { id }
+
+  input:
+    set id, "genome.fasta" from assemblies
+
+  output:
+    set id, "genome.fasta", "*.ht2" into indexedAssembly
+
+  """
+  hisat2-build genome.fasta $id
+  """
+}
+
+process alignToAssemblyhisat2 {
+  publishDir "${params.outdir}/02-bams", mode: 'copy', pattern: '*.bam'
+  tag { "${idAssembly} ${idFastq}" }
+
+  input:
+    set idAssembly, "genome.fasta", "${idAssembly}.*.ht2", idFastq, "${idFastq}.fastq" from indexedAssembly.combine(fastqDumpForAlignmentAll)
+
+  output:
+    set  idAssembly, "genome.fasta", idFastq, "${idAssembly}.${idFastq}.bam" into bamsToFilter
+
+  """
+  hisat2 -x ${idAssembly} \
+  -U ${idFastq}.fastq \
+  --threads 10 \
+  --max-intronlen 2000 \
+  | samtools view -b \
+  | samtools sort -n \
+  -o ${idAssembly}.${idFastq}.bam
+
+  """
+}
+
+process filterBams {
+  publishDir "${params.outdir}/03-filteredBams", mode: 'copy', pattern: '*.bam'
+
+  input: 
+  set idAssembly, "genome.fasta", idFastq, "aligned.bam" from bamsToFilter 
+
+  output: 
+  set idAssembly, "genome.fasta", idFastq, "${idAssembly}.${idFastq}.filtered.sorted.bam" into alignedAndFiltered
+
+  """
+  cp aligned.bam aligned.input.bam
+  docker run -v \$PWD:/xxx augustus /opt/augustus-3.3.3/bin/filterBam \
+  --uniq \
+  --in /xxx/aligned.input.bam \
+  --out /xxx/filtered.bam
+  samtools sort filtered.bam > ${idAssembly}.${idFastq}.filtered.sorted.bam
+  """
+}
+
+alignedAndFiltered
+.tap {bamToHintsInput}
+.tap {indexBamInput}
+
+
+
+process indexBam {
+  publishDir "${params.outdir}/03-filteredBams/", mode: 'copy', pattern: '*.bai'
+  tag { "${idAssembly} ${idFastq}" }
+
+  input:
+  set  idAssembly, "genome.fasta", idFastq, "assembly.bam" from indexBamInput
+
+  output:
+  set  idAssembly, "genome.fasta", idFastq, "${idAssembly}.${idFastq}.filtered.sorted.bam.bai" into indexedBam
+
+  """
+  samtools index assembly.bam ${idAssembly}.${idFastq}.filtered.sorted.bam.bai
+  """
+}
+
+
+process bamToHints {
+  
+  tag { "${idAssembly} ${idFastq}" }
+
+  input:
+  set idAssembly, "genome.fasta", idFastq, "assembly.bam" from bamToHintsInput
+
+  output:
+  set idAssembly, "genome.fasta", idFastq, "${idAssembly}.${idFastq}.gff" into bamToHintsOutput
+
+  """
+  cp assembly.bam assembly.input.bam
+
+  docker run -v \$PWD:/xxx augustus /opt/augustus-3.3.3/bin/bam2hints \
+  --intronsonly \
+  --maxgaplen=10 \
+  --minintronlen=15 \
+  --maxintronlen=500 \
+  --in=/xxx/assembly.input.bam \
+  --out=/xxx/${idAssembly}.${idFastq}.gff
+  """
+}
+
+process findStrand {
+   publishDir "${params.outdir}/04-hints/", mode: 'copy', pattern: '*.gff'
+  tag { "${idAssembly} ${idFastq}" }
+
+  input:
+  set idAssembly, "genome.fasta", idFastq, "introns.gff" from bamToHintsOutput
+
+  output:
+  set idAssembly, "genome.fasta", idFastq, "${idAssembly}.${idFastq}.introns.gff" into findStrandOutput
+
+  """
+  cp genome.fasta genome.input.fasta
+  cp introns.gff introns.input.gff
+
+  docker run -v \$PWD:/xxx augustus perl /root/augustus/docs/tutorial2018/BRAKER_v2.0.4+/filterIntronsFindStrand.pl \
+  /xxx/genome.input.fasta \
+  /xxx/introns.input.gff \
+  --score > "${idAssembly}.${idFastq}.introns.gff"
+  """
+}
+
+findStrandOutput
+.collect()
+.flatten()
+.collate(4)
+.groupTuple()
+.set {mergeHints}
+
+process mergeHints {
+  publishDir "${params.outdir}/04-hints/", mode: 'copy', pattern: '*.gff'
+  input :
+  set idAssembly, genomes, idFastq, "hints*.gff", "genome.fasta" from mergeHints.combine(assembliesForAugustus, by:0)
+
+  output:
+  set idAssembly, "merged_introns.gff" , "genome.fasta" into genemark
+
+  """
+  cat hints* > merged_introns.gff
+  """
+}
+
+process genemark {
+  publishDir "${params.outdir}/04-hints/", mode: 'copy', pattern: '*.gtf'
+  input:
+  set idAssembly, "introns.gff", "genome.fasta" from genemark
+
+  output:
+  set idAssembly, "introns.gff",  "genome.fasta", "${idAssembly}.gtf" into filterGenemark
+
+  """
+  /opt/genemark-ES/gmes_petap.pl \
+  --verbose \
+  --sequence=genome.fasta \
+  --ET=introns.gff \
+  --cores=14 \
+  --soft_mask 1000
+
+  mv genemark.gtf ${idAssembly}.gtf
+
+  """
+}
+
+process filterGenemark {
+  publishDir "${params.outdir}/04-hints/", mode: 'copy', pattern: '*.gtf'
+  input:
+  set idAssembly, "introns.gff", "genome.fasta", "genemark.gtf" from filterGenemark
+
+  output:
+  set idAssembly, "genome.fasta", "${idAssembly}.bonafide.gtf", "genemark.gtf" into computeFlankingRegions
+
+  """
+  cp genemark.gtf genemark.local.gtf
+  cp introns.gff introns.local.gff
+
+  docker run -v \$PWD:/xxx augustus perl /root/augustus/docs/tutorial2018/BRAKER_v2.0.4+/filterGenemark.pl \
+  --genemark=/xxx/genemark.local.gtf \
+  --introns=/xxx/introns.local.gff
+
+  mv *.good.gtf ${idAssembly}.bonafide.gtf
+  """
+}
+
+process computeFlankingRegions {
+
+  input:
+  set idAssembly, "genome.fasta", "bonafide.gtf", "genemark.gtf" from computeFlankingRegions
+
+  output:
+  set idAssembly, "genome.fasta",  "${idAssembly}.bonafide.gtf", "tmp.gb" into filterGenesIn_mRNAname
+
+  """
+  cp bonafide.gtf bonafide.local.gtf
+  cp genemark.gtf genemark.local.gtf
+  cp genome.fasta genome.local.fasta
+
+  flankvalue=\$(docker run -v \$PWD:/xxx augustus /root/augustus/scripts/computeFlankingRegion.pl \
+  /xxx/bonafide.local.gtf | \
+  awk '/^The flanking_DNA value is:/ {print \$5}')
+
+  docker run -v \$PWD:/xxx augustus /root/augustus/scripts/gff2gbSmallDNA.pl \
+  /xxx/genemark.local.gtf \
+  /xxx/genome.local.fasta \
+  \$flankvalue /xxx/tmp.gb
+
+  mv bonafide.gtf ${idAssembly}.bonafide.gtf
+  """
+
+}
+
+
+process filterGenesIn_mRNAname {
+    publishDir "${params.outdir}/04-hints/", mode: 'copy', pattern: '*.gb'
+
+    input:
+    set idAssembly, "genome.fasta", "bonafide.gtf", "tmp.gb" from filterGenesIn_mRNAname
+
+    output:
+    set idAssembly, "${idAssembly}.bonafide.gb" into xxx
+
+    """
+    cp tmp.gb tmp.local.gb
+    cp bonafide.gtf bonafide.local.gtf
+
+    docker run -v \$PWD:/xxx augustus /root/augustus/scripts/filterGenesIn_mRNAname.pl \
+    /xxx/bonafide.local.gtf \
+    /xxx/tmp.local.gb \
+    > bonafide.gb
+
+    mv bonafide.gb ${idAssembly}.bonafide.gb
+    """
+}
+
+process 
+
+return
+
+
+process augustusGTF {
+  publishDir "${params.outdir}/$id/augustus", mode: 'copy'
+  tag { id }
+
+  input:
+  set id, "hints.gff", "input.fasta" from mergedHintsForAugustus
+
+
+  output:
+  set id, "${id}.augustus.gff", "input.fasta" into augustusGTFoutput
+
+  """
+docker run augustus augustus \
+ --progress=true \
+ --gff3=off\
+ --softmasking=1 \
+ --uniqueGeneId=true \
+ --noInFrameStop=true \
+ --hintsfile=hints.gff \
+ --/augustus/verbosity=4 \
+ --species=PnodSN15 \
+ --extrinsicCfgFile=${params.config} \
+ input.fasta > ${id}.augustus.gff
+  """
+}
+
+augustusGTFoutput
+.tap{augustusToFasta}
+.tap{augustusToBed}
+
+process extractFasta {
+  publishDir "${params.outdir}/$id/augustus", mode: 'copy'
+  tag { id }
+
+  input:
+  set id, "${id}.gff", "input.fasta" from augustusToFasta
+
+  output:
+  set id, "${id}.proteins.fasta" into augustusFastas
+
+  """
+  /opt/augustus/current/scripts/getAnnoFasta.pl --seqfile input.fasta ${id}.gff
+  mv ${id}.aa ${id}.proteins.fasta
+  mv ${id}.codingseq ${id}.cds.fasta
+  """
+
+}
