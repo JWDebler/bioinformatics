@@ -321,7 +321,7 @@ process filterGenesIn_mRNAname {
     set idAssembly, "genome.fasta", "bonafide.gtf", "tmp.gb" from filterGenesIn_mRNAname
 
     output:
-    set idAssembly, "${idAssembly}.bonafide.gb" into xxx
+    set idAssembly, "${idAssembly}.bonafide.gb", "bonafide.gtf", "genome.fasta" into extractTranscriptNames
 
     """
     cp tmp.gb tmp.local.gb
@@ -336,7 +336,82 @@ process filterGenesIn_mRNAname {
     """
 }
 
-process 
+process extractTranscriptNames {
+
+  input:
+  set idAssembly, "bonafide.gb", "bonafide.gtf", "genome.fasta" from extractTranscriptNames
+
+  output:
+  set idAssembly, "bonafide.f.gtf", "genome.fasta", "bonafide.gb" into extractAA
+
+  """
+  cat bonafide.gb | awk '/\\/gene/ {g=gensub(/.*gene="([^[:space:]]+)"/, "\\"\\\\1\\"", "g", \$0); print g}' | sort -u > traingenes.lst
+  grep -f traingenes.lst -F bonafide.gtf > bonafide.f.gtf
+  """
+}
+
+process extractAA {
+
+  publishDir "${params.outdir}/05-training/", mode: 'copy', pattern: '*.aa'
+
+  input:
+  set idAssembly, "bonafide.f.gtf", "genome.fasta" , "bonafide.gb"from extractAA
+
+  output:
+  set idAssembly, "${idAssembly}.trainingset.aa" , "bonafide.gb"into trainingsetAA
+
+  """
+  cp bonafide.f.gtf bonafide.local.gtf
+  cp genome.fasta genome.local.fasta
+
+  docker run -v \$PWD:/xxx augustus /root/augustus/scripts/gtf2aa.pl \
+  /xxx/genome.local.fasta \
+  /xxx/bonafide.local.gtf \
+  /xxx/${idAssembly}.trainingset.aa
+  """
+}
+
+process blastAllvsAll {
+
+  publishDir "${params.outdir}/05-training/", mode: 'copy', pattern: '*.aa'
+  
+  input:
+  set idAssembly, "trainingset.aa" , "bonafide.gb"from trainingsetAA
+
+  output:
+  set idAssembly, "${idAssembly}.trainingset.nonred.aa" , "bonafide.gb"into trainingsetAAnonredundant
+
+  """
+  /opt/Augustus/scripts/aa2nonred.pl \
+  trainingset.aa \
+  ${idAssembly}.trainingset.nonred.aa \
+  --cores=14
+  """
+}
+
+process cleanupAA {
+
+  input:
+  set idAssembly, "nonred.aa" , "bonafide.gb"from trainingsetAAnonredundant
+
+  """
+  grep ">" nonred.aa | perl -pe 's/>//' > nonred.lst
+
+  cat bonafide.gb | \
+
+  perl -ne 'if (\$_ =~ m/LOCUS\\s+(\\S+)\\s/) { \$txLocus = \$1;} elsif (\$_ =~ m/\\/gene=\\"(\\S+)\\"/) {\$txInGb3{\$1} = \$txLocus} if(eof()) {foreach (keys %txInGb3) { print "\$_\\t\$txInGb3{\$_}\\n";}}' > loci.lst
+  
+  grep -f nonred.lst loci.lst | cut -f2 > nonred.loci.lst
+
+  cp bonafide.gb bonafide.local.gb
+  docker run -v \$PWD:/xxx augustus /root/augustus/scripts/filterGenesIn.pl \
+  /xxx/nonred.loci.lst \
+  /xxx/bonafide.local.gb > ${idAssembly}.bonafide.f.gb
+
+  
+  """
+}
+
 
 return
 
