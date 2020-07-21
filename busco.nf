@@ -1,7 +1,8 @@
 def helpMessage() {
     log.info"""
     # Busco completeness pipeline
-    A pipeline to determine BUSCO completeness using BUSCO V4
+    A pipeline to determine BUSCO completeness using BUSCO V4.
+    It uses the simple filename (everything in front of the first '.') of your input data for plots, so make sure it is unique.
 
     ## Examples
     nextflow run busco.nf \
@@ -13,7 +14,7 @@ def helpMessage() {
     --genomes <glob>
         Required
         A glob of the fasta genomes to be polished.
-        The basename of the file is used as the genome name.
+        The simple filename of the file is used as the genome name.
 
     --database <string>
         Optional
