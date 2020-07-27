@@ -80,6 +80,7 @@ process dumpfastq {
 
   output:
     set id, "*.fastq" into fastqDumpForAlignment
+    set id, "*.fastq" into fastqForFastQC
 
   """
   fastq-dump  $id
@@ -90,7 +91,6 @@ fastqDumpForAlignment
 .collect()
 .flatten()
 .collate(2)
-.tap{fastqForFastQC}
 .set{fastqDumpForAlignmentAll}
 
 process FastQC {
