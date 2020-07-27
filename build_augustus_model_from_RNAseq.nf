@@ -51,8 +51,8 @@ params.srrids = false
 params.outdir = "results_augustus_model"
 
 if ( params.genome ) {
-    genomes = Channel
-    .fromPath(params.genomes, checkIfExists: true, type: "file")
+    genome = Channel
+    .fromPath(params.genome, checkIfExists: true, type: "file")
     .map{file -> [file.simpleName, file]}
     .tap{assemblies}
     .tap{assembliesForAugustus}
