@@ -26,6 +26,10 @@ def helpMessage() {
         Optional
         Default: 14
 
+    --SRRids <glob>
+        Required
+        Textfile with SRR IDs, one per line.
+
     --outdir <path>
         Default: `results_augustus_model`
         The directory to store the results in.
@@ -43,6 +47,7 @@ if (params.help) {
 
 params.genome = false
 params.rnaseq = false
+params.srrids = false
 params.outdir = "results_augustus_model"
 
 if ( params.genome ) {
@@ -56,28 +61,20 @@ if ( params.genome ) {
     exit 1
 }
 
-if ( params.trimmedReads ) {
-    trimmedReads = Channel
-    .fromPath(params.trimmedReads, checkIfExists: true, type: "file")
-    .map {file -> [file.simpleName, file]}
-    .tap { trimmedReadsForPolishing }
+if ( params.srrids ) {
+    srrids = Channel
+    .fromPath(params.srrids, checkIfExists: true, type: "file")
+    .splitText()
+    .map{it -> it.trim()}
+    .set{srrIDsTrimmed}
 } else {
-    log.info "No trimmed reads supplied, did you include '*.fastq.gz'?"
+    log.info "No SRR IDs text file supplied."
     exit 1
 }
 
-params.workdir = '/home/ubuntu/2020-07-16_augustus'
-params.genomes = "${params.workdir}/genomes/*.f*a"
-params.srrids = "${params.workdir}/rabieiSRRs.txt"
-params.outdir = "${params.workdir}/output"
+params.outdir = "results"
 
 
-
-Channel
-.fromPath(params.srrids)
-.splitText()
-.map{it -> it.trim()}
-.set{srrIDsTrimmed}
 
 Channel
 .fromPath(params.genomes)
@@ -101,8 +98,22 @@ fastqDumpForAlignment
 .collect()
 .flatten()
 .collate(2)
+.tap{fastqForFastQC}
 .set{fastqDumpForAlignmentAll}
 
+process FastQC {
+  publishDir "${params.outdir}/02-fastQC", mode: 'copy'
+
+  input:
+  set idFastq, "${idFastq}.fastq" from fastqForFastQC
+
+  output:
+  set idFastQ, "${idFastq}_fastqc.html", "${idFastq}_fastqc.zip"
+
+  """
+  /opt/FastQC/fastqc ${idFastq}.fastq
+  """
+}
 
 process indexAssemblyHisat2 {
   tag { id }
@@ -119,7 +130,7 @@ process indexAssemblyHisat2 {
 }
 
 process alignToAssemblyhisat2 {
-  publishDir "${params.outdir}/02-bams", mode: 'copy', pattern: '*.bam'
+  publishDir "${params.outdir}/03-bams", mode: 'copy', pattern: '*.bam'
   tag { "${idAssembly} ${idFastq}" }
 
   input:
@@ -141,7 +152,7 @@ process alignToAssemblyhisat2 {
 }
 
 process filterBams {
-  publishDir "${params.outdir}/03-filteredBams", mode: 'copy', pattern: '*.bam'
+  publishDir "${params.outdir}/04-filteredBams", mode: 'copy', pattern: '*.bam'
 
   input: 
   set idAssembly, "genome.fasta", idFastq, "aligned.bam" from bamsToFilter 
@@ -166,7 +177,7 @@ alignedAndFiltered
 
 
 process indexBam {
-  publishDir "${params.outdir}/03-filteredBams/", mode: 'copy', pattern: '*.bai'
+  publishDir "${params.outdir}/04-filteredBams/", mode: 'copy', pattern: '*.bai'
   tag { "${idAssembly} ${idFastq}" }
 
   input:
@@ -205,7 +216,7 @@ process bamToHints {
 }
 
 process findStrand {
-   publishDir "${params.outdir}/04-hints/", mode: 'copy', pattern: '*.gff'
+   publishDir "${params.outdir}/05-hints/", mode: 'copy', pattern: '*.gff'
   tag { "${idAssembly} ${idFastq}" }
 
   input:
@@ -233,7 +244,7 @@ findStrandOutput
 .set {mergeHints}
 
 process mergeHints {
-  publishDir "${params.outdir}/04-hints/", mode: 'copy', pattern: '*.gff'
+  publishDir "${params.outdir}/05-hints/", mode: 'copy', pattern: '*.gff'
   input :
   set idAssembly, genomes, idFastq, "hints*.gff", "genome.fasta" from mergeHints.combine(assembliesForAugustus, by:0)
 
@@ -246,7 +257,7 @@ process mergeHints {
 }
 
 process genemark {
-  publishDir "${params.outdir}/04-hints/", mode: 'copy', pattern: '*.gtf'
+  publishDir "${params.outdir}/05-hints/", mode: 'copy', pattern: '*.gtf'
   input:
   set idAssembly, "introns.gff", "genome.fasta" from genemark
 
@@ -267,7 +278,7 @@ process genemark {
 }
 
 process filterGenemark {
-  publishDir "${params.outdir}/04-hints/", mode: 'copy', pattern: '*.gtf'
+  publishDir "${params.outdir}/05-hints/", mode: 'copy', pattern: '*.gtf'
   input:
   set idAssembly, "introns.gff", "genome.fasta", "genemark.gtf" from filterGenemark
 
@@ -315,7 +326,7 @@ process computeFlankingRegions {
 
 
 process filterGenesIn_mRNAname {
-    publishDir "${params.outdir}/04-hints/", mode: 'copy', pattern: '*.gb'
+    publishDir "${params.outdir}/05-hints/", mode: 'copy', pattern: '*.gb'
 
     input:
     set idAssembly, "genome.fasta", "bonafide.gtf", "tmp.gb" from filterGenesIn_mRNAname
@@ -352,7 +363,7 @@ process extractTranscriptNames {
 
 process extractAA {
 
-  publishDir "${params.outdir}/05-training/", mode: 'copy', pattern: '*.aa'
+  publishDir "${params.outdir}/06-training/", mode: 'copy', pattern: '*.aa'
 
   input:
   set idAssembly, "bonafide.f.gtf", "genome.fasta" , "bonafide.gb"from extractAA
@@ -373,7 +384,7 @@ process extractAA {
 
 process blastAllvsAll {
 
-  publishDir "${params.outdir}/05-training/", mode: 'copy', pattern: '*.aa'
+  publishDir "${params.outdir}/06-training/", mode: 'copy', pattern: '*.aa'
   
   input:
   set idAssembly, "trainingset.aa" , "bonafide.gb"from trainingsetAA
