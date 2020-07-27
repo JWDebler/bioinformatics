@@ -369,10 +369,10 @@ process extractAA {
   publishDir "${params.outdir}/06-training/", mode: 'copy', pattern: '*.aa'
 
   input:
-  set idAssembly, "bonafide.f.gtf", "genome.fasta" , "bonafide.gb"from extractAA
+  set idAssembly, "bonafide.f.gtf", "genome.fasta" , "bonafide.gb" from extractAA
 
   output:
-  set idAssembly, "${idAssembly}.trainingset.aa" , "bonafide.gb"into trainingsetAA
+  set idAssembly, "${idAssembly}.trainingset.aa" , "bonafide.gb" into trainingsetAA
 
   """
   cp bonafide.f.gtf bonafide.local.gtf
@@ -393,7 +393,7 @@ process blastAllvsAll {
   set idAssembly, "trainingset.aa" , "bonafide.gb"from trainingsetAA
 
   output:
-  set idAssembly, "${idAssembly}.trainingset.nonred.aa" , "bonafide.gb"into trainingsetAAnonredundant
+  set idAssembly, "${idAssembly}.trainingset.nonred.aa" , "bonafide.gb" into trainingsetAAnonredundant
 
   """
   /opt/Augustus/scripts/aa2nonred.pl \
@@ -408,7 +408,10 @@ process cleanupAA {
   publishDir "${params.outdir}/06-training/", mode: 'copy', pattern: '*.gb'
 
   input:
-  set idAssembly, "nonred.aa" , "bonafide.gb"from trainingsetAAnonredundant
+  set idAssembly, "nonred.aa" , "bonafide.gb" from trainingsetAAnonredundant
+
+  output:
+  file "${idAssembly}.bonafide.f.gb"
 
   """
   grep ">" nonred.aa | perl -pe 's/>//' > nonred.lst
