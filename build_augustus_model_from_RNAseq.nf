@@ -82,7 +82,7 @@ process dumpfastq {
 
   output:
     //set id, "*.fastq" into fastqDumpForAlignment
-    set id, "*_1.fastq", "*_2.fastq" fastqDumpForAlignment
+    set id, "*_1.fastq", "*_2.fastq" into fastqDumpForAlignment
 
   """
   fastq-dump -split-3 $id
