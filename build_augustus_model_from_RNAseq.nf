@@ -48,7 +48,7 @@ if (params.help) {
 params.genome = false
 params.rnaseq = false
 params.srrids = false
-params.outdir = "results_augustus_model"
+params.outdir = "results"
 
 if ( params.genome ) {
     genome = Channel
@@ -71,14 +71,6 @@ if ( params.srrids ) {
     log.info "No SRR IDs text file supplied."
     exit 1
 }
-
-params.outdir = "results"
-
-
-
-Channel
-.fromPath(params.genomes)
-
 
 process dumpfastq {
   publishDir "${params.outdir}/01-fastq", mode: 'copy'
