@@ -101,13 +101,15 @@ process FastQC {
   publishDir "${params.outdir}/02-fastQC", mode: 'copy'
 
   input:
-  set idFastq, "*.fastq" from fastqForFastQC
+  set idFastq, "${idFastq}_1.fastq", "${idFastq}_2.fastq" from fastqForFastQC
+  //set idFastq, "${idFastq}.fastq" from fastqForFastQC
 
   output:
-  set idFastq, "*_fastqc.html", "*_fastqc.zip"
+  //set idFastq, "${idFastq}_fastqc.html", "${idFastq}_fastqc.zip"
+  set idFastq, "${idFastq}_1_fastqc.html", "${idFastq}_1_fastqc.zip", "${idFastq}_2_fastqc.html", "${idFastq}_2_fastqc.zip"
 
   """
-  /opt/FastQC/fastqc *.fastq
+  /opt/FastQC/fastqc  "${idFastq}_1.fastq" "${idFastq}_2.fastq"
   """
 }
 
