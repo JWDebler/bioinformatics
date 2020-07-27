@@ -72,6 +72,8 @@ if ( params.srrids ) {
     exit 1
 }
 
+//Sometimes SRR datasets are for some reason merged (forward and backward read)
+//-split-3 separates those reads back
 process dumpfastq {
   publishDir "${params.outdir}/01-fastq", mode: 'copy'
 
@@ -79,10 +81,11 @@ process dumpfastq {
     val id from srrIDsTrimmed
 
   output:
-    set id, "*.fastq" into fastqDumpForAlignment
+    //set id, "*.fastq" into fastqDumpForAlignment
+    set id, "*_1.fastq", "*_2.fastq" fastqDumpForAlignment
 
   """
-  fastq-dump  $id
+  fastq-dump -split-3 $id
   """
 }
 
@@ -90,7 +93,8 @@ fastqDumpForAlignment
 .tap {fastqForFastQC}
 .collect()
 .flatten()
-.collate(2)
+.collate(3)
+//.collate(2)
 .set{fastqDumpForAlignmentAll}
 
 process FastQC {
@@ -126,14 +130,19 @@ process alignToAssemblyhisat2 {
   tag { "${idAssembly} ${idFastq}" }
 
   input:
-    set idAssembly, "genome.fasta", "${idAssembly}.*.ht2", idFastq, "${idFastq}.fastq" from indexedAssembly.combine(fastqDumpForAlignmentAll)
+    set idAssembly, "genome.fasta", "${idAssembly}.*.ht2", idFastq, "${idFastq}_1.fastq", "${idFastq}_2.fastq" from indexedAssembly.combine(fastqDumpForAlignmentAll)
+    //set idAssembly, "genome.fasta", "${idAssembly}.*.ht2", idFastq, "${idFastq}.fastq" from indexedAssembly.combine(fastqDumpForAlignmentAll)
 
   output:
     set  idAssembly, "genome.fasta", idFastq, "${idAssembly}.${idFastq}.bam" into bamsToFilter
 
+// either use -U, or -1/-2
+
+// -1 ${idFastq}_1.fastq -2 ${idFastq}_2.fastq \
+// -U ${idFastq}.fastq \
   """
   hisat2 -x ${idAssembly} \
-  -U ${idFastq}.fastq \
+  -1 ${idFastq}_1.fastq -2 ${idFastq}_2.fastq \
   --threads 10 \
   --max-intronlen 2000 \
   | samtools view -b \
