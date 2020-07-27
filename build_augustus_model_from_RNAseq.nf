@@ -100,7 +100,7 @@ process FastQC {
   set idFastq, "${idFastq}.fastq" from fastqForFastQC
 
   output:
-  set idFastQ, "${idFastq}_fastqc.html", "${idFastq}_fastqc.zip"
+  set idFastq, "${idFastq}_fastqc.html", "${idFastq}_fastqc.zip"
 
   """
   /opt/FastQC/fastqc ${idFastq}.fastq
