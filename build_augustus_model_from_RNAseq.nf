@@ -405,6 +405,8 @@ process blastAllvsAll {
 
 process cleanupAA {
 
+  publishDir "${params.outdir}/06-training/", mode: 'copy', pattern: '*.gb'
+
   input:
   set idAssembly, "nonred.aa" , "bonafide.gb"from trainingsetAAnonredundant
 
