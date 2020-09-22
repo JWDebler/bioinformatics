@@ -107,8 +107,6 @@ with open(input_file) as file:
                 
 
         print(*elements, sep='\t')
-        
         else:
-            print(*line, sep='\t')
-            
+            print(*line, sep='\t')  
 
