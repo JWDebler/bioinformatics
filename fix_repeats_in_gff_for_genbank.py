@@ -104,9 +104,9 @@ with open(input_file) as file:
                 mobile_element = "transposon: Maverick"
                 elements[2] = "repeat_region"
                 elements[8]+="; rpt_type=" + rpt_type + "; mobile_element=" + mobile_element
-                
-
-        print(*elements, sep='\t')
+        
+            print(*elements, sep='\t')
+        
         else:
             print(*line, sep='\t')  
 
