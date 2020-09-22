@@ -60,6 +60,11 @@ with open(input_file) as file:
                 elements[2] = "repeat_region"
                 elements[8]+="; rpt_type="+rpt_type
 
+            elif elements[2] == "LTR|TIR":
+                rpt_type = "other"
+                elements[2] = "repeat_region"
+                elements[8]+="; rpt_type="+rpt_type
+
             elif elements[2] == "TIR":
                 rpt_type = "terminal"
                 elements[2] = "repeat_region"
