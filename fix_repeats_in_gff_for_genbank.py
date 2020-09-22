@@ -69,31 +69,31 @@ with open(input_file) as file:
                 rpt_type = "long_terminal_repeat"
                 rpt_family = "TRIM"
                 elements[2] = "repeat_region"
-                lements[8] += "; rpt_type=" + rpt_type + "; rpt_family=" + rpt_family
+                elements[8] += "; rpt_type=" + rpt_type + "; rpt_family=" + rpt_family
 
             elif elements[2] == "DIRS":
                 rpt_type = "long_terminal_repeat"
                 rpt_family = "DIRS"
                 elements[2] = "repeat_region"
-                lements[8] += "; rpt_type=" + rpt_type + "; rpt_family=" + rpt_family
+                elements[8] += "; rpt_type=" + rpt_type + "; rpt_family=" + rpt_family
 
             elif elements[2] == "LINE":
                 rpt_type = "other"
                 rpt_family = "LINE"
                 elements[2] = "repeat_region"
-                lements[8] += "; rpt_type=" + rpt_type + "; rpt_family=" + rpt_family
+                elements[8] += "; rpt_type=" + rpt_type + "; rpt_family=" + rpt_family
 
             elif elements[2] == "SINE":
                 rpt_type = "dispersed"
                 rpt_family = "SINE"
                 elements[2] = "repeat_region"
-                lements[8] += "; rpt_type=" + rpt_type + "; rpt_family=" + rpt_family
+                elements[8] += "; rpt_type=" + rpt_type + "; rpt_family=" + rpt_family
 
             elif elements[2] == "MITE":
                 rpt_type = "other"
                 rpt_family = "transposon: MITE"
                 elements[2] = "repeat_region"
-                lements[8] += "; rpt_type=" + rpt_type + "; rpt_family=" + rpt_family
+                elements[8] += "; rpt_type=" + rpt_type + "; rpt_family=" + rpt_family
 
             elif elements[2] == "TIR":
                 rpt_type = "terminal"
