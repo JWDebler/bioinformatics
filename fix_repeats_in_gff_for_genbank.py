@@ -7,7 +7,7 @@ from pathlib import Path
 #parse commandline arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('-i', '--input', help='path to a "*.gff" file')
-parser.add_argument('-o', '--output', help='path to an output file (default = inputfilename.gff)')
+parser.add_argument('-o', '--output', help='path to an output file (default = inputfilename.fixed.gff)')
 args = parser.parse_args()
 
 if args.input:
@@ -32,7 +32,7 @@ if os.path.isfile(output_file):
 with open(input_file) as file:
     input = csv.reader(file, delimiter='\t')
     for line in input:
-        #If something is in the first colum, use that as the identifier 
+        #look for the 'PiRATE' identifier and then check for the type of repeat
         if line[1] == "PiRATE":
             elements = []
             for element in line:
@@ -137,9 +137,10 @@ with open(input_file) as file:
                 mobile_element = "transposon: Maverick"
                 elements[2] = "repeat_region"
                 elements[8]+="; rpt_type=" + rpt_type + "; mobile_element=" + mobile_element
-        
+            # print the modified list of repeat elements with a tab as the separator
             print(*elements, sep='\t')
         
         else:
+            # print all the other elements with a tab as the separator
             print(*line, sep='\t')  
 
