@@ -6,17 +6,15 @@ from pathlib import Path
 
 #parse commandline arguments
 parser = argparse.ArgumentParser()
-parser.add_argument('-i', '--input', help='path to a "*.aa" file')
-parser.add_argument('-o', '--output', help='path to an output file (default = inputfilename.fasta)')
+parser.add_argument('-i', '--input', help='path to a "*.gff" file')
+parser.add_argument('-o', '--output', help='path to an output file (default = inputfilename.gff)')
 args = parser.parse_args()
 
 if args.input:
     input_file = Path(args.input)
 else:
-    input_file_name = '*.gff'
-    input_file_path= os.path.join(os.getcwd(), input_file_name)
-    for element in glob.glob(input_file_path):
-        input_file = Path(element)
+    print("No input file provided, use '-i' and supply a .gff file")
+    raise SystemExit
 
 if args.output:
     output_file = Path(args.output)
