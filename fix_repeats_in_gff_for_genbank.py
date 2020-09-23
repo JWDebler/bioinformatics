@@ -1,8 +1,12 @@
 import os
 import csv
 import argparse
-import glob
 from pathlib import Path
+
+# This script extracts repeat annotations made via the PiRATE pipeline from a gff file
+# and creates a gff file that can be used by table2asn for annotation submissions
+# to genbank. Definitions are taken from https://www.ncbi.nlm.nih.gov/WebSub/html/annot_examples.html
+# but this does not seem like an exhaustive list.
 
 #parse commandline arguments
 parser = argparse.ArgumentParser()
