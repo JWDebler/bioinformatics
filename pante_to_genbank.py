@@ -130,7 +130,7 @@ with open(input_file) as file:
                             anticodon_seq = anticodon_tag.group(1)
                             amino_acid_tag = re.search('amino_acid=([a-zA-Z]{3})', elements[8])
                             amino_acid = amino_acid_tag.group(1)
-                            anticodon = "anticodon=seq:" + anticodon_seq + "," + "aa:" + amino_acid
+                            anticodon = "anticodon=(seq:" + anticodon_seq + "," + "aa:" + amino_acid + ")"
                             elements[8] = elements[8].replace(anticodon_tag_old, anticodon)
                             if 'pseudo' in p:
                                 elements[2] = "trna"
