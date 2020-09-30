@@ -167,56 +167,58 @@ with open(input_file) as file:
                         if search:
                             rpt_family = search.group(1)
                             if rpt_family.lower() == "ltr/gypsy":
-                                elements[8] += "; rpt_type=long_terminal_repeat:Gypsy; mobile_element_type=retrotransposon:Gypsy"
+                                elements[2] =  "mobile_element"
+                                elements[8] += "; mobile_element_type=retrotransposon:Gypsy"
 
                             elif rpt_family.lower() == "ltr/copia":
-                                elements[8] += "; rpt_type=long_terminal_repeat:Copia; mobile_element_type=retrotransposon:Copia"
+                                elements[2] =  "mobile_element"
+                                elements[8] += "; mobile_element_type=retrotransposon:Copia"
 
                             elif rpt_family.lower() == "ltr":
-                                elements[8] += "; rpt_type=long_terminal_repeat; mobile_element_type=retrotransposon; rpt_family=LTR"
+                                elements[8] += "; rpt_type=long_terminal_repeat; rpt_family=LTR"
 
                             elif rpt_family.lower() == "dna/tcmar-fot1":
-                                elements[2] == "mobile_element"
+                                elements[2] = "mobile_element"
                                 elements[8] += "; mobile_element_type=transposon:TcMar-Fot1"
 
                             elif rpt_family.lower() == "dna/tcmar-tc1":
-                                elements[2] == "mobile_element"
+                                elements[2] = "mobile_element"
                                 elements[8] += "; mobile_element_type=transposon:TcMar-Tc1"
 
                             elif rpt_family.lower() == "dna/tcmar-tc2":
-                                elements[2] == "mobile_element"
+                                elements[2] = "mobile_element"
                                 elements[8] += "; mobile_element_type=transposon:TcMar-Tc2"
 
                             elif rpt_family.lower() == "dna/tcmar-tc4":
-                                elements[2] == "mobile_element"
+                                elements[2] = "mobile_element"
                                 elements[8] += "; mobile_element_type=transposon:TcMar-Tc4"
 
                             elif rpt_family.lower() == "dna/cmc-enspm":
-                                elements[2] == "mobile_element"
+                                elements[2] = "mobile_element"
                                 elements[8] += "; mobile_element_type=transposon:CMC-EnSpm "
 
                             elif rpt_family.lower() == "dna/mule-mudr":
-                                elements[2] == "mobile_element"
+                                elements[2] = "mobile_element"
                                 elements[8] += "; mobile_element_type=transposon:MULE-MuDR "
 
                             elif rpt_family.lower() == "dna/hat-ac":
-                                elements[2] == "mobile_element"
+                                elements[2] = "mobile_element"
                                 elements[8] += "; mobile_element_type=transposon:hAT-Ac "
 
                             elif rpt_family.lower() == "line/penelope":
-                                elements[2] == "mobile_element"
+                                elements[2] = "mobile_element"
                                 elements[8] += "; mobile_element_type=LINE:penelope "
 
                             elif rpt_family.lower() == "line/i-jockey":
-                                elements[2] == "mobile_element"
+                                elements[2] = "mobile_element"
                                 elements[8] += "; mobile_element_type=LINE:I-Jockey "
 
                             elif rpt_family.lower() == "line/l1":
-                                elements[2] == "mobile_element"
+                                elements[2] = "mobile_element"
                                 elements[8] += "; mobile_element_type=LINE:L1 "
 
                             elif rpt_family.lower() == "line/l2":
-                                elements[2] == "mobile_element"
+                                elements[2] = "mobile_element"
                                 elements[8] += "; mobile_element_type=LINE:L2 "
 
                             elif rpt_family.lower() == "artefact":
