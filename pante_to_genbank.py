@@ -67,8 +67,7 @@ with open(input_file) as file:
                     
 
         if len(line) > 6:
-        #look for the 'PiRATE' identifier and then check for the type of repeat
-            if line[1] == "RepeatMasker" or "EAhelitron" or "RepeatModeler" or "MiteFinderII" or "LTRharvest" or "LTRdigest":
+            if line[1] == "RepeatMasker" or "EAhelitron" or "RepeatModeler" or "MiteFinderII" or "LTRharvest" or "LTRdigest" or "tRNAScan-SE":
                 elements = []
                 for element in line:
                     elements.append(element)
@@ -125,7 +124,7 @@ with open(input_file) as file:
                         if x in trnas:
                             parent = re.search('Parent=.*[0-9]+', elements[8])
                             p = parent.group(0)
-                            anticodon_tag = re.search('anticodon=([A-Z]{3})', elements[8])
+                            anticodon_tag = re.search('anticodon=[A-Z]{3};', elements[8])
                             anticodon_tag_old = anticodon_tag.group()
                             #anticodon_seq = anticodon_tag.group(1)
                             #amino_acid_tag = re.search('amino_acid=([a-zA-Z]{3})', elements[8])
