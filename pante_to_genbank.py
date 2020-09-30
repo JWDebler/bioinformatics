@@ -124,7 +124,14 @@ with open(input_file) as file:
                         x = trna.group()
                         if x in trnas:
                             parent = re.search('Parent=.*[0-9]+', elements[8])
-                            p = parent.group()
+                            p = parent.group(0)
+                            anticodon_tag = re.search('anticodon=([A-Z]{3})', elements[8])
+                            anticodon_tag_old = anticodon_tag.group()
+                            anticodon_seq = anticodon_tag.group(1)
+                            amino_acid_tag = re.search('amino_acid=([a-zA-Z]{3})', elements[8])
+                            amino_acid = amino_acid_tag.group(1)
+                            anticodon = "anticodon=seq:" + anticodon_seq + "," + "aa:" + amino_acid
+                            elements[8] = elements[8].replace(anticodon_tag_old, anticodon)
                             if 'pseudo' in p:
                                 elements[2] = "trna"
                                 product = trnas[x][0]
@@ -148,8 +155,8 @@ with open(input_file) as file:
 
                 # helitron
                 if elements[2] == "helitron":
-                    elements[2] = "repeat_region"
-                    elements[8] += "; rpt_type=DNA_transposon; mobile_element_type=RC:Helitron"
+                    elements[2] = "mobile_element"
+                    elements[8] += "; mobile_element_type=transposon:Helitron"
 
                     print(*elements, sep='\t')
 
