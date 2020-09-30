@@ -144,6 +144,7 @@ with open(input_file) as file:
 
                 # helitron
                 if elements[2] == "helitron":
+                    elements[2] = "repeat_region"
                     elements[8] += "; rpt_type=DNA_transposon; mobile_element_type=RC:Helitron"
 
                     print(*elements, sep='\t')
