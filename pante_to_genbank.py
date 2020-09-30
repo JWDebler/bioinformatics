@@ -8,6 +8,10 @@ from pathlib import Path
 # and creates a gff file that can be used by table2asn for annotation submissions
 # to genbank. Definitions are taken from https://www.ncbi.nlm.nih.gov/WebSub/html/annot_examples.html
 # but this does not seem like an exhaustive list.
+# http://www.insdc.org/documents/feature-table
+# https://github.com/Dfam-consortium/RepeatModeler/blob/master/RepeatClassifier
+# http://www.insdc.org/controlled-vocabulary-rpttype-qualifier
+
 
 #parse commandline arguments
 parser = argparse.ArgumentParser()
@@ -151,8 +155,8 @@ with open(input_file) as file:
 
                # LTR harvest
                 if elements[2] == "LTR_retrotransposon":
-                    elements[2] = "repeat_region"
-                    elements[8] = "rpt_type=LTR_retrotransposon; mobile_element_type=LTR; rpt_family=LTR"
+                    elements[2] = "mobile_element"
+                    elements[8] = "rpt_type=long_terminal_repeat; mobile_element_type=retrotransposon; rpt_family=LTR"
 
                     print(*elements, sep='\t')
 
@@ -163,49 +167,60 @@ with open(input_file) as file:
                         if search:
                             rpt_family = search.group(1)
                             if rpt_family.lower() == "ltr/gypsy":
-                                elements[8] += "; rpt_type=long_terminal_repeat; mobile_element_type=LTR:Gypsy; rpt_family=LTR:Gypsy"
+                                elements[8] += "; rpt_type=long_terminal_repeat:Gypsy; mobile_element_type=retrotransposon:Gypsy"
 
                             elif rpt_family.lower() == "ltr/copia":
-                                elements[8] += "; rpt_type=long_terminal_repeat; mobile_element_type=LTR:Copia; rpt_family=LTR:Copia"
+                                elements[8] += "; rpt_type=long_terminal_repeat:Copia; mobile_element_type=retrotransposon:Copia"
 
                             elif rpt_family.lower() == "ltr":
-                                elements[8] += "; rpt_type=long_terminal_repeat; mobile_element_type=LTR; rpt_family=LTR"
+                                elements[8] += "; rpt_type=long_terminal_repeat; mobile_element_type=retrotransposon; rpt_family=LTR"
 
                             elif rpt_family.lower() == "dna/tcmar-fot1":
-                                elements[8] += "; rpt_type=DNA_transposon; mobile_element_type=DNA:TcMar-Fot1 ; rpt_family=DNA:TcMar-Fot1 "
+                                elements[2] == "mobile_element"
+                                elements[8] += "; mobile_element_type=transposon:TcMar-Fot1"
 
                             elif rpt_family.lower() == "dna/tcmar-tc1":
-                                elements[8] += "; rpt_type=DNA_transposon; mobile_element_type=DNA:TcMar-Tc1 ; rpt_family=DNA:TcMar-Tc1 "
+                                elements[2] == "mobile_element"
+                                elements[8] += "; mobile_element_type=transposon:TcMar-Tc1"
 
                             elif rpt_family.lower() == "dna/tcmar-tc2":
-                                elements[8] += "; rpt_type=DNA_transposon; mobile_element_type=DNA:TcMar-Tc2 ; rpt_family=DNA:TcMar-Tc2 "
+                                elements[2] == "mobile_element"
+                                elements[8] += "; mobile_element_type=transposon:TcMar-Tc2"
 
                             elif rpt_family.lower() == "dna/tcmar-tc4":
-                                elements[8] += "; rpt_type=DNA_transposon; mobile_element_type=DNA:TcMar-Tc4 ; rpt_family=DNA:TcMar-Tc4 "
+                                elements[2] == "mobile_element"
+                                elements[8] += "; mobile_element_type=transposon:TcMar-Tc4"
 
                             elif rpt_family.lower() == "dna/cmc-enspm":
-                                elements[8] += "; rpt_type=DNA_transposon; mobile_element_type=DNA:CMC-EnSpm ; rpt_family=DNA:CMC-EnSpm "
+                                elements[2] == "mobile_element"
+                                elements[8] += "; mobile_element_type=transposon:CMC-EnSpm "
 
                             elif rpt_family.lower() == "dna/mule-mudr":
-                                elements[8] += "; rpt_type=DNA_transposon; mobile_element_type=DNA:MULE-MuDR ; rpt_family=DNA:MULE-MuDR "
+                                elements[2] == "mobile_element"
+                                elements[8] += "; mobile_element_type=transposon:MULE-MuDR "
 
                             elif rpt_family.lower() == "dna/hat-ac":
-                                elements[8] += "; rpt_type=DNA_transposon; mobile_element_type=DNA:hAT-Ac ; rpt_family=DNA:hAT-Ac "
+                                elements[2] == "mobile_element"
+                                elements[8] += "; mobile_element_type=transposon:hAT-Ac "
 
                             elif rpt_family.lower() == "line/penelope":
-                                elements[8] += "; rpt_type=other; mobile_element_type=LINE:penelope ; rpt_family=LINE:penelope "
+                                elements[2] == "mobile_element"
+                                elements[8] += "; mobile_element_type=LINE:penelope "
 
                             elif rpt_family.lower() == "line/i-jockey":
-                                elements[8] += "; rpt_type=other; mobile_element_type=LINE:I-Jockey ; rpt_family=LINE:I-Jockey "
+                                elements[2] == "mobile_element"
+                                elements[8] += "; mobile_element_type=LINE:I-Jockey "
 
                             elif rpt_family.lower() == "line/l1":
-                                elements[8] += "; rpt_type=other; mobile_element_type=LINE:L1 ; rpt_family=LINE:L1 "
+                                elements[2] == "mobile_element"
+                                elements[8] += "; mobile_element_type=LINE:L1 "
 
                             elif rpt_family.lower() == "line/l2":
-                                elements[8] += "; rpt_type=other; mobile_element_type=LINE:L2 ; rpt_family=LINE:L2 "
+                                elements[2] == "mobile_element"
+                                elements[8] += "; mobile_element_type=LINE:L2 "
 
                             elif rpt_family.lower() == "artefact":
-                                elements[2] = "mobile_genetic_element"
+                                elements[2] = "mobile_element"
                                 elements[8] += "; mobile_element_type=ARTEFACT  "
 
                             elif rpt_family.lower() == "rrna":
