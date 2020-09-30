@@ -221,11 +221,11 @@ with open(input_file) as file:
                                 elements[8] += "; mobile_element_type=ARTEFACT  "
 
                             elif rpt_family.lower() == "rrna":
-                                elements[2] = "rRNA_gene"
+                                elements[2] = "rRNA"
                                 elements[8] += "; rpt_type=rRNA  "
 
                             elif rpt_family.lower() == "unknown":
-                                elements[2] = "dispersed_repeat"
+                                elements[2] = "repeat_region"
                                 elements[8] += "; rpt_type=dispersed  "
 
                             else:
