@@ -126,10 +126,6 @@ with open(input_file) as file:
                             p = parent.group(0)
                             anticodon_tag = re.search('anticodon=[A-Z]{3};', elements[8])
                             anticodon_tag_old = anticodon_tag.group()
-                            #anticodon_seq = anticodon_tag.group(1)
-                            #amino_acid_tag = re.search('amino_acid=([a-zA-Z]{3})', elements[8])
-                            #amino_acid = amino_acid_tag.group(1)
-                            #anticodon = "anticodon=(seq:" + anticodon_seq + "," + "aa:" + amino_acid + ")"
                             elements[8] = elements[8].replace(anticodon_tag_old, "")
                             if 'pseudo' in p:
                                 elements[2] = "trna"
@@ -233,7 +229,7 @@ with open(input_file) as file:
 
                             elif rpt_family.lower() == "rrna":
                                 elements[2] = "repeat_region"
-                                elements[8] += "; rpt_type=unknown  "
+                                elements[8] += "; rpt_type=other  "
 
                             elif rpt_family.lower() == "unknown":
                                 elements[2] = "repeat_region"
