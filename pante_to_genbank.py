@@ -22,9 +22,9 @@ args = parser.parse_args()
 if args.input:
     input_file = Path(args.input)
 else:
-    #input_file = ("GCA_004011705.1_Alentis_Al4_genomic_clean_header_pante.gff3")
-    print("No input file provided, use '-i' and supply a .gff file")
-    raise SystemExit
+    input_file = ("GCA_004011705.1_Alentis_Al4_genomic_clean_header_pante.gff3")
+    #print("No input file provided, use '-i' and supply a .gff file")
+    #raise SystemExit
 
 if args.output:
     output_file = Path(args.output)
@@ -67,7 +67,8 @@ with open(input_file) as file:
                     
 
         if len(line) > 6:
-            if line[1] == "RepeatMasker" or "EAhelitron" or "RepeatModeler" or "MiteFinderII" or "LTRharvest" or "LTRdigest" or "tRNAScan-SE":
+            if line[1] == "RepeatMasker" or line[1] == "EAhelitron" or line[1] == "RepeatModeler" or line[1] == "MiteFinderII" or line[1] == "LTRharvest" or line[1] == "LTRdigest" or line[1] == "tRNAScan-SE":
+                #print(line[1])
                 elements = []
                 for element in line:
                     elements.append(element)
@@ -84,7 +85,7 @@ with open(input_file) as file:
                     else:
                         elements[8] += "; rpt_type=" + rpt_type + "; satellite_type=microsatellite"
                     
-                    print(*elements, sep='\t')
+                    #print(*elements, sep='\t')
 
                 # minisatellite
                 if elements[2] == "minisatellite":
@@ -98,7 +99,7 @@ with open(input_file) as file:
                     else:
                         elements[8] += "; rpt_type=" + rpt_type + "; satellite_type=minisatellite"
                     
-                    print(*elements, sep='\t')
+                    #print(*elements, sep='\t')
 
 
                 # monomeric_repeat
@@ -113,7 +114,7 @@ with open(input_file) as file:
                     else:
                         elements[8] += "; rpt_type=" + rpt_type + "; satellite_type=satellite"
 
-                    print(*elements, sep='\t')
+                    #print(*elements, sep='\t')
 
                 # tRNA
                 if elements[1] == "tRNAScan-SE":
@@ -131,36 +132,36 @@ with open(input_file) as file:
                                 elements[2] = "trna"
                                 product = trnas[x][0]
                                 elements[8] += "; product=" + product + "; pseudo=true; pseudogene=unknown"
-                                print(*elements, sep='\t')
+                                #print(*elements, sep='\t')
                                 elements[2] = "gene"
                                 gene = trnas[x][1]
                                 id = p.split("=",1)[1]
                                 elements[8] = "ID=" + id + "; gene=" + gene + "; pseudo=true; pseudogene=unknown"
-                                print(*elements, sep='\t')
+                                #print(*elements, sep='\t')
                             else:
                                 elements[2] = "trna"
                                 product = trnas[x][0]
                                 elements[8] += "; product=" + product
-                                print(*elements, sep='\t')
+                                #print(*elements, sep='\t')
                                 elements[2] = "gene"
                                 gene = trnas[x][1]
                                 id = p.split("=",1)[1]
                                 elements[8] = "ID=" + id + "; gene=" + gene
-                                print(*elements, sep='\t')
+                                #print(*elements, sep='\t')
 
                 # helitron
                 if elements[2] == "helitron":
                     elements[2] = "mobile_element"
                     elements[8] += "; mobile_element_type=transposon:Helitron"
 
-                    print(*elements, sep='\t')
+                    #print(*elements, sep='\t')
 
                # LTR harvest
                 if elements[2] == "LTR_retrotransposon":
                     elements[2] = "mobile_element"
                     elements[8] = "rpt_type=long_terminal_repeat; mobile_element_type=retrotransposon; rpt_family=LTR"
 
-                    print(*elements, sep='\t')
+                    #print(*elements, sep='\t')
 
                 # repeat_region
                 if elements[2] == "repeat_region":
@@ -236,20 +237,20 @@ with open(input_file) as file:
                                 elements[8] += "; rpt_type=dispersed  "
 
                             else:
-                                print("#######################################################################")
-                                print("Please fix this script and add filters for the before mentioned repeats")
-                                print("#######################################################################")
-                                print('Add this to script: ',rpt_family)
+                                #print("#######################################################################")
+                                #print("Please fix this script and add filters for the before mentioned repeats")
+                                #print("#######################################################################")
+                                #print('Add this to script: ',rpt_family)
                                 raise SystemExit
 
-                        print(*elements, sep='\t')
+                        #print(*elements, sep='\t')
                         
-                    #else:
-                        #print(elements)
+            else:
+                print(line[1])
 
 
                 
-                # print the modified list of repeat elements with a tab as the separator
-                #print(*elements, sep='\t')
+                # #print the modified list of repeat elements with a tab as the separator
+                ##print(*elements, sep='\t')
     
 
