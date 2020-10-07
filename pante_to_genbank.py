@@ -23,7 +23,7 @@ if args.input:
     input_file = Path(args.input)
 else:
     input_file = ("GCA_004011705.1_Alentis_Al4_genomic_clean_header_pante.gff3")
-    #print("No input file provided, use '-i' and supply a .gff file")
+    print("No input file provided, use '-i' and supply a .gff file")
     #raise SystemExit
 
 if args.output:
@@ -67,11 +67,60 @@ with open(input_file) as file:
                     
 
         if len(line) > 6:
-            if line[1] == "RepeatMasker" or line[1] == "EAhelitron" or line[1] == "RepeatModeler" or line[1] == "MiteFinderII" or line[1] == "LTRharvest" or line[1] == "LTRdigest" or line[1] == "tRNAScan-SE":
-                #print(line[1])
+            if line[1] == "RepeatMasker" or line[1] == "EAhelitron" or line[1] == "RepeatModeler" or line[1] == "MiteFinderII" or line[1] == "LTRharvest" or line[1] == "LTRdigest" or line[1] == "tRNAScan-SE" or line[1] == "RNAmmer":
+                
                 elements = []
                 for element in line:
                     elements.append(element)
+
+                # RNAmmer rRNA
+                if elements[1] == "RNAmmer":
+                    if elements[2] == "rRNA_5S":
+                        rRNA_parent = re.search('Parent=(.*[0-9]+)$', elements[8])
+                        rRNA_p = rRNA_parent.group(1)
+                        elements[2] = "gene"
+                        elements[8] = "ID=" + rRNA_p
+                        print(*elements, sep='\t')
+                        elements[2] = "rRNA"
+                        elements[8] = "product=5S ribosomal RNA; Parent=" + rRNA_p
+                        print(*elements, sep='\t')
+                    elif elements[2] == "rRNA_28S":
+                        rRNA_parent = re.search('Parent=(.*[0-9]+)$', elements[8])
+                        rRNA_p = rRNA_parent.group(1)
+                        elements[2] = "gene"
+                        elements[8] = "ID=" + rRNA_p
+                        print(*elements, sep='\t')
+                        elements[2] = "rRNA"
+                        elements[8] = "product=28S ribosomal RNA; Parent=" + rRNA_p
+                        print(*elements, sep='\t')
+                    elif elements[2] == "rRNA_23S":
+                        rRNA_parent = re.search('Parent=(.*[0-9]+)$', elements[8])
+                        rRNA_p = rRNA_parent.group(1)
+                        elements[2] = "gene"
+                        elements[8] = "ID=" + rRNA_p
+                        print(*elements, sep='\t')
+                        elements[2] = "rRNA"
+                        elements[8] = "product=23S ribosomal RNA; Parent=" + rRNA_p
+                        print(*elements, sep='\t')
+                    elif elements[2] == "rRNA_16S":
+                        rRNA_parent = re.search('Parent=(.*[0-9]+)$', elements[8])
+                        rRNA_p = rRNA_parent.group(1)
+                        elements[2] = "gene"
+                        elements[8] = "ID=" + rRNA_p
+                        print(*elements, sep='\t')
+                        elements[2] = "rRNA"
+                        elements[8] = "product=16S ribosomal RNA; Parent=" + rRNA_p
+                        print(*elements, sep='\t')
+                    elif elements[2] == "rRNA_18S":
+                        rRNA_parent = re.search('Parent=(.*[0-9]+)$', elements[8])
+                        rRNA_p = rRNA_parent.group(1)
+                        elements[2] = "gene"
+                        elements[8] = "ID=" + rRNA_p
+                        print(*elements, sep='\t')
+                        elements[2] = "rRNA"
+                        elements[8] = "product=18S ribosomal RNA; Parent=" + rRNA_p
+                        print(*elements, sep='\t')
+                    
 
                 # microsatellite
                 if elements[2] == "microsatellite":
@@ -85,7 +134,7 @@ with open(input_file) as file:
                     else:
                         elements[8] += "; rpt_type=" + rpt_type + "; satellite_type=microsatellite"
                     
-                    #print(*elements, sep='\t')
+                    print(*elements, sep='\t')
 
                 # minisatellite
                 if elements[2] == "minisatellite":
@@ -99,7 +148,7 @@ with open(input_file) as file:
                     else:
                         elements[8] += "; rpt_type=" + rpt_type + "; satellite_type=minisatellite"
                     
-                    #print(*elements, sep='\t')
+                    print(*elements, sep='\t')
 
 
                 # monomeric_repeat
@@ -114,7 +163,7 @@ with open(input_file) as file:
                     else:
                         elements[8] += "; rpt_type=" + rpt_type + "; satellite_type=satellite"
 
-                    #print(*elements, sep='\t')
+                    print(*elements, sep='\t')
 
                 # tRNA
                 if elements[1] == "tRNAScan-SE":
@@ -132,36 +181,36 @@ with open(input_file) as file:
                                 elements[2] = "trna"
                                 product = trnas[x][0]
                                 elements[8] += "; product=" + product + "; pseudo=true; pseudogene=unknown"
-                                #print(*elements, sep='\t')
+                                print(*elements, sep='\t')
                                 elements[2] = "gene"
                                 gene = trnas[x][1]
                                 id = p.split("=",1)[1]
                                 elements[8] = "ID=" + id + "; gene=" + gene + "; pseudo=true; pseudogene=unknown"
-                                #print(*elements, sep='\t')
+                                print(*elements, sep='\t')
                             else:
                                 elements[2] = "trna"
                                 product = trnas[x][0]
                                 elements[8] += "; product=" + product
-                                #print(*elements, sep='\t')
+                                print(*elements, sep='\t')
                                 elements[2] = "gene"
                                 gene = trnas[x][1]
                                 id = p.split("=",1)[1]
                                 elements[8] = "ID=" + id + "; gene=" + gene
-                                #print(*elements, sep='\t')
+                                print(*elements, sep='\t')
 
                 # helitron
                 if elements[2] == "helitron":
                     elements[2] = "mobile_element"
                     elements[8] += "; mobile_element_type=transposon:Helitron"
 
-                    #print(*elements, sep='\t')
+                    print(*elements, sep='\t')
 
                # LTR harvest
                 if elements[2] == "LTR_retrotransposon":
                     elements[2] = "mobile_element"
                     elements[8] = "rpt_type=long_terminal_repeat; mobile_element_type=retrotransposon; rpt_family=LTR"
 
-                    #print(*elements, sep='\t')
+                    print(*elements, sep='\t')
 
                 # repeat_region
                 if elements[2] == "repeat_region":
@@ -237,20 +286,20 @@ with open(input_file) as file:
                                 elements[8] += "; rpt_type=dispersed  "
 
                             else:
-                                #print("#######################################################################")
-                                #print("Please fix this script and add filters for the before mentioned repeats")
-                                #print("#######################################################################")
-                                #print('Add this to script: ',rpt_family)
+                                print("#######################################################################")
+                                print("Please fix this script and add filters for the before mentioned repeats")
+                                print("#######################################################################")
+                                print('Add this to script: ',rpt_family)
                                 raise SystemExit
 
-                        #print(*elements, sep='\t')
+                        print(*elements, sep='\t')
                         
-            else:
-                print(line[1])
+            #else:
+                #print(line[1])
 
 
                 
-                # #print the modified list of repeat elements with a tab as the separator
-                ##print(*elements, sep='\t')
+                # print the modified list of repeat elements with a tab as the separator
+                #print(*elements, sep='\t')
     
 
