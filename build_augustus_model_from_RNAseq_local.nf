@@ -84,25 +84,7 @@ if ( params.reverse ) {
 }
 
 forward_reads.combine(reverse_reads)
-.println()
-
-return
-
-process FastQC {
-  publishDir "${params.outdir}/02-fastQC", mode: 'copy'
-
-  input:
-  set idFastq, "${idFastq}_1.fastq", "${idFastq}_2.fastq" from fastqForFastQC
-  //set idFastq, "${idFastq}.fastq" from fastqForFastQC
-
-  output:
-  //set idFastq, "${idFastq}_fastqc.html", "${idFastq}_fastqc.zip"
-  set idFastq, "${idFastq}_1_fastqc.html", "${idFastq}_1_fastqc.zip", "${idFastq}_2_fastqc.html", "${idFastq}_2_fastqc.zip"
-
-  """
-  /opt/FastQC/fastqc  "${idFastq}_1.fastq" "${idFastq}_2.fastq"
-  """
-}
+.set{reads}
 
 process indexAssemblyHisat2 {
   tag { id }
@@ -123,24 +105,22 @@ process alignToAssemblyhisat2 {
   tag { "${idAssembly} ${idFastq}" }
 
   input:
-    set idAssembly, "genome.fasta", "${idAssembly}.*.ht2", idFastq, "${idFastq}_1.fastq", "${idFastq}_2.fastq" from indexedAssembly.combine(fastqDumpForAlignmentAll)
-    //set idAssembly, "genome.fasta", "${idAssembly}.*.ht2", idFastq, "${idFastq}.fastq" from indexedAssembly.combine(fastqDumpForAlignmentAll)
+    set idAssembly, "genome.fasta", "${idAssembly}.*.ht2", "fwd.fastq.gz", "rev.fastq.gz" from indexedAssembly.combine(reads)
 
   output:
-    set  idAssembly, "genome.fasta", idFastq, "${idAssembly}.${idFastq}.bam" into bamsToFilter
+    set  idAssembly, "genome.fasta", "${idAssembly}.bam" into bamsToFilter
 
 // either use -U, or -1/-2
-
 // -1 ${idFastq}_1.fastq -2 ${idFastq}_2.fastq \
 // -U ${idFastq}.fastq \
   """
   hisat2 -x ${idAssembly} \
-  -1 ${idFastq}_1.fastq -2 ${idFastq}_2.fastq \
+  -1 fwd.fastq.gz -2 rev.fastq.gz \
   --threads 10 \
   --max-intronlen 2000 \
   | samtools view -b \
   | samtools sort -n \
-  -o ${idAssembly}.${idFastq}.bam
+  -o ${idAssembly}.bam
 
   """
 }
@@ -149,10 +129,10 @@ process filterBams {
   publishDir "${params.outdir}/04-filteredBams", mode: 'copy', pattern: '*.bam'
 
   input: 
-  set idAssembly, "genome.fasta", idFastq, "aligned.bam" from bamsToFilter 
+  set idAssembly, "genome.fasta", "aligned.bam" from bamsToFilter 
 
   output: 
-  set idAssembly, "genome.fasta", idFastq, "${idAssembly}.${idFastq}.filtered.sorted.bam" into alignedAndFiltered
+  set idAssembly, "genome.fasta", "${idAssembly}.filtered.sorted.bam" into alignedAndFiltered
 
   """
   cp aligned.bam aligned.input.bam
@@ -160,7 +140,7 @@ process filterBams {
   --uniq \
   --in /xxx/aligned.input.bam \
   --out /xxx/filtered.bam
-  samtools sort filtered.bam > ${idAssembly}.${idFastq}.filtered.sorted.bam
+  samtools sort filtered.bam > ${idAssembly}.filtered.sorted.bam
   """
 }
 
@@ -175,26 +155,26 @@ process indexBam {
   tag { "${idAssembly} ${idFastq}" }
 
   input:
-  set  idAssembly, "genome.fasta", idFastq, "assembly.bam" from indexBamInput
+  set  idAssembly, "genome.fasta", "assembly.bam" from indexBamInput
 
   output:
-  set  idAssembly, "genome.fasta", idFastq, "${idAssembly}.${idFastq}.filtered.sorted.bam.bai" into indexedBam
+  set  idAssembly, "genome.fasta", "${idAssembly}.filtered.sorted.bam.bai" into indexedBam
 
   """
-  samtools index assembly.bam ${idAssembly}.${idFastq}.filtered.sorted.bam.bai
+  samtools index assembly.bam ${idAssembly}.filtered.sorted.bam.bai
   """
 }
 
 
 process bamToHints {
   
-  tag { "${idAssembly} ${idFastq}" }
+  tag { "${idAssembly}" }
 
   input:
-  set idAssembly, "genome.fasta", idFastq, "assembly.bam" from bamToHintsInput
+  set idAssembly, "genome.fasta", "assembly.bam" from bamToHintsInput
 
   output:
-  set idAssembly, "genome.fasta", idFastq, "${idAssembly}.${idFastq}.gff" into bamToHintsOutput
+  set idAssembly, "genome.fasta", "${idAssembly}.gff" into bamToHintsOutput
 
   """
   cp assembly.bam assembly.input.bam
@@ -205,19 +185,19 @@ process bamToHints {
   --minintronlen=15 \
   --maxintronlen=500 \
   --in=/xxx/assembly.input.bam \
-  --out=/xxx/${idAssembly}.${idFastq}.gff
+  --out=/xxx/${idAssembly}.gff
   """
 }
 
 process findStrand {
    publishDir "${params.outdir}/05-hints/", mode: 'copy', pattern: '*.gff'
-  tag { "${idAssembly} ${idFastq}" }
+  tag { "${idAssembly}" }
 
   input:
-  set idAssembly, "genome.fasta", idFastq, "introns.gff" from bamToHintsOutput
+  set idAssembly, "genome.fasta", "introns.gff" from bamToHintsOutput
 
   output:
-  set idAssembly, "genome.fasta", idFastq, "${idAssembly}.${idFastq}.introns.gff" into findStrandOutput
+  set idAssembly, "genome.fasta", "${idAssembly}.introns.gff" into findStrandOutput
 
   """
   cp genome.fasta genome.input.fasta
@@ -226,21 +206,15 @@ process findStrand {
   docker run -v \$PWD:/xxx augustus perl /root/augustus/docs/tutorial2018/BRAKER_v2.0.4+/filterIntronsFindStrand.pl \
   /xxx/genome.input.fasta \
   /xxx/introns.input.gff \
-  --score > "${idAssembly}.${idFastq}.introns.gff"
+  --score > "${idAssembly}.introns.gff"
   """
 }
 
-findStrandOutput
-.collect()
-.flatten()
-.collate(4)
-.groupTuple()
-.set {mergeHints}
 
 process mergeHints {
   publishDir "${params.outdir}/05-hints/", mode: 'copy', pattern: '*.gff'
   input :
-  set idAssembly, genomes, idFastq, "hints*.gff", "genome.fasta" from mergeHints.combine(assembliesForAugustus, by:0)
+  set idAssembly, genomes, "hints*.gff", "genome.fasta" from findStrandOutput.combine(assembliesForAugustus, by:0)
 
   output:
   set idAssembly, "merged_introns.gff" , "genome.fasta" into genemark
@@ -421,6 +395,3 @@ process cleanupAA {
   
   """
 }
-
-
-return
