@@ -83,7 +83,7 @@ if ( params.reverse ) {
     exit 1
 }
 
-fwd_reads.combine(reverse_reads)
+forward_reads.combine(reverse_reads)
 .println()
 
 return
