@@ -78,8 +78,24 @@ Channel.fromFilePairs(params.reads)
 .groupTuple()
 .map {sampleID, ary -> [sampleID, ary.transpose()]}
 .map {sampleID, ary -> [sampleID, ary[0], ary[1]]}
-.set{fwdrevreads}
+.set{rawReads}
 
+process combine_reads {
+  tag {readID}
+
+  publishDir "${params.outdir}/02-combined-reads", mode: 'copy'
+
+  input: 
+  set readID, "fwd.*.fastq.gz", "rev.*.fastq.gz" from rawReads
+
+  output:
+        set readID, "${readID}.fwd.fastq.gz", "${readID}.rev.fastq.gz" into fwdrevreads
+
+        """
+        cat fwd.*.fastq.gz > ${readID}.fwd.fastq.gz
+        cat rev.*.fastq.gz > ${readID}.rev.fastq.gz \
+        """
+}
 
 process indexAssembly2 {
   tag { id }
