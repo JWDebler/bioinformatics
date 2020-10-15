@@ -92,8 +92,8 @@ process combine_reads {
         set readID, "${readID}.fwd.fastq.gz", "${readID}.rev.fastq.gz" into fwdrevreads
 
         """
-        cat fwd.*.fastq.gz > ${readID}.fwd.fastq.gz
-        cat rev.*.fastq.gz > ${readID}.rev.fastq.gz \
+        cat ${readID}.fwd.*.fastq.gz > ${readID}.fwd.fastq.gz
+        cat ${readID}.rev.*.fastq.gz > ${readID}.rev.fastq.gz \
         """
 }
 
