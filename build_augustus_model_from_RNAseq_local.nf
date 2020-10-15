@@ -86,7 +86,7 @@ process combine_reads {
   publishDir "${params.outdir}/02-combined-reads", mode: 'copy'
 
   input: 
-  set readID, "fwd.*.fastq.gz", "rev.*.fastq.gz" from rawReads
+  set readID, "${readID}.*.fastq.gz", "${readID}.*.fastq.gz" from rawReads
 
   output:
         set readID, "${readID}.fwd.fastq.gz", "${readID}.rev.fastq.gz" into fwdrevreads
