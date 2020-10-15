@@ -26,13 +26,9 @@ def helpMessage() {
         Optional
         Default: 14
 
-    --forward <glob>
+    --reads <glob>
         Required
         fastq.gz file of forward reads.
-
-    --reverse <glob>
-        Required
-        fastq.gz file of reverse reads.
 
     --outdir <path>
         Default: `results_augustus_model`
@@ -65,26 +61,24 @@ if ( params.genome ) {
     exit 1
 }
 
-if ( params.forward ) {
+if ( params.reads ) {
     fwd_reads = Channel
     .fromPath(params.forward, checkIfExists: true, type: "file")
     .set{forward_reads}
 } else {
-    log.info "No forward reads supplied."
+    params.reads = "/home/johannes/rdrive/Chickpea_and_Lentil-MOBEGF-SE07592/fredrickNotebooks/2020-04-01_Ascochyta_assembly/2020-10-06_RNAseq_analysis/02_processed_data/trimmomatic/*_{1,2}P.fq.gz"
+    log.info "No reads supplied."
     exit 1
 }
 
-if ( params.reverse ) {
-    rev_reads = Channel
-    .fromPath(params.reverse, checkIfExists: true, type: "file")
-    .set{reverse_reads}
-} else {
-    log.info "No reverse reads supplied."
-    exit 1
-}
+reads = 
+Channel.fromFilePairs(params.reads)
+.map {sampleID, fwdrevreads -> [sampleID.tokenize('_')[0], fwdrevreads]}
+.groupTuple()
+.map {sampleID, ary -> [sampleID, ary.transpose()]}
+.map {sampleID, ary -> [sampleID, ary[0], ary[1]]}
+.set{fwdrevreads}
 
-forward_reads.combine(reverse_reads)
-.set{reads}
 
 process indexAssemblyHisat2 {
   tag { id }
@@ -102,13 +96,13 @@ process indexAssemblyHisat2 {
 
 process alignToAssemblyhisat2 {
   publishDir "${params.outdir}/03-bams", mode: 'copy', pattern: '*.bam'
-  tag { "${idAssembly} ${idFastq}" }
+  tag { "${idAssembly} ${readID}" }
 
   input:
-    set idAssembly, "genome.fasta", "${idAssembly}.*.ht2", "fwd.fastq.gz", "rev.fastq.gz" from indexedAssembly.combine(reads)
+    set idAssembly, "genome.fasta", "${idAssembly}.*.ht2", readID, "fwd.fastq.gz", "rev.fastq.gz" from indexedAssembly.combine(fwdrevreads)
 
   output:
-    set  idAssembly, "genome.fasta", "${idAssembly}.bam" into bamsToFilter
+    set  idAssembly, "genome.fasta", readID, "${idAssembly}.${readID}.bam" into bamsToFilter
 
 // either use -U, or -1/-2
 // -1 ${idFastq}_1.fastq -2 ${idFastq}_2.fastq \
@@ -120,7 +114,7 @@ process alignToAssemblyhisat2 {
   --max-intronlen 2000 \
   | samtools view -b \
   | samtools sort -n \
-  -o ${idAssembly}.bam
+  -o ${idAssembly}.${readID}.bam
 
   """
 }
@@ -129,10 +123,10 @@ process filterBams {
   publishDir "${params.outdir}/04-filteredBams", mode: 'copy', pattern: '*.bam'
 
   input: 
-  set idAssembly, "genome.fasta", "aligned.bam" from bamsToFilter 
+  set idAssembly, "genome.fasta", readID, "aligned.bam" from bamsToFilter 
 
   output: 
-  set idAssembly, "genome.fasta", "${idAssembly}.filtered.sorted.bam" into alignedAndFiltered
+  set idAssembly, "genome.fasta", readID, "${idAssembly}.${readID}.filtered.sorted.bam" into alignedAndFiltered
 
   """
   cp aligned.bam aligned.input.bam
@@ -140,7 +134,7 @@ process filterBams {
   --uniq \
   --in /xxx/aligned.input.bam \
   --out /xxx/filtered.bam
-  samtools sort filtered.bam > ${idAssembly}.filtered.sorted.bam
+  samtools sort filtered.bam > ${idAssembly}.${readID}.filtered.sorted.bam
   """
 }
 
@@ -155,13 +149,13 @@ process indexBam {
   tag { "${idAssembly} ${idFastq}" }
 
   input:
-  set  idAssembly, "genome.fasta", "assembly.bam" from indexBamInput
+  set  idAssembly, "genome.fasta", readID, "assembly.bam" from indexBamInput
 
   output:
-  set  idAssembly, "genome.fasta", "${idAssembly}.filtered.sorted.bam.bai" into indexedBam
+  set  idAssembly, "genome.fasta", readID, "${idAssembly}.${readID}.filtered.sorted.bam.bai" into indexedBam
 
   """
-  samtools index assembly.bam ${idAssembly}.filtered.sorted.bam.bai
+  samtools index assembly.bam ${idAssembly}.${readID}.filtered.sorted.bam.bai
   """
 }
 
@@ -171,10 +165,10 @@ process bamToHints {
   tag { "${idAssembly}" }
 
   input:
-  set idAssembly, "genome.fasta", "assembly.bam" from bamToHintsInput
+  set idAssembly, "genome.fasta", readID, "assembly.bam" from bamToHintsInput
 
   output:
-  set idAssembly, "genome.fasta", "${idAssembly}.gff" into bamToHintsOutput
+  set idAssembly, "genome.fasta", readID, "${idAssembly}.${readID}.gff" into bamToHintsOutput
 
   """
   cp assembly.bam assembly.input.bam
@@ -185,7 +179,7 @@ process bamToHints {
   --minintronlen=15 \
   --maxintronlen=500 \
   --in=/xxx/assembly.input.bam \
-  --out=/xxx/${idAssembly}.gff
+  --out=/xxx/${idAssembly}.${readID}.gff
   """
 }
 
@@ -194,10 +188,10 @@ process findStrand {
   tag { "${idAssembly}" }
 
   input:
-  set idAssembly, "genome.fasta", "introns.gff" from bamToHintsOutput
+  set idAssembly, "genome.fasta", readID, "introns.gff" from bamToHintsOutput
 
   output:
-  set idAssembly, "genome.fasta", "${idAssembly}.introns.gff" into findStrandOutput
+  set idAssembly, "genome.fasta", readID, "${idAssembly}.${readID}.introns.gff" into findStrandOutput
 
   """
   cp genome.fasta genome.input.fasta
@@ -206,15 +200,21 @@ process findStrand {
   docker run -v \$PWD:/xxx augustus perl /root/augustus/docs/tutorial2018/BRAKER_v2.0.4+/filterIntronsFindStrand.pl \
   /xxx/genome.input.fasta \
   /xxx/introns.input.gff \
-  --score > "${idAssembly}.introns.gff"
+  --score > "${idAssembly}.${readID}.introns.gff"
   """
 }
 
+findStrandOutput
+.collect()
+.flatten()
+.collate(4)
+.groupTuple()
+.set {mergeHints}
 
 process mergeHints {
   publishDir "${params.outdir}/05-hints/", mode: 'copy', pattern: '*.gff'
   input :
-  set idAssembly, genomes, "hints*.gff", "genome.fasta" from findStrandOutput.combine(assembliesForAugustus, by:0)
+  set idAssembly, genomes, readID, "hints*.gff", "genome.fasta" from mergeHints.combine(assembliesForAugustus, by:0)
 
   output:
   set idAssembly, "merged_introns.gff" , "genome.fasta" into genemark
