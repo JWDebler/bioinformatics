@@ -49,6 +49,7 @@ params.genome = false
 params.rnaseq = false
 params.srrids = false
 params.outdir = "results"
+params.cores = 14
 
 if ( params.genome ) {
     genome = Channel
@@ -67,8 +68,8 @@ if ( params.reads ) {
     .set{forward_reads}
 } else {
     params.reads = "/home/johannes/rdrive/Chickpea_and_Lentil-MOBEGF-SE07592/fredrickNotebooks/2020-04-01_Ascochyta_assembly/2020-10-06_RNAseq_analysis/02_processed_data/trimmomatic/*_{1,2}P.fq.gz"
-    log.info "No reads supplied."
-    exit 1
+    //log.info "No reads supplied."
+    //exit 1
 }
 
 reads = 
@@ -80,7 +81,7 @@ Channel.fromFilePairs(params.reads)
 .set{fwdrevreads}
 
 
-process indexAssemblyHisat2 {
+process indexAssembly2 {
   tag { id }
 
   input:
@@ -110,7 +111,7 @@ process alignToAssemblyhisat2 {
   """
   hisat2 -x ${idAssembly} \
   -1 fwd.fastq.gz -2 rev.fastq.gz \
-  --threads 10 \
+  --threads ${params.cores} \
   --max-intronlen 2000 \
   | samtools view -b \
   | samtools sort -n \
@@ -237,7 +238,7 @@ process genemark {
   --verbose \
   --sequence=genome.fasta \
   --ET=introns.gff \
-  --cores=14 \
+  --cores=${params.cores} \
   --soft_mask 1000
 
   mv genemark.gtf ${idAssembly}.gtf
@@ -364,7 +365,7 @@ process blastAllvsAll {
   /opt/Augustus/scripts/aa2nonred.pl \
   trainingset.aa \
   ${idAssembly}.trainingset.nonred.aa \
-  --cores=14
+  --cores=${params.cores}
   """
 }
 
