@@ -115,7 +115,7 @@ process alignToAssemblyhisat2 {
   publishDir "${params.outdir}/03-bams", mode: 'copy', pattern: '*.bam'
   tag { "${idAssembly} ${readID}" }
   memory '30 GB'
-  
+
   input:
     set idAssembly, "genome.fasta", "${idAssembly}.*.ht2", readID, "fwd.fastq.gz", "rev.fastq.gz" from indexedAssembly.combine(fwdrevreads)
 
@@ -139,6 +139,7 @@ process alignToAssemblyhisat2 {
 
 process filterBams {
   publishDir "${params.outdir}/04-filteredBams", mode: 'copy', pattern: '*.bam'
+  tag { "${idAssembly} ${readID}" }
 
   input: 
   set idAssembly, "genome.fasta", readID, "aligned.bam" from bamsToFilter 
@@ -180,7 +181,7 @@ process indexBam {
 
 process bamToHints {
   
-  tag { "${idAssembly}" }
+  tag { "${idAssembly} ${readID}" }
 
   input:
   set idAssembly, "genome.fasta", readID, "assembly.bam" from bamToHintsInput
@@ -203,7 +204,7 @@ process bamToHints {
 
 process findStrand {
    publishDir "${params.outdir}/05-hints/", mode: 'copy', pattern: '*.gff'
-  tag { "${idAssembly}" }
+  tag { "${idAssembly} ${readID}" }
 
   input:
   set idAssembly, "genome.fasta", readID, "introns.gff" from bamToHintsOutput
