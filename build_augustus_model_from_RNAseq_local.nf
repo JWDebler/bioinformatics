@@ -114,7 +114,8 @@ process indexAssembly2 {
 process alignToAssemblyhisat2 {
   publishDir "${params.outdir}/03-bams", mode: 'copy', pattern: '*.bam'
   tag { "${idAssembly} ${readID}" }
-
+  memory '30 GB'
+  
   input:
     set idAssembly, "genome.fasta", "${idAssembly}.*.ht2", readID, "fwd.fastq.gz", "rev.fastq.gz" from indexedAssembly.combine(fwdrevreads)
 
