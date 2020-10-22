@@ -165,7 +165,7 @@ alignedAndFiltered
 
 process indexBam {
   publishDir "${params.outdir}/04-filteredBams/", mode: 'copy', pattern: '*.bai'
-  tag { "${idAssembly} ${idFastq}" }
+  tag { "${idAssembly} ${readID}" }
 
   input:
   set  idAssembly, "genome.fasta", readID, "assembly.bam" from indexBamInput
