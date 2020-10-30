@@ -33,12 +33,7 @@ process versions {
     echo racon: >> versions.txt
     racon --version >> versions.txt
     echo --------------- >> versions.txt
-    echo medaka: >> versions.txt
-
-    . /home/ubuntu/medaka/venv/bin/activate
-    medaka --version >> versions.txt
     
-    deactivate
     """
 
 }
