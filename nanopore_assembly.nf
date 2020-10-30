@@ -11,7 +11,7 @@
 
 params.nanopore = "/data/2020-10-30_Kewell_P9424_canu211/nanopore/*.fastq.gz"
 params.illumina = "/data/2020-10-30_Kewell_P9424_canu211/*.fastq.gz"
-params.outdir = "/data/2020-10-30_Kewell_P9424_canu211/"
+params.outputdir = "/data/2020-10-30_Kewell_P9424_canu211/"
 
 nanopore_reads = Channel
     .fromPath(params.nanopore, checkIfExists: true, type: "file")
