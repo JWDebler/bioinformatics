@@ -9,6 +9,13 @@
 //
 // for sample in `ls *.fastq | cut -f1 -d'.'`; do cat $sample.fastq | seqkit rmdup -n -o $sample.clean.fastq; done
 
+params.nanopore = "/data/2020-10-30_Kewell_P9424_canu211/nanopore/*.fastq.gz"
+params.illumina = "/data/2020-10-30_Kewell_P9424_canu211/*.fastq.gz"
+
+nanopore_reads = Channel
+    .fromPath(params.nanopre, checkIfExists: true, type: "file")
+    .map {file -> [file.simpleName, file]}
+
 process versions {
     publishDir "${params.outputdir}/", mode: 'copy'
 
@@ -34,24 +41,6 @@ process versions {
 
 }
 
-// barcode and adapter trimming
-process qcat_trim {
-
-    publishDir "${params.outputdir}/03-trimmed-fastq", mode: 'copy', pattern: '*.fastq.gz'
-    
-    input:
-    set sampleID, 'input.fastq' from rawnanoporereads
-
-    output:
-    set sampleID, "${sampleID}.trimmed.fastq.gz" into canuAssembly
-
-    """
-    qcat -f input.fastq -o "${sampleID}.trimmed.fastq" --detect-middle --trim
-    gzip -9 ${sampleID}.trimmed.fastq
-    """
-
-}
-
 // genome assembly
 process Canu {
 
@@ -60,7 +49,7 @@ process Canu {
     memory '30 GB'
 
     input:
-    set sampleID, 'input.fastq.gz' from canuAssembly
+    set sampleID, 'input.fastq.gz' from nanopore_reads
 
     output:
     set sampleID, "${sampleID}.contigs.fasta", 'input.fastq.gz' into racon
@@ -111,9 +100,10 @@ process medaka {
     set sampleID, 'input.fasta', 'input.fastq.gz' from medaka
 
     output:
-    set sampleID, "${sampleID}.contigs.racon.medaka.fasta", 'input.fastq.gz' into unknown
+    set sampleID, "${sampleID}.contigs.racon.medaka.fasta", 'input.fastq.gz' into pilon
 
     """
+    . /home/ubuntu/medaka/venv/bin/activate
     medaka_consensus \
     -d input.fasta \
     -i input.fastq.gz \
@@ -122,5 +112,7 @@ process medaka {
 
     cp ${sampleID}_medaka_output/consensus.fasta ${sampleID}.contigs.racon.medaka.fasta
 
+    deactivate
     """
 }
+
