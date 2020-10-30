@@ -13,7 +13,7 @@ params.nanopore = "/data/2020-10-30_Kewell_P9424_canu211/nanopore/*.fastq.gz"
 params.illumina = "/data/2020-10-30_Kewell_P9424_canu211/*.fastq.gz"
 
 nanopore_reads = Channel
-    .fromPath(params.nanopre, checkIfExists: true, type: "file")
+    .fromPath(params.nanopore, checkIfExists: true, type: "file")
     .map {file -> [file.simpleName, file]}
 
 process versions {
