@@ -11,6 +11,7 @@
 
 params.nanopore = "/data/2020-10-30_Kewell_P9424_canu211/nanopore/*.fastq.gz"
 params.illumina = "/data/2020-10-30_Kewell_P9424_canu211/*.fastq.gz"
+params.outdir = "/data/2020-10-30_Kewell_P9424_canu211/"
 
 nanopore_reads = Channel
     .fromPath(params.nanopore, checkIfExists: true, type: "file")
@@ -23,9 +24,6 @@ process versions {
     file 'versions.txt'
 
     """
-    echo qcat: >> versions.txt
-    qcat --version >> versions.txt
-    echo --------------- >> versions.txt
     echo canu: >> versions.txt
     canu --version >> versions.txt
     echo --------------- >> versions.txt
@@ -36,7 +34,9 @@ process versions {
     racon --version >> versions.txt
     echo --------------- >> versions.txt
     echo medaka: >> versions.txt
+    . /home/ubuntu/medaka/venv/bin/activate
     medaka --version >> versions.txt
+    deactivate
     """
 
 }
