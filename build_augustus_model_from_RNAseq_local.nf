@@ -83,7 +83,7 @@ Channel.fromFilePairs(params.reads)
 process combine_reads {
   tag {readID}
 
-  publishDir "${params.outdir}/02-combined-reads", mode: 'copy'
+  publishDir "${params.outdir}/01-combined-reads", mode: 'copy'
 
   input: 
   set readID, "${readID}.fwd.*.fastq.gz", "${readID}.rev.*.fastq.gz" from rawReads
