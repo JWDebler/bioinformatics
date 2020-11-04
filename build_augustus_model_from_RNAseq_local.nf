@@ -243,10 +243,24 @@ process mergeHints {
   """
 }
 
+process fix_fasta_header {
+
+  input:
+  set idAssembly, "merged_introns.gff" , "genome.fasta" from genemark
+
+  output:
+  set idAssembly, "merged_introns.gff" , "genome.fasta" into genemark_clean
+
+"""
+sed 's, .*\$,,g' -i genome.fasta
+"""
+
+}
+
 process genemark {
   publishDir "${params.outdir}/05-hints/", mode: 'copy', pattern: '*.gtf'
   input:
-  set idAssembly, "introns.gff", "genome.fasta" from genemark
+  set idAssembly, "introns.gff", "genome.fasta" from genemark_clen
 
   output:
   set idAssembly, "introns.gff",  "genome.fasta", "${idAssembly}.gtf" into filterGenemark
