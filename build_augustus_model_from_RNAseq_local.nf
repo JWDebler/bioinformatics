@@ -260,7 +260,7 @@ sed 's, .*\$,,g' -i genome.fasta
 process genemark {
   publishDir "${params.outdir}/05-hints/", mode: 'copy', pattern: '*.gtf'
   input:
-  set idAssembly, "introns.gff", "genome.fasta" from genemark_clen
+  set idAssembly, "introns.gff", "genome.fasta" from genemark_clean
 
   output:
   set idAssembly, "introns.gff",  "genome.fasta", "${idAssembly}.gtf" into filterGenemark
