@@ -97,11 +97,29 @@ process combine_reads {
         """
 }
 
+// it turns out that your genome header file cannot contain any spaces and words thereafter, therefore we need to strip out everything after the first space
+process fix_genome {
+  tag { id }
+
+  publishDir "${params.outdir}", mode: 'copy', pattern: '*.fasta'
+
+  input:
+  set id, "genome.fasta" from assemblies
+
+  output:
+  set id, "${id}.fasta" into index_assemblies
+
+  """
+  sed 's, .*\$,,g' -i genome.fasta
+  mv genome.fasta ${id}.fasta
+  """
+}
+
 process indexAssembly2 {
   tag { id }
 
   input:
-    set id, "genome.fasta" from assemblies
+    set id, "genome.fasta" from index_assemblies
 
   output:
     set id, "genome.fasta", "*.ht2" into indexedAssembly
@@ -243,24 +261,10 @@ process mergeHints {
   """
 }
 
-process fix_fasta_header {
-
-  input:
-  set idAssembly, "merged_introns.gff" , "genome.fasta" from genemark
-
-  output:
-  set idAssembly, "merged_introns.gff" , "genome.fasta" into genemark_clean
-
-"""
-sed 's, .*\$,,g' -i genome.fasta
-"""
-
-}
-
 process genemark {
   publishDir "${params.outdir}/05-hints/", mode: 'copy', pattern: '*.gtf'
   input:
-  set idAssembly, "introns.gff", "genome.fasta" from genemark_clean
+  set idAssembly, "introns.gff", "genome.fasta" from genemark
 
   output:
   set idAssembly, "introns.gff",  "genome.fasta", "${idAssembly}.gtf" into filterGenemark
