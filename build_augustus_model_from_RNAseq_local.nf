@@ -67,7 +67,7 @@ if ( params.reads ) {
     .fromPath(params.forward, checkIfExists: true, type: "file")
     .set{forward_reads}
 } else {
-    params.reads = "/home/johannes/rdrive/Ascochyta_genomics-KAMPHL-SE07477/johannes/notebook/2020-10-08_Rabiei_RNAseq/02-trimmed_reads/*_{1,2}P.fq.gz"
+    params.reads = "/home/johannes/rdrive/Ascochyta_genomics-KAMPHL-SE07477/johannes/notebook/2020-10-08_Rabiei_RNAseq/trimmed_reads/*_{1,2}P.fq.gz"
     //log.info "No reads supplied."
     //exit 1
 }

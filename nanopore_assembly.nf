@@ -9,7 +9,7 @@
 //
 // for sample in `ls *.fastq | cut -f1 -d'.'`; do cat $sample.fastq | seqkit rmdup -n -o $sample.clean.fastq; done
 
-params.nanopore = "/data/2020-10-30_Kewell_P9424_canu211/nanopore/*.fastq.gz"
+params.nanopore = "/data/2020-10-30_Kewell_P9424_canu211/nanopore/*.all.fastq.gz"
 params.illumina = "/data/2020-10-30_Kewell_P9424_canu211/*.fastq.gz"
 params.outputdir = "/data/2020-10-30_Kewell_P9424_canu211/"
 
