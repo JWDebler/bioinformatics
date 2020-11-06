@@ -40,7 +40,7 @@ process versions {
 
 // genome assembly
 process Canu {
-
+    tag {sampleID}
     publishDir "${params.outputdir}/04-canu-assembly", mode: 'copy', pattern: '*.fasta'
 
     memory '30 GB'
@@ -66,7 +66,7 @@ process Canu {
 
 // polishing step 1
 process racon {
-
+    tag {sampleID}
     publishDir "${params.outputdir}/05-racon-polish", mode: 'copy', pattern: '*.fasta'
 
     input:
@@ -90,7 +90,7 @@ process racon {
 
 // polishing step 2
 process medaka {
-
+    tag {sampleID}
     publishDir "${params.outputdir}/06-medaka-polish", mode: 'copy', pattern: '*.fasta'
 
     input:
