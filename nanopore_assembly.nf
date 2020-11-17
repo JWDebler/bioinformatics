@@ -90,7 +90,7 @@ process racon {
 
 // polishing step 2
 process medaka {
-    tag {sampleID}
+    tag {sampleID}cat 
     publishDir "${params.outputdir}/06-medaka-polish", mode: 'copy', pattern: '*.fasta'
 
     input:
@@ -99,8 +99,9 @@ process medaka {
     output:
     set sampleID, "${sampleID}.contigs.racon.medaka.fasta", 'input.fastq.gz' into pilon
 
+    conda '/home/ubuntu/miniconda3/envs/medaka'
+
     """
-    . /home/ubuntu/medaka/venv/bin/activate
     medaka_consensus \
     -d input.fasta \
     -i input.fastq.gz \
@@ -108,8 +109,6 @@ process medaka {
     -m r941_min_high_g360
 
     cp ${sampleID}_medaka_output/consensus.fasta ${sampleID}.contigs.racon.medaka.fasta
-
-    deactivate
     """
 }
 
