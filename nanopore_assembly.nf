@@ -90,7 +90,7 @@ process racon {
 
 // polishing step 2
 process medaka {
-    tag {sampleID}cat 
+    tag {sampleID} 
     publishDir "${params.outputdir}/06-medaka-polish", mode: 'copy', pattern: '*.fasta'
 
     input:
