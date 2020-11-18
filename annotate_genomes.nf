@@ -69,29 +69,29 @@ process dos2unix {
     set sampleID, 'genome.fasta' from genomesFordos2unix
 
     output:
-    set sampleID, "${sampleID}.fasta" into dos2unixed
+    set sampleID, "${sampleID}.fasta" into contigsForGenemark, contigsForAugustus //dos2unixed
 
     """
     dos2unix -n genome.fasta ${sampleID}.fasta
     """
 }
 
-process addSpeciesNameTofastaHeadersContigs {
-    tag {sampleID}
-    publishDir "${params.outdir}", mode: 'copy'
+// process addSpeciesNameTofastaHeadersContigs {
+//     tag {sampleID}
+//     publishDir "${params.outdir}", mode: 'copy'
 
-    input:
-    set sampleID, "${sampleID}.fasta" from dos2unixed
+//     input:
+//     set sampleID, "${sampleID}.fasta" from dos2unixed
 
-    output:
-    set sampleID, "${sampleID}.fasta" into contigsForGenemark, contigsForAugustus
+//     output:
+//     set sampleID, "${sampleID}.fasta" into contigsForGenemark, contigsForAugustus
 
-    """
-    sed 's,>,>${sampleID}.,g' -i ${sampleID}.fasta
-    sed 's, .*\$,,g' -i ${sampleID}.fasta  
+//     """
+//     sed 's,>,>${sampleID}.,g' -i ${sampleID}.fasta
+//     sed 's, .*\$,,g' -i ${sampleID}.fasta  
 
-    """
-}
+//     """
+// }
 
 //Augustus annotation
 process annotation_augustus {
