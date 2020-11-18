@@ -188,6 +188,6 @@ process extractProteinsFromAugustus {
   set sampleID, "${sampleID}.augustus.proteins.fasta" 
 
   """
-  /agat_sp_extract_sequences.pl -g input.gff3 -f input.fasta -p -o ${sampleID}.augustus.proteins.fasta
+  agat_sp_extract_sequences.pl -g input.gff3 -f input.fasta -p -o ${sampleID}.augustus.proteins.fasta
   """
 }
