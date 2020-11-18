@@ -144,7 +144,7 @@ process annotation_genemark {
 
 process genemarkGTFtoGFF {
     tag {sampleID}
-    publishdir "${params.outdir}", mode: 'copy', pattern: '*.gff3'
+    publishDir "${params.outdir}", mode: 'copy', pattern: '*.gff3'
 
     input:
     set sampleID, "${sampleID}.genemark.gtf", "input.fasta" from genemarkGFF
