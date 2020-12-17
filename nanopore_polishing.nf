@@ -131,7 +131,7 @@ process medaka {
     set sampleID, "${sampleID}.contigs.racon.medaka.fasta", "${sampleID}.fastq.gz" into unknown
 
     """
-    conda '/miniconda3/envs/medaka/ '
+    conda '/miniconda3/envs/medaka'
     
     medaka_consensus \
     -d ${sampleID}.fasta \
