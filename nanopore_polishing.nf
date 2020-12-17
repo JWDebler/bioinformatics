@@ -131,7 +131,7 @@ process medaka {
     set sampleID, "${sampleID}.contigs.racon.medaka.fasta", "${sampleID}.fastq.gz" into unknown
 
     """
-    . /home/ubuntu/medaka/venv/bin/activate
+    conda 'medaka'
     
     medaka_consensus \
     -d ${sampleID}.fasta \
@@ -141,7 +141,6 @@ process medaka {
 
     cp ${sampleID}_medaka_output/consensus.fasta ${sampleID}.contigs.racon.medaka.fasta
 
-    deactivate
     """
 }
 
