@@ -42,6 +42,8 @@ process versions {
 process Canu {
     tag {sampleID}
     publishDir "${params.outputdir}/04-canu-assembly", mode: 'copy', pattern: '*.fasta'
+    publishDir "${params.outputdir}/04-canu-assembly", mode: 'copy', pattern: '*.fasta.gz'
+    publishDir "${params.outputdir}/04-canu-assembly", mode: 'copy', pattern: '*.report'
 
     memory '30 GB'
 
@@ -50,6 +52,8 @@ process Canu {
 
     output:
     set sampleID, "${sampleID}.contigs.fasta", 'input.fastq.gz' into racon
+    set sampleID, "${sampleID}.correctedReads.fasta.gz" into correctedReads
+    file "${sampleID}.canu.report"
 
     """
     canu \
@@ -59,7 +63,8 @@ process Canu {
     -nanopore input.fastq.gz
 
     cp ${sampleID}/*contigs.fasta ${sampleID}.contigs.fasta
-
+    cp ${sampleID}/*correctedReads.fasta.gz ${sampleID}.correctedReads.fasta.gz
+    cp ${sampleID}/*.report ${sampleID}.canu.report
     """
 
 }
