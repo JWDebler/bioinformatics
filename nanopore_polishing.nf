@@ -122,6 +122,8 @@ process racon {
 // polishing step 2
 process medaka {
 
+    conda '/home/ubuntu/miniconda3/envs/medaka'
+
     publishDir "${params.outdir}/06-medaka-polish", mode: 'copy', pattern: '*.fasta'
 
     input:
@@ -131,8 +133,6 @@ process medaka {
     set sampleID, "${sampleID}.contigs.racon.medaka.fasta", "${sampleID}.fastq.gz" into unknown
 
     """
-    conda '/home/ubuntu/miniconda3/envs/medaka'
-    
     medaka_consensus \
     -d ${sampleID}.fasta \
     -i ${sampleID}.fastq.gz \
