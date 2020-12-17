@@ -62,7 +62,7 @@ if ( params.trimmedReads ) {
 
 genomesForPolishing
 .combine(trimmedReadsForPolishing, by: 0)
-.set { racon }
+.set { dos2unix }
 
 process versions {
     publishDir "${params.outdir}/", mode: 'copy'
@@ -80,6 +80,20 @@ process versions {
     """
 
 }
+
+// to handle line end characteres created by exporting fasta from geneious
+process dos2unix {
+    input:
+    set sampleID, "${sampleID}.fasta", "${sampleID}.fastq.gz" from dos2unix
+
+    output:
+    set sampleID, "${sampleID}.dos2unix.fasta", "${sampleID}.fastq.gz" into racon
+
+    """
+    dos2unix -n ${sampleID}.fasta ${sampleID}.dos2unix.fasta
+    """
+}
+
 
 // racon parameters as suggested by medaka authors https://github.com/nanoporetech/medaka
 process racon {
