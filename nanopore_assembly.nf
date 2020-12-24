@@ -55,7 +55,7 @@ if ( params.nanoporeReads ) {
 }
 
 process versions {
-    publishDir "${params.outputdir}/", mode: 'copy'
+    publishDir "${params.outdir}/", mode: 'copy'
 
     output:
     file 'versions.txt'
@@ -78,9 +78,9 @@ process versions {
 // genome assembly
 process Canu {
     tag {sampleID}
-    publishDir "${params.outputdir}/04-canu-assembly", mode: 'copy', pattern: '*.fasta'
-    publishDir "${params.outputdir}/04-canu-assembly", mode: 'copy', pattern: '*.fasta.gz'
-    publishDir "${params.outputdir}/04-canu-assembly", mode: 'copy', pattern: '*.report'
+    publishDir "${params.outdir}/04-canu-assembly", mode: 'copy', pattern: '*.fasta'
+    publishDir "${params.outdir}/04-canu-assembly", mode: 'copy', pattern: '*.fasta.gz'
+    publishDir "${params.outdir}/04-canu-assembly", mode: 'copy', pattern: '*.report'
 
     memory '30 GB'
 
@@ -110,7 +110,7 @@ process Canu {
 // polishing step 1
 process racon {
     tag {sampleID}
-    publishDir "${params.outputdir}/05-racon-polish", mode: 'copy', pattern: '*.fasta'
+    publishDir "${params.outdir}/05-racon-polish", mode: 'copy', pattern: '*.fasta'
 
     input:
     set sampleID, 'input.fasta', 'input.fastq.gz' from racon
@@ -137,7 +137,7 @@ process medaka {
     conda '/home/ubuntu/miniconda3/envs/medaka'
 
     tag {sampleID} 
-    publishDir "${params.outputdir}/06-medaka-polish", mode: 'copy', pattern: '*.fasta'
+    publishDir "${params.outdir}/06-medaka-polish", mode: 'copy', pattern: '*.fasta'
 
     input:
     set sampleID, 'input.fasta', 'input.fastq.gz' from medaka
