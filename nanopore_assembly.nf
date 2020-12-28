@@ -97,7 +97,7 @@ process Canu {
     -p ${sampleID} \
     -d ${sampleID} \
     genomeSize=45m \
-    minInputCoverage=5 \ 
+    minInputCoverage=5 \
     stopOnLowCoverage=5 \
     -fast \
     -nanopore input.fastq.gz
