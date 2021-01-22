@@ -132,7 +132,7 @@ process annotation_genemark {
     set sampleID, "${sampleID}.fasta" from contigsForGenemark
 
     output:
-    set sampleID, "${sampleID}.genemark.gtf", "${sampleID}.fasta" into genemarkProt, genemarkGFF
+    set sampleID, "${sampleID}.genemark.gtf", "${sampleID}.fasta" into genemarkGFF
 
     """
     ${params.genemark} --ES --fungus --cores ${params.cores} --sequence ${sampleID}.fasta
@@ -150,7 +150,7 @@ process genemarkGTFtoGFF {
     set sampleID, "${sampleID}.genemark.gtf", "input.fasta" from genemarkGFF
 
     output:
-    set sampleID, "${sampleID}.genemark.gff3"
+    set sampleID, "${sampleID}.genemark.gff3" , "input.fasta" into genemarkProt
 
     """
     agat_convert_sp_gxf2gxf.pl -g ${sampleID}.genemark.gtf -gvo 3 -o genemark.gff
@@ -165,14 +165,13 @@ process extractProteinsFromGenemark {
   publishDir "${params.outdir}", mode: 'copy', pattern: '*.proteins.fasta'
 
   input:
-  set sampleID, "${sampleID}.genemark.gtf", "input.fasta" from genemarkProt
+  set sampleID, "input.gff3", "input.fasta" from genemarkProt
 
   output:
   set sampleID, "${sampleID}.genemark.proteins.fasta" 
 
   """
-  /opt/genemark-ES/get_sequence_from_GTF.pl ${sampleID}.genemark.gtf input.fasta
-  mv prot_seq.faa ${sampleID}.genemark.proteins.fasta
+  agat_sp_extract_sequences.pl -g input.gff3 -f input.fasta -p -o ${sampleID}.genemark.proteins.fasta
   """
 }
 
