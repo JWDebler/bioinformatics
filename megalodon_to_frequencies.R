@@ -39,7 +39,7 @@ df <- data.table(df)
 #str(df)
 df <- df[,list(methylated_frequency = mean(methylated_frequency), 
                 Cov = sum(Cov)),
-                list(chromosome,start)]
+                list(chromosome,start,endhead )]
 df <- data.frame(df)
 df$start <- format(df$start,scientific=FALSE)
 write.table(df, file=args[2],  quote = FALSE, sep = "\t", col.names = TRUE, row.names = FALSE)
