@@ -101,7 +101,7 @@ process plotBuscoSummaries {
     """
     mkdir input_derp
     cp $all_busco_outputs input_derp/
-    docker run -v \$(pwd)/input_derp:/busco_wd ezlabgva/busco:v4.0.5_cv1 python3.7 /busco/scripts/generate_plot.py -wd .
+    docker run -v \$(pwd)/input_derp:/busco_wd ezlabgva/busco:v4.0.5_cv1 generate_plot.py -wd .
     cp input_derp/busco_figure.png .
     """
 }l
