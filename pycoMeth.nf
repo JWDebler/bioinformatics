@@ -60,5 +60,5 @@ if ( params.nanopolish ) {
     exit 1
 }
 
-print referenceGenome
-print nanopolishOutput
+referenceGenome.println
+nanopolishOutput.println
