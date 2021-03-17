@@ -44,6 +44,7 @@ if ( params.reference ) {
     reference = Channel
     .fromPath(params.reference, checkIfExists: true, type: "file")
     .map {file -> [file.simpleName, file]}
+    .tap{referenceGenome}
 } else {
     log.info "No reference genome supplied, did you include '*.fasta'?"
     exit 1
@@ -53,10 +54,11 @@ if ( params.nanopolish ) {
     nanopolish = Channel
     .fromPath(params.nanopolish, checkIfExists: true, type: "file")
     .map {file -> [file.simpleName, file]}
+    .tap{nanopolishOutput}
 } else {
     log.info "No nanopolish reads supplied, did you include '*.tsv?"
     exit 1
 }
 
-print reference
-print nanopolish
+print referenceGenome
+print nanopolishOutput

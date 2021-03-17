@@ -154,7 +154,7 @@ process medaka {
     -o ${sampleID}_medaka_output \
     -m r941_min_high_g360
 
-    cp ${sampleID}_medaka_output/consensus.fasta ${sampleID}.contigs.racon.medaka.fasta
+    seqkit sort -lr ${sampleID}_medaka_output/consensus.fasta > ${sampleID}.contigs.racon.medaka.fasta
     """
 }
 
