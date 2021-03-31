@@ -14,6 +14,8 @@ def helpMessage() {
         Required
         A glob of the fasta genomes to be polished.
         The basename of the file is used as the genome name.
+        The basename of the genome and the reads needs to be the same.
+        e.g. 'genome_x.fasta' and 'genome_x.fastq.gz'
 
     --trimmedReads <glob>
         Required
@@ -122,8 +124,6 @@ process racon {
 // polishing step 2
 process medaka {
 
-    conda '/home/ubuntu/miniconda3/envs/medaka'
-
     publishDir "${params.outdir}/06-medaka-polish", mode: 'copy', pattern: '*.fasta'
 
     input:
@@ -144,4 +144,4 @@ process medaka {
     """
 }
 
-log.info "If nothing happened, did you inlcude '*.fasta' and '*.fastq.gz' in the --genomes and --trimmedReads options?"
+log.info "If nothing happened, did you inlcude '*.fasta' and '*.fastq.gz' in the --genomes and --trimmedReads options? Also, make sure that the basename of genome and reads is the same!"
