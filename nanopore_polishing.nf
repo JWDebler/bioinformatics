@@ -137,6 +137,7 @@ process medaka {
     -d ${sampleID}.fasta \
     -i ${sampleID}.fastq.gz \
     -o ${sampleID}_medaka_output \
+    -t 10 \
     -m r941_min_high_g360
 
     cp ${sampleID}_medaka_output/consensus.fasta ${sampleID}.contigs.racon.medaka.fasta
