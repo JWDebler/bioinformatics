@@ -2,6 +2,9 @@ def helpMessage() {
     log.info"""
     # Protein annotation using deepSig, EffectorP2.0 and Interproscan (including SignalP4.1)
     A pipeline to annotate proteins with signal peptides, EffectorP Score and via interproscan
+    Fasta headers need to be cleaned up, meaning no spaces. You can do that with:
+    sed 's, .*$,,g' -i file.fasta
+    Also make sure the proteome files do not contain '*' as stop codon sign.
 
     ## Examples
     nextflow run protein_annotation.nf \
@@ -43,7 +46,8 @@ if ( params.proteome ) {
     exit 1
 }
 
-//GeneMark doesnt have the species ID in the fasta header, therefor we add it here
+// GeneMark doesnt have the species ID in the fasta header, therefor we add it here
+// We'll also clean up fasta headers containing spaces.
 process appendSpeciesID {
   tag { id }
   publishDir "${params.outdir}", mode: 'copy'
@@ -56,6 +60,8 @@ process appendSpeciesID {
 
   """
   awk '/^>/ {sub(/>/, ">${id}.", \$1); print \$1} /^[^>]/ {print \$0}' ${id}.fasta > ${id}.proteins.fasta
+
+  sed 's, .*$,,g' -i ${id}.proteins.fasta
   """
 }
 
