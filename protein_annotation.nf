@@ -3,7 +3,7 @@ def helpMessage() {
     # Protein annotation using deepSig, EffectorP2.0 and Interproscan (including SignalP4.1)
     A pipeline to annotate proteins with signal peptides, EffectorP Score and via interproscan
     Fasta headers need to be cleaned up, meaning no spaces. You can do that with:
-    sed 's, .*$,,g' -i file.fasta
+    sed 's, .*\$,,g' -i file.fasta
     Also make sure the proteome files do not contain '*' as stop codon sign.
 
     ## Examples
