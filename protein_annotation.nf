@@ -61,7 +61,7 @@ process appendSpeciesID {
   """
   awk '/^>/ {sub(/>/, ">${id}.", \$1); print \$1} /^[^>]/ {print \$0}' ${id}.fasta > ${id}.proteins.fasta
 
-  sed 's, .*$,,g' -i ${id}.proteins.fasta
+  sed 's, .*\$,,g' -i ${id}.proteins.fasta
   """
 }
 
