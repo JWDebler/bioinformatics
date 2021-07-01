@@ -70,7 +70,9 @@ process versions {
     echo racon: >> versions.txt
     racon --version >> versions.txt
     echo --------------- >> versions.txt
-    
+    echo medaka: >> versions.txt
+    medaka --version >> versions.txt
+    echo --------------- >> versions.txt
     """
 
 }
@@ -152,7 +154,7 @@ process medaka {
     -d input.fasta \
     -i input.fastq.gz \
     -o ${sampleID}_medaka_output \
-    -m r941_min_high_g360
+    -m r941_min_sup_g507
 
     seqkit sort -lr ${sampleID}_medaka_output/consensus.fasta > ${sampleID}.contigs.racon.medaka.fasta
     """
