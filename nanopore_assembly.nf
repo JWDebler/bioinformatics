@@ -138,7 +138,7 @@ process racon {
 // polishing step 2
 process medaka {
 
-    //conda '/home/ubuntu/miniconda3/envs/medaka'
+    conda '/home/ubuntu/miniconda3/envs/medaka'
 
     tag {sampleID} 
     publishDir "${params.outdir}/06-medaka-polish", mode: 'copy', pattern: '*.fasta'
@@ -160,3 +160,4 @@ process medaka {
     """
 }
 
+med[]
