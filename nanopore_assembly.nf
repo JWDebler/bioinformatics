@@ -159,5 +159,3 @@ process medaka {
     seqkit sort -lr ${sampleID}_medaka_output/consensus.fasta > ${sampleID}.contigs.racon.medaka.fasta
     """
 }
-
-med[]
