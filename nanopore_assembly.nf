@@ -26,7 +26,7 @@ def helpMessage() {
         The basename of the file needs to match the basename of the respective genome.
 
     --outdir <path>
-        Default: `results_nanopore_polishing`
+        Default: `assembly`
         The directory to store the results in.
 
     ## Exit codes
@@ -128,6 +128,7 @@ process racon {
     input.fastq.gz > minimap.racon.paf
 
     racon -m 8 -x -6 -g -8 -w 500 -t 14\
+    --no-trimming \
     input.fastq.gz \
     minimap.racon.paf \
     input.fasta > ${sampleID}.contigs.racon.fasta
