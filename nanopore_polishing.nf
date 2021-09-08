@@ -126,6 +126,8 @@ process racon {
 // polishing step 2
 process medaka {
 
+    conda '/home/ubuntu/miniconda3/envs/medaka'
+
     publishDir "${params.outdir}/06-medaka-polish", mode: 'copy', pattern: '*.fasta'
 
     input:
@@ -133,18 +135,18 @@ process medaka {
 
     output:
     set sampleID, "${sampleID}.contigs.racon.medaka.fasta", "${sampleID}.fastq.gz" into unknown
-
+// use r941_min_sup_g507 or r941_min_hac_g507 for model
     """
     medaka_consensus \
     -d ${sampleID}.fasta \
     -i ${sampleID}.fastq.gz \
     -o ${sampleID}_medaka_output \
     -t 10 \
-    -m r941_min_high_g360
+    -m r941_min_sup_g507
 
     cp ${sampleID}_medaka_output/consensus.fasta ${sampleID}.contigs.racon.medaka.fasta
 
     """
 }
 
-log.info "If nothing happened, did you inlcude '*.fasta' and '*.fastq.gz' in the --genomes and --trimmedReads options? Also, make sure that the basename of genome and reads is the same!"
+log.info "If nothing happened, did you inlcude '*.fasta' and '*.fastq.gz' in the --genomes and --trimmedReads options respectively? Also, make sure that the basename of genome and reads is the same!"
