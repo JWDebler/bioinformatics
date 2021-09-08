@@ -116,7 +116,7 @@ process interproscan {
   set id, "${id}.proteins.fasta" from proteinsForInterproscan
 
   output:
-  file "${id}.interproscan.tsv"
+  file "${id}.interproscan.tsv", "${id}.interproscan.gff3" 
 
 // currently excluding MobiDBLite, as it fails with python3.8 and TMHMM as there is a path problem somewhere
   """
@@ -129,7 +129,7 @@ process interproscan {
   --iprlookup\
   --input ${id}.proteins.fasta \
   --output-file-base ${id}.interproscan \
-  --format tsv
+  --format tsv, gff3
   """
 
 }

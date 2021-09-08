@@ -1,3 +1,5 @@
+// run from outside conda environment! If medaka fails it medaka
+
 def helpMessage() {
     log.info"""
     # Nanopore genome polishing
