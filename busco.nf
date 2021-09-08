@@ -74,7 +74,7 @@ process busco {
     file "short_summary*.txt" into busco_output
     """
     cp ${sampleID}.fasta ./${sampleID}.local.fasta
-    docker run -v \$(pwd):/busco_wd ezlabgva/busco:v5.0.0_cv1 busco \
+    docker run -v \$(pwd):/busco_wd ezlabgva/busco:v5.2.2_cv1 busco \
     -i ${sampleID}.local.fasta \
     -o ${sampleID} \
     -l ${params.database} \
