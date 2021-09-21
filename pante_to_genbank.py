@@ -273,6 +273,10 @@ with open(input_file) as file:
                                 elements[2] = "mobile_element"
                                 elements[8] += "; mobile_element_type=LINE:L2 "
 
+                            elif rpt_family.lower() == "line/tad1":
+                                elements[2] = "mobile_element"
+                                elements[8] += "; mobile_element_type=LINE:Tad1 "
+
                             elif rpt_family.lower() == "artefact":
                                 elements[2] = "mobile_element"
                                 elements[8] += "; mobile_element_type=ARTEFACT  "
