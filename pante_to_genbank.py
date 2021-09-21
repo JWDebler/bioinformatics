@@ -316,6 +316,14 @@ with open(input_file) as file:
                             elif rpt_family.lower() == "dna/kolobok-t2":
                                 elements[2] = "mobile_element"
                                 elements[8] += "; mobile_element_type=transposon:Kolobok-T2 "
+                            
+                            elif rpt_family.lower() == "rc/helitron":
+                                elements[2] = "mobile_element"
+                                elements[8] += "; mobile_element_type=transposon:Helitron-1 "
+
+                            elif rpt_family.lower() == "rc/helitron-2":
+                                elements[2] = "mobile_element"
+                                elements[8] += "; mobile_element_type=transposon:Helitron-2 "
 
                             else:
                                 print("#######################################################################")
