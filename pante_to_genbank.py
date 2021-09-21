@@ -285,6 +285,10 @@ with open(input_file) as file:
                                 elements[2] = "repeat_region"
                                 elements[8] += "; rpt_type=dispersed  "
 
+                            elif rpt_family.lower() == "dna":
+                                elements[2] = "mobile_element"
+                                elements[8] += "; mobile_element_type=transposon:DNA  "
+
                             else:
                                 print("#######################################################################")
                                 print("Please fix this script and add filters for the before mentioned repeats")
