@@ -289,6 +289,26 @@ with open(input_file) as file:
                                 elements[2] = "mobile_element"
                                 elements[8] += "; mobile_element_type=transposon:DNA  "
 
+                            elif rpt_family.lower() == "dna/kolobok":
+                                elements[2] = "mobile_element"
+                                elements[8] += "; mobile_element_type=transposon:Kolobok  "
+
+                            elif rpt_family.lower() == "dna/kolobok-e":
+                                elements[2] = "mobile_element"
+                                elements[8] += "; mobile_element_type=transposon:Kolobok-E  "
+
+                            elif rpt_family.lower() == "dna/kolobok-h":
+                                elements[2] = "mobile_element"
+                                elements[8] += "; mobile_element_type=transposon:Kolobok-H  "
+
+                            elif rpt_family.lower() == "dna/kolobok-hydra":
+                                elements[2] = "mobile_element"
+                                elements[8] += "; mobile_element_type=transposon:Kolobok-Hydra-specific_Branch  "
+
+                            elif rpt_family.lower() == "dna/kolobok-t2":
+                                elements[2] = "mobile_element"
+                                elements[8] += "; mobile_element_type=transposon:Kolobok-T2 "
+
                             else:
                                 print("#######################################################################")
                                 print("Please fix this script and add filters for the before mentioned repeats")
