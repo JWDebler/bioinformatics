@@ -283,7 +283,7 @@ with open(input_file) as file:
 
                             elif rpt_family.lower() == "artefact":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=ARTEFACT  "
+                                elements[8] += "; mobile_element_type=other:Artifact  "
 
                             elif rpt_family.lower() == "rrna":
                                 elements[2] = "repeat_region"
@@ -333,6 +333,8 @@ with open(input_file) as file:
                                 raise SystemExit
 
                         print(*elements, sep='\t')
+
+                        print("deeeeeeeeeeerp")
                         
             #else:
                 #print(line[1])
