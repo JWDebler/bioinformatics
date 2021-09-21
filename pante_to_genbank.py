@@ -130,7 +130,7 @@ with open(input_file) as file:
                         search = re.search('repeat_unit=(.+?)$', elements[8])
                         if search:
                             rpt_unit = search.group(1)
-                            if int(elements[4])-int(elements[3]) < rpt_unit.length():
+                            if int(elements[4])-int(elements[3]) < rpt_unit.len():
                                 print("ERROR")
                                 break
                             elements[8] += "; rpt_type=" + rpt_type + "; satellite_type=microsatellite" + "; rpt_unit_seq=" + rpt_unit
