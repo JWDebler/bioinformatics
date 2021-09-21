@@ -56,8 +56,8 @@ trnas = {"tRNA":["tRNA-Xxx", "trnX"],
         "phenylalanyl_tRNA": ["tRNA-Phe", "trnF"]}
 
 #If file with same outputname exists, delete it first
-if os.path.isfile(output_file):
-    os.unlink(output_file)
+#if os.path.isfile(output_file):
+#    os.unlink(output_file)
 
 
 with open(input_file) as file:
