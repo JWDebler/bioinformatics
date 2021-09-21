@@ -131,10 +131,9 @@ with open(input_file) as file:
                         if search:
                             rpt_unit = search.group(1)
                             if int(elements[4])-int(elements[3]) < len(rpt_unit):
-                                print("ERROR")
-                                print(elements[4],elements[3],len(rpt_unit),rpt_unit)
-                                break
-                            elements[8] += "; rpt_type=" + rpt_type + "; satellite_type=microsatellite" + "; rpt_unit_seq=" + rpt_unit
+                                continue
+                            else:
+                                elements[8] += "; rpt_type=" + rpt_type + "; satellite_type=microsatellite" + "; rpt_unit_seq=" + rpt_unit
                     else:
                         elements[8] += "; rpt_type=" + rpt_type + "; satellite_type=microsatellite"
                     
