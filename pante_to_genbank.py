@@ -16,20 +16,19 @@ from pathlib import Path
 #parse commandline arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('-i', '--input', help='path to a "*.gff" file')
-parser.add_argument('-o', '--output', help='path to an output file (default = inputfilename.fixed.gff)')
+#parser.add_argument('-o', '--output', help='path to an output file (default = inputfilename.fixed.gff)')
 args = parser.parse_args()
 
 if args.input:
     input_file = Path(args.input)
 else:
-    input_file = ("GCA_004011705.1_Alentis_Al4_genomic_clean_header_pante.gff3")
     print("No input file provided, use '-i' and supply a .gff file")
-    #raise SystemExit
+    raise SystemExit
 
-if args.output:
-    output_file = Path(args.output)
-else:
-    output_file = Path(os.path.join(os.getcwd(),os.path.basename(input_file)+'.fixed.gff'))
+#if args.output:
+#    output_file = Path(args.output)
+#else:
+#    output_file = Path(os.path.join(os.getcwd(),os.path.basename(input_file)+'.fixed.gff'))
 
 gff = {}
 trnas = {"tRNA":["tRNA-Xxx", "trnX"], 
@@ -336,8 +335,6 @@ with open(input_file) as file:
                                 raise SystemExit
 
                         print(*elements, sep='\t')
-
-                        print("deeeeeeeeeeerp")
                         
             #else:
                 #print(line[1])
