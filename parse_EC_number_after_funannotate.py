@@ -87,5 +87,5 @@ with open(input_file) as file:
                 element_8_new =';'.join(map(str,element_8))
                 elements[8] = element_8_new
                 print(*elements, sep='\t')
-        #else:
-            #print(line)
+        else:
+            print(*elements, sep='\t')
