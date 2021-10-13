@@ -115,7 +115,7 @@ process annotation_augustus {
     --species=${params.species} \
     --progress=true \
     --gff3=on \
-    --softmasking=1 \
+    --softmasking=0 \
     --uniqueGeneId=true \
     --noInFrameStop=true \
     --/augustus/verbosity=4 \
