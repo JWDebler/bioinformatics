@@ -12,6 +12,10 @@ from pathlib import Path
 # https://github.com/Dfam-consortium/RepeatModeler/blob/master/RepeatClassifier
 # http://www.insdc.org/controlled-vocabulary-rpttype-qualifier
 
+# Things to do manually:
+
+# Telomeres: add: rpt_type=telomeric_repeat
+# remove 'repeat_unit' --> VScode find and replace: repeat_unit.*[AGCT];
 
 #parse commandline arguments
 parser = argparse.ArgumentParser()
@@ -23,6 +27,7 @@ if args.input:
     input_file = Path(args.input)
 else:
     print("No input file provided, use '-i' and supply a .gff file")
+    #input_file = "ArME14.22_chromosomes_pante.gff3"
     raise SystemExit
 
 #if args.output:
@@ -132,7 +137,7 @@ with open(input_file) as file:
                             if int(elements[4])-int(elements[3]) < len(rpt_unit):
                                 continue
                             else:
-                                elements[8] += "; rpt_type=" + rpt_type + "; satellite_type=microsatellite" + "; rpt_unit_seq=" + rpt_unit
+                                elements[8] += "; rpt_type=" + rpt_type + "; satellite_type=microsatellite"
                     else:
                         elements[8] += "; rpt_type=" + rpt_type + "; satellite_type=microsatellite"
                     
@@ -146,7 +151,7 @@ with open(input_file) as file:
                         search = re.search('repeat_unit=(.+?)$', elements[8])
                         if search:
                             rpt_unit = search.group(1)
-                            elements[8] += "; rpt_type=" + rpt_type + "; satellite_type=minisatellite" + "; rpt_unit_seq=" + rpt_unit
+                            elements[8] += "; rpt_type=" + rpt_type + "; satellite_type=minisatellite"
                     else:
                         elements[8] += "; rpt_type=" + rpt_type + "; satellite_type=minisatellite"
                     
@@ -161,7 +166,7 @@ with open(input_file) as file:
                         search = re.search('repeat_unit=(.+?)$', elements[8])
                         if search:
                             rpt_unit = search.group(1)
-                            elements[8] += "; rpt_type=" + rpt_type + "; satellite_type=satellite" + "; rpt_unit_seq=" + rpt_unit
+                            elements[8] += "; rpt_type=" + rpt_type + "; satellite_type=satellite"
                     else:
                         elements[8] += "; rpt_type=" + rpt_type + "; satellite_type=satellite"
 
@@ -261,7 +266,19 @@ with open(input_file) as file:
 
                             elif rpt_family.lower() == "dna/hat-ac":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:hAT-Ac "
+                                elements[8] += "; mobile_element_type=transposon:Activator "
+
+                            elif rpt_family.lower() == "dna/hat-charlie":
+                                elements[2] = "mobile_element"
+                                elements[8] += "; mobile_element_type=transposon:Charlie "
+
+                            elif rpt_family.lower() == "dna/ginger":
+                                elements[2] = "mobile_element"
+                                elements[8] += "; mobile_element_type=transposon:Ginger "
+
+                            elif rpt_family.lower() == "dna/ginger-2":
+                                elements[2] = "mobile_element"
+                                elements[8] += "; mobile_element_type=transposon:Ginger-2 "
 
                             elif rpt_family.lower() == "line/penelope":
                                 elements[2] = "mobile_element"
@@ -289,7 +306,7 @@ with open(input_file) as file:
 
                             elif rpt_family.lower() == "rrna":
                                 elements[2] = "repeat_region"
-                                elements[8] += "; rpt_type=other  "
+                                elements[8] += "; rpt_type=other; note=potential rRNA  "
 
                             elif rpt_family.lower() == "unknown":
                                 elements[2] = "repeat_region"
