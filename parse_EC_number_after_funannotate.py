@@ -14,7 +14,7 @@ args = parser.parse_args()
 if args.input:
     input_file = Path(args.input)
 else:
-    input_file = Path("ArME14_all_annotations.gff3")
+    input_file = Path("test.gff3")
     print("No input file provided, use '-i' and supply a .gff file")
     #raise SystemExit
 
@@ -43,9 +43,15 @@ with open(input_file) as file:
             ec=search.group(1).split(';')[0]
             #print(ec)
             #get enzyme name
-            enzyme_name = scrape_ec(ec)
-            #if enzyme name is blank remove EC_number tag
-            if len(enzyme_name) < 1: #remove EC_number tag
+            # if EC number is incomplete (1, 1.1 or 1.1.1 instead of 1.1.1.1), don't bother looking it up
+            if ec.count('.') == 3:
+                enzyme_name = scrape_ec(ec)
+                #print('=====> all good')
+            else:
+                enzyme_name = ''                
+                #print('=====> incomplete ec')
+            # Check if enzyme name is blank and remove EC_number tag
+            if len(enzyme_name) < 1 :
                 element_8 = elements[8].split(";")
                 idx = 0
                 for i in element_8:
