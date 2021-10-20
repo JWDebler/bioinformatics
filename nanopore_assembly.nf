@@ -155,6 +155,7 @@ process medaka {
     -o ${sampleID}_medaka_output \
     -m r941_min_sup_g507
 
-    seqkit sort -lr ${sampleID}_medaka_output/consensus.fasta > ${sampleID}.contigs.racon.medaka.fasta
+    seqkit sort -lr ${sampleID}_medaka_output/consensus.fasta > ${sampleID}.fasta
+    seqkit replace -p '.+' -r '${sampleID}_ctg_{nr}' --nr-width 2 ${sampleID}.fasta > ${sampleID}.contigs.racon.medaka.fasta
     """
 }
