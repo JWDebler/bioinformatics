@@ -28,10 +28,10 @@ with open(input_file) as file:
             id_string = re.search('ID=(.+?)$', elements[8]) 
             product=product_string.group(1).split(';')[0]
             id=id_string.group(1).split(';')[0]
-            print(product)
-            print(id)
+            #print(product)
+            #print(id)
             id_product_mapper[id] = 'product='+product+';'
-print(id_product_mapper)
+#print(id_product_mapper)
 
 with open(input_file) as file:   
     input = csv.reader(file, delimiter='\t')
