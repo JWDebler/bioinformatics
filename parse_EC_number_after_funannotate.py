@@ -14,7 +14,7 @@ args = parser.parse_args()
 if args.input:
     input_file = Path(args.input)
 else:
-    input_file = Path("test.gff3")
+    #input_file = Path("test.gff3")
     print("No input file provided, use '-i' and supply a .gff file")
     #raise SystemExit
 
