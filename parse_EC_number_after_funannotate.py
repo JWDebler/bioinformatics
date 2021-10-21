@@ -24,7 +24,7 @@ def scrape_ec(ec):
     soup = BeautifulSoup(html_content, "lxml")
     ecnumber = soup.title.prettify()
     #parse only the name out of the title
-    enzyme_name = (ecnumber[(ecnumber.find(ec))+len(ec)+1:-10])
+    enzyme_name = (ecnumber[(ecnumber.find(ec))+len(ec)+1:-10]).replace(",","%2C")# same change for existing names in GFF
     return enzyme_name
 
 
