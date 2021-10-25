@@ -42,7 +42,7 @@ if (params.help) {
 
 params.genomes = false
 params.outdir = "genome_annotation"
-params.genemark = '/opt/genemark-ES/gmes_petap.pl'
+params.genemark = '/opt/genemark/gmes_petap.pl'
 params.cores = 14
 params.species = "Alentis"
 
