@@ -77,6 +77,8 @@ if ( params.pacbioReads ) {
 
 NanoporeReadsForAssembly
 .combine(PacbioReadsForAssembly, by: 0)
+.view()
+return
 .set(ReadsForAssembly)
 
 
