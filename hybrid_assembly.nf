@@ -58,7 +58,7 @@ if ( params.nanoporeReads ) {
     nanoporeReads = Channel
     .fromPath(params.nanoporeReads, checkIfExists: true, type: "file")
     .map {file -> [file.simpleName, file]}
-    .tap { NanoporeReadsForAssembly }
+    .tap { nanoporeReadsForAssembly }
 } else {
     log.info "No nanopore reads supplied, did you include '*.fastq.gz'?"
     exit 1
@@ -68,16 +68,19 @@ if ( params.pacbioReads ) {
     nanoporeReads = Channel
     .fromPath(params.pacbioReads, checkIfExists: true, type: "file")
     .map {file -> [file.simpleName, file]}
-    .tap { PacbioReadsForAssembly }
+    .tap { pacbioReadsForAssembly }
 } else {
     log.info "No pacbio reads supplied, did you include '*.fastq.gz'?"
     exit 1
 }
 
 
-NanoporeReadsForAssembly
-.combine(PacbioReadsForAssembly, by: 0)
+nanoporeReadsForAssembly
+.combine(pacbioReadsForAssembly, by: 0)
 .tap { readsForAssembly }
+.view()
+
+return
 
 
 process versions {
