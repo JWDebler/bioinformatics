@@ -126,7 +126,7 @@ process Canu {
     stopOnLowCoverage=5 \
     -fast \
     -nanopore input.nanopore.fastq.gz \
-    -pacbio input.pacbio.fastq
+    -pacbio input.pacbio.fastq.gz
 
     cp ${sampleID}/*contigs.fasta ${sampleID}.contigs.fasta
     cp ${sampleID}/*correctedReads.fasta.gz ${sampleID}.correctedReads.fasta.gz
