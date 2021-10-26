@@ -85,7 +85,7 @@ if ( params.illuminaReads ) {
 }
 
 IlluminaReadsForAssembly
-.combine(by: 0)
+.combine(IlluminaReadsForAssembly, by: 0)
 .view()
 
 return
