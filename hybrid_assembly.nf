@@ -77,7 +77,7 @@ if ( params.pacbioReads ) {
 
 NanoporeReadsForAssembly
 .combine(PacbioReadsForAssembly, by: 0)
-.set(ReadsForAssembly)
+.set{ReadsForAssembly}
 
 
 process versions {
