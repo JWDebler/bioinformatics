@@ -30,6 +30,11 @@ def helpMessage() {
         A glob of the fastq.gz files of the adapter and barcode trimmed reads.
         The basename of the file needs to match the basename of the respective genome.
 
+    --illuminaReads <glob>
+        Required
+        A glob of the fastq.gz files of the adapter and barcode trimmed reads.
+        The basename of the file needs to match the basename of the respective genome.
+
     --outdir <path>
         Default: `assembly`
         The directory to store the results in.
@@ -68,6 +73,21 @@ if ( params.pacbioReads ) {
     log.info "No pacbio reads supplied, did you include '*.fastq.gz'?"
     exit 1
 }
+
+if ( params.illuminaReads ) {
+    illuminaReads = Channel
+    .fromPath(params.illuminaReads, checkIfExists: true, type: "file")
+    .map {file -> [file.simpleName, file]}
+    .tap { IlluminaReadsForAssembly }
+} else {
+    log.info "No nanopore reads supplied, did you include '*.fastq.gz'?"
+    exit 1
+}
+
+IlluminaReadsForAssembly
+.view()
+
+return
 
 NanoporeReadsForAssembly
 .combine(PacbioReadsForAssembly, by: 0)
