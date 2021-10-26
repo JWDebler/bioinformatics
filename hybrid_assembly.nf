@@ -76,7 +76,7 @@ if ( params.pacbioReads ) {
 
 if ( params.illuminaReads ) {
     illuminaReads = Channel
-    .fromPath(params.illuminaReads, checkIfExists: true, type: "file")
+    .fromFilePairs(params.illuminaReads, checkIfExists: true, type: "file")
     .map {file -> [file.simpleName, file]}
     .tap { IlluminaReadsForAssembly }
 } else {
@@ -85,8 +85,6 @@ if ( params.illuminaReads ) {
 }
 
 IlluminaReadsForAssembly
-.combine(IlluminaReadsForAssembly, by: 0)
-.combine(IlluminaReadsForAssembly, by: 0)
 .view()
 
 return
