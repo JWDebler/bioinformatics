@@ -78,10 +78,6 @@ if ( params.pacbioReads ) {
 nanoporeReadsForAssembly
 .combine(pacbioReadsForAssembly, by: 0)
 .tap { readsForAssembly }
-.view()
-
-return
-
 
 process versions {
     publishDir "${params.outdir}/", mode: 'copy'
