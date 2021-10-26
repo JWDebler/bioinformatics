@@ -75,6 +75,9 @@ if ( params.pacbioReads ) {
 }
 
 
+nanoporeReadsForAssembly
+.combine(pacbioReadsForAssembly, by: 0)
+.tap { readsForAssembly }
 
 process versions {
     publishDir "${params.outdir}/", mode: 'copy'
@@ -107,7 +110,7 @@ process Canu {
     memory '30 GB'
 
     input:
-    set sampleID, 'input.nanopore.fastq.gz', 'input.pacbio.fastq.gz', from nanoporeReadsForAssembly.combine(pacbioReadsForAssembly, by: 0)
+    set sampleID, 'input.nanopore.fastq.gz', 'input.pacbio.fastq.gz' from readsForAssembly
 
     output:
     set sampleID, "${sampleID}.contigs.fasta", 'input.nanopore.fastq.gz', 'input.pacbio.fastq.gz' into racon
