@@ -71,9 +71,7 @@ if ( params.pacbioReads ) {
 
 NanoporeReadsForAssembly
 .combine(PacbioReadsForAssembly, by: 0)
-.view()
-
-return
+.set(ReadsForAssembly)
 
 
 process versions {
@@ -107,10 +105,10 @@ process Canu {
     memory '30 GB'
 
     input:
-    set sampleID, 'input.nanopore.fastq.gz', 'input.pacbio.fastq.gz', from NanoporeReadsForAssembly
+    set sampleID, 'input.nanopore.fastq.gz', 'input.pacbio.fastq.gz', from ReadsForAssembly
 
     output:
-    set sampleID, "${sampleID}.contigs.fasta", 'input.fastq.gz' into racon
+    set sampleID, "${sampleID}.contigs.fasta", 'input.nanopore.fastq.gz', 'input.pacbio.fastq.gz' into racon
     set sampleID, "${sampleID}.correctedReads.fasta.gz" into correctedReads
     file "${sampleID}.canu.report"
 
@@ -138,19 +136,19 @@ process racon {
     publishDir "${params.outdir}/05-racon-polish", mode: 'copy', pattern: '*.fasta'
 
     input:
-    set sampleID, 'input.fasta', 'input.fastq.gz' from racon
+    set sampleID, 'input.fasta', 'input.nanopore.fastq.gz', 'input.pacbio.fastq.gz' from racon
 
     output:
-    set sampleID, "${sampleID}.contigs.racon.fasta", 'input.fastq.gz' into medaka
+    set sampleID, "${sampleID}.contigs.racon.fasta", 'input.nanopore.fastq.gz', 'input.pacbio.fastq.gz' into medaka
 
     """
     minimap2 \
     input.fasta \
-    input.fastq.gz > minimap.racon.paf
+    input.nanopore.fastq.gz > minimap.racon.paf
 
     racon -m 8 -x -6 -g -8 -w 500 -t 14\
     --no-trimming \
-    input.fastq.gz \
+    input.nanopore.fastq.gz \
     minimap.racon.paf \
     input.fasta > ${sampleID}.contigs.racon.fasta
 
@@ -169,12 +167,12 @@ process medaka {
     set sampleID, 'input.fasta', 'input.fastq.gz' from medaka
 
     output:
-    set sampleID, "${sampleID}.contigs.racon.medaka.fasta", 'input.fastq.gz' into pilon
+    set sampleID, "${sampleID}.contigs.racon.medaka.fasta", 'input.nanopore.fastq.gz', 'input.pacbio.fastq.gz' into pilon
 
     """
     medaka_consensus \
     -d input.fasta \
-    -i input.fastq.gz \
+    -i input.nanopore.fastq.gz \
     -o ${sampleID}_medaka_output \
     -m r941_min_sup_g507
 
