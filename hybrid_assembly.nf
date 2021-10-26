@@ -77,15 +77,8 @@ if ( params.pacbioReads ) {
 if ( params.illuminaReads ) {
     illuminaReads = Channel
     .fromFilePairs(params.illuminaReads, checkIfExists: true, type: "file")
-    .map {file -> [file.simpleName, file]}
-    .tap { IlluminaReadsForAssembly }
-} else {
-    log.info "No nanopore reads supplied, did you include '*.fastq.gz'?"
-    exit 1
-}
+    .view()
 
-IlluminaReadsForAssembly
-.view()
 
 return
 
