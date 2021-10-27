@@ -50,9 +50,10 @@ if (params.help) {
     exit 0
 }
 
-
+params.cores = 14
 params.nanoporeReads = false
 params.outdir = "assembly"
+params.pilon = "/opt/pilon/pilon-1.24.jar"
 
 if ( params.nanoporeReads ) {
     nanoporeReads = Channel
@@ -88,10 +89,8 @@ if ( params.illuminaReads ) {
 
 nanoporeReadsForAssembly
 .join(pacbioReadsForAssembly)
-.join(illuminaReadsForPolishing)
 .tap { readsForAssembly }
-.view()
-return
+
 
 process versions {
     publishDir "${params.outdir}/", mode: 'copy'
@@ -109,6 +108,11 @@ process versions {
     echo racon: >> versions.txt
     racon --version >> versions.txt
     echo --------------- >> versions.txt
+    echo hisat2 >> versions.txt
+    hisat2 --version | head -n 1 >> versions.txt
+    echo --------------- >> versions.txt
+    echo pilon >> versions.txt
+    java -jar ${params.pilon} --version >> versions.txt
 
     """
 
@@ -124,11 +128,11 @@ process Canu {
     memory '30 GB'
 
     input:
-    set sampleID, 'input.nanopore.fastq.gz', 'input.pacbio.fastq.gz' from readsForAssembly
+    tuple sampleID, 'input.nanopore.fastq.gz', 'input.pacbio.fastq.gz' from readsForAssembly
 
     output:
-    set sampleID, "${sampleID}.contigs.fasta", 'input.nanopore.fastq.gz', 'input.pacbio.fastq.gz' into racon
-    set sampleID, "${sampleID}.correctedReads.fasta.gz" into correctedReads
+    tuple sampleID, "${sampleID}.contigs.fasta", 'input.nanopore.fastq.gz', 'input.pacbio.fastq.gz' into racon
+    tuple sampleID, "${sampleID}.correctedReads.fasta.gz" into correctedReads
     file "${sampleID}.canu.report"
 
     """
@@ -155,10 +159,10 @@ process racon {
     publishDir "${params.outdir}/05-racon-polish", mode: 'copy', pattern: '*.fasta'
 
     input:
-    set sampleID, 'input.fasta', 'input.nanopore.fastq.gz', 'input.pacbio.fastq.gz' from racon
+    tuple sampleID, 'input.fasta', 'input.nanopore.fastq.gz', 'input.pacbio.fastq.gz' from racon
 
     output:
-    set sampleID, "${sampleID}.contigs.racon.fasta", 'input.nanopore.fastq.gz', 'input.pacbio.fastq.gz' into medaka
+    tuple sampleID, "${sampleID}.contigs.racon.fasta", 'input.nanopore.fastq.gz', 'input.pacbio.fastq.gz' into medaka
 
     """
     minimap2 \
@@ -183,10 +187,10 @@ process medaka {
     publishDir "${params.outdir}/06-medaka-polish", mode: 'copy', pattern: '*.fasta'
 
     input:
-    set sampleID, 'input.fasta', 'input.fastq.gz' from medaka
+    tuple sampleID, 'input.fasta', 'input.fastq.gz' from medaka
 
     output:
-    set sampleID, "${sampleID}.contigs.racon.medaka.fasta", 'input.nanopore.fastq.gz', 'input.pacbio.fastq.gz' into pilon
+    tuple sampleID, "${sampleID}.contigs.racon.medaka.fasta", 'input.nanopore.fastq.gz', 'input.pacbio.fastq.gz' into pilon
 
     """
     medaka_consensus \
@@ -195,7 +199,34 @@ process medaka {
     -o ${sampleID}_medaka_output \
     -m r941_min_sup_g507
 
-    seqkit sort -lr ${sampleID}_medaka_output/consensus.fasta > ${sampleID}.fasta
-    seqkit replace -p '.+' -r '${sampleID}_ctg_{nr}' --nr-width 2 ${sampleID}.fasta > ${sampleID}.contigs.racon.medaka.fasta
     """
+}
+
+process hisat2 {
+  tag {sampleID}
+    publishDir "${params.outdir}/06-pilon-polish", mode: 'copy', pattern: '*.fasta'
+
+    input:
+    tuple sampleID, 'input.fasta', 'input.nanopore.fastq.gz', 'input.pacbio.fastq.gz', 'fwd.fastq.gz', 'rev.fastq.gz', 'unpaired.fastq.gz' from racon.join(illuminaReadsForPolishing)
+
+    output:
+    tuple sampleID, "${sampleID}.racon.medaka.pilon.fasta"
+
+    """
+    hisat2-build input.fasta ${sampleID}
+
+    hisat2 -x ${sampleID} -1 fwd.fastq.gz -2 rev.fastq.gz --threads ${params.cores} --max-intronlen 2000 | samtools view -b | samtools sort -o ${sampleID}.paired.bam
+
+    samtools index ${sampleID}.paired.bam
+
+    hisat2 -x ${sampleID} -U unpaired.fastq.gz --threads ${params.cores} --max-intronlen 2000 | samtools view -b | samtools sort -o ${sampleID}.unpaired.bam
+
+    samtools index ${sampleID}.unpaired.bam
+
+    java -jar ${params.pilon} --genome input.fasta --frags ${sampleID}.paired.bam --unpaired ${sampleID}.unpaired.bam --threads ${params.cores}
+
+    seqkit sort -lr pilon.fasta > pilon.sorted.fasta
+    seqkit replace -p '.+' -r '${sampleID}_ctg_{nr}' --nr-width 2 pilon.sorted.fasta > ${sampleID}.racon.medaka.pilon.fasta
+
+    """  
 }
