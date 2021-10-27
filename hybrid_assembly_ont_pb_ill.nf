@@ -85,7 +85,6 @@ if ( params.illuminaReads ) {
     log.info "No illumina reads supplied, did you include '*.fastq.gz'?"
     exit 1
 }
-}
 
 nanoporeReadsForAssembly
 .join(pacbioReadsForAssembly)
