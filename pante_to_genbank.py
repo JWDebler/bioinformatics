@@ -27,8 +27,8 @@ if args.input:
     input_file = Path(args.input)
 else:
     print("No input file provided, use '-i' and supply a .gff file")
-    #input_file = "ArME14.22_chromosomes_pante.gff3"
-    raise SystemExit
+    input_file = "ArME14_pante.gff3"
+    #raise SystemExit
 
 #if args.output:
 #    output_file = Path(args.output)
@@ -71,11 +71,137 @@ with open(input_file) as file:
                     
 
         if len(line) > 6:
-            if line[1] == "RepeatMasker" or line[1] == "EAhelitron" or line[1] == "RepeatModeler" or line[1] == "MiteFinderII" or line[1] == "LTRharvest" or line[1] == "LTRdigest" or line[1] == "tRNAScan-SE" or line[1] == "RNAmmer":
+            # limiting what to look for
+            if line[1] == "RepeatMasker" or line[1] == "EAhelitron" or line[1] == "RepeatModeler" or line[1] == "MiteFinderII" or line[1] == "LTRharvest" or line[1] == "LTRdigest" or line[1] == "tRNAScan-SE" or line[1] == "RNAmmer" or line[1] == "pante_protein_families":
                 
                 elements = []
                 for element in line:
                     elements.append(element)
+
+                #pante_protein_matches
+                if elements[1] == "pante_protein_families":
+                    search = re.search('Name=(.+?)$', elements[8])
+                    name=search.group(1).split(';')[0]
+
+                    if name == "DNA/TIR/Tc1-Mariner/Fot1":
+                        elements[2] = "mobile_element"
+                        elements[8] += "; mobile_element_type=transposon:TcMar-Fot1 "
+
+                    elif name == "LINE/Tad1-like":
+                        elements[2] = "mobile_element"
+                        elements[8] += "; mobile_element_type=LINE:Tad1 "
+                        
+                    elif name == "LTR/Ty3/Gypsy":
+                        elements[2] = "mobile_element"
+                        elements[8] += "; mobile_element_type=retrotransposon:Gypsy "
+
+                    elif name == "RC/Helitron":
+                        elements[2] = "mobile_element"
+                        elements[8] += "; mobile_element_type=transposon:Helitron-1 "
+
+                    elif name == "DNA/TIR/Tc1-Mariner/Mariner":
+                        elements[2] = "mobile_element"
+                        elements[8] += "; mobile_element_type=transposon:TcMar-Mariner "
+
+                    elif name == "LTR/Ty1/Copia":
+                        elements[2] = "mobile_element"
+                        elements[8] += "; mobile_element_type=retrotransposon:Copia "
+
+                    elif name == "DNA/TIR/hAT/Hobo":
+                        elements[2] = "mobile_element"
+                        elements[8] += "; mobile_element_type=transposon:Hobo "
+
+                    elif name == "DNA/TIR/hAT/Ac":
+                        elements[2] = "mobile_element"
+                        elements[8] += "; mobile_element_type=transposon:Activator "
+
+                    elif name == "DNA/TIR/hAT/Tol2":
+                        elements[2] = "mobile_element"
+                        elements[8] += "; mobile_element_type=transposon:Tol2 "
+
+                    elif name == "LINE/I":
+                        elements[2] = "mobile_element"
+                        elements[8] += "; mobile_element_type=LINE:L1 "
+
+                    elif name == "LINE/LOA":
+                        elements[2] = "mobile_element"
+                        elements[8] += "; mobile_element_type=LINE:R1-LOA "
+
+                    elif name == "DNA/TIR/MuDR":
+                        elements[2] = "mobile_element"
+                        elements[8] += "; mobile_element_type=transposon:MULE-MuDR "
+
+                    elif name == "DNA/TIR/Tc1-Mariner/Tc1":
+                        elements[2] = "mobile_element"
+                        elements[8] += "; mobile_element_type=transposon:TcMar-Tc1 "
+
+                    elif name == "DNA/TIR/Kolobok/IS4EU":
+                        elements[2] = "mobile_element"
+                        elements[8] += "; mobile_element_type=transposon:Kolobok-IS4EU "
+
+                    elif name == "DNA/TIR/En-Spm":
+                        elements[2] = "mobile_element"
+                        elements[8] += "; mobile_element_type=transposon:CMC-EnSpm "
+
+                    elif name == "LINE/L1/Tx1":
+                        elements[2] = "mobile_element"
+                        elements[8] += "; mobile_element_type=LINE:L1-Tx1 "
+
+                    elif name == "LINE/R1":
+                        elements[2] = "mobile_element"
+                        elements[8] += "; mobile_element_type=LINE:R1 "
+
+                    elif name == "LINE/Tad1":
+                        elements[2] = "mobile_element"
+                        elements[8] += "; mobile_element_type=LINE:Tad1 "
+
+                    elif name == "LINE/Telomeric":
+                        elements[2] = "mobile_element"
+                        elements[8] += "; mobile_element_type=LINE "
+
+                    elif name == "LINE/RTE/BovB":
+                        elements[2] = "mobile_element"
+                        elements[8] += "; mobile_element_type=LINE:BovB "
+
+                    elif name == "LINE/CR1":
+                        elements[2] = "mobile_element"
+                        elements[8] += "; mobile_element_type=LINE:CR1 "
+
+                    elif name == "LINE/L2":
+                        elements[2] = "mobile_element"
+                        elements[8] += "; mobile_element_type=LINE:L2 "
+
+                    elif name == "LINE/Jockey":
+                        elements[2] = "mobile_element"
+                        elements[8] += "; mobile_element_type=LINE:I-Jockey "
+
+                    elif name == "DNA/TIR/Tc1-Mariner":
+                        elements[2] = "mobile_element"
+                        elements[8] += "; mobile_element_type=transposon:TcMar "
+
+                    elif name == "DNA/TIR/Tc1-Mariner/Mogwai":
+                        elements[2] = "mobile_element"
+                        elements[8] += "; mobile_element_type=transposon:TcMar-Mogwai "
+
+                    elif name == "LINE/L1":
+                        elements[2] = "mobile_element"
+                        elements[8] += "; mobile_element_type=LINE:L1 "
+
+                    elif name == "DNA/TIR/hAT/Restless":
+                        elements[2] = "mobile_element"
+                        elements[8] += "; mobile_element_type=transposon:Restless "
+
+                    elif name == "DNA/TIR/P":
+                        elements[2] = "mobile_element"
+                        elements[8] += "; mobile_element_type=transposon:P-Element "
+
+                    else:
+                                print("#######################################################################")
+                                print("Please fix this script and add filters for the before mentioned repeats")
+                                print("#######################################################################")
+                                print('Add this to script under "pante_protein_matches": ',name)
+                                raise SystemExit
+                    print(*elements, sep='\t')
 
                 # RNAmmer rRNA
                 if elements[1] == "RNAmmer":
@@ -143,6 +269,7 @@ with open(input_file) as file:
                     
                     print(*elements, sep='\t')
 
+                
                 # minisatellite
                 if elements[2] == "minisatellite":
                     rpt_type = "tandem"
@@ -348,7 +475,7 @@ with open(input_file) as file:
                                 print("#######################################################################")
                                 print("Please fix this script and add filters for the before mentioned repeats")
                                 print("#######################################################################")
-                                print('Add this to script: ',rpt_family)
+                                print('Add this to script under "repeat_region": ',rpt_family)
                                 raise SystemExit
 
                         print(*elements, sep='\t')
