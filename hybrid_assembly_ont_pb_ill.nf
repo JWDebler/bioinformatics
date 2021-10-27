@@ -202,12 +202,12 @@ process medaka {
     """
 }
 
-process hisat2 {
+process hisat2_and_pilon {
   tag {sampleID}
     publishDir "${params.outdir}/06-pilon-polish", mode: 'copy', pattern: '*.fasta'
 
     input:
-    tuple sampleID, 'input.fasta', 'input.nanopore.fastq.gz', 'input.pacbio.fastq.gz', 'fwd.fastq.gz', 'rev.fastq.gz', 'unpaired.fastq.gz' from racon.join(illuminaReadsForPolishing)
+    tuple sampleID, 'input.fasta', 'input.nanopore.fastq.gz', 'input.pacbio.fastq.gz', 'fwd.fastq.gz', 'rev.fastq.gz', 'unpaired.fastq.gz' from pilon.join(illuminaReadsForPolishing)
 
     output:
     tuple sampleID, "${sampleID}.racon.medaka.pilon.fasta"
