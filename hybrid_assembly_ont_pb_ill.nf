@@ -109,10 +109,10 @@ process versions {
     racon --version >> versions.txt
     echo --------------- >> versions.txt
     echo hisat2 >> versions.txt
-    hisat2 --version | head -n 1 >> versions.txt
+    hisat2 --version | head -n 1  | cut -d ' ' -f 3>> versions.txt
     echo --------------- >> versions.txt
     echo pilon >> versions.txt
-    java -jar ${params.pilon} --version >> versions.txt
+    java -jar ${params.pilon} --version  | cut -d ' ' -f 3 >> versions.txt
 
     """
 
