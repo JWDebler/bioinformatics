@@ -15,7 +15,6 @@ from pathlib import Path
 # Things to do manually:
 
 # Telomeres: add: rpt_type=telomeric_repeat
-# remove 'repeat_unit' --> VScode find and replace: repeat_unit.*[AGCT];
 
 #parse commandline arguments
 parser = argparse.ArgumentParser()
@@ -77,6 +76,25 @@ with open(input_file) as file:
                 elements = []
                 for element in line:
                     elements.append(element)
+                
+                # MiteFinderII
+                if elements[1] == "MiteFinderII" and elements[2] == "repeat_region":
+                    elements[2] = "mobile_element"
+
+                    # removing 'ID' tag
+                    element_8 = elements[8].split(";")
+                    idx = 0
+                    for i in element_8:
+                        idx +=1
+                        if i.startswith("ID="):
+                            break
+                    del element_8[idx -1]                        
+                    element_8_new = ';'.join(map(str,element_8))                        
+                    elements[8] = element_8_new
+
+                    elements[8] += "; mobile_element_type=MITE; Name=MITE "
+                    print(*elements, sep='\t')
+
 
                 #pante_protein_matches
                 if elements[1] == "pante_protein_families":
@@ -255,17 +273,30 @@ with open(input_file) as file:
                 # microsatellite
                 if elements[2] == "microsatellite":
                     rpt_type = "tandem"
-                    elements[2] = "microsatellite"
+                    elements[2] = "repeat_region"
                     if "repeat_unit" in elements[8]:
+
                         search = re.search('repeat_unit=(.+?)$', elements[8])
+
+                        # removing 'repeat_unit' tag
+                        element_8 = elements[8].split(";")
+                        idx = 0
+                        for i in element_8:
+                            idx +=1
+                            if i.startswith("repeat_unit"):
+                                break
+                        del element_8[idx -1]                        
+                        element_8_new = ';'.join(map(str,element_8))                        
+                        elements[8] = element_8_new
+                        # adding 'rpt_type' and 'satellite' tags
                         if search:
                             rpt_unit = search.group(1)
                             if int(elements[4])-int(elements[3]) < len(rpt_unit):
                                 continue
                             else:
-                                elements[8] += "; rpt_type=" + rpt_type + "; satellite_type=microsatellite"
+                                elements[8] += "; rpt_type=" + rpt_type + "; satellite=microsatellite"
                     else:
-                        elements[8] += "; rpt_type=" + rpt_type + "; satellite_type=microsatellite"
+                        elements[8] += "; rpt_type=" + rpt_type + "; satellite=microsatellite"
                     
                     print(*elements, sep='\t')
 
@@ -273,14 +304,27 @@ with open(input_file) as file:
                 # minisatellite
                 if elements[2] == "minisatellite":
                     rpt_type = "tandem"
-                    elements[2] = "minisatellite"
+                    elements[2] = "repeat_region"
                     if "repeat_unit" in elements[8]:
                         search = re.search('repeat_unit=(.+?)$', elements[8])
+
+                        # removing 'repeat_unit' tag
+                        element_8 = elements[8].split(";")
+                        idx = 0
+                        for i in element_8:
+                            idx +=1
+                            if i.startswith("repeat_unit"):
+                                break
+                        del element_8[idx -1]                        
+                        element_8_new = ';'.join(map(str,element_8))                        
+                        elements[8] = element_8_new
+                        # adding 'rpt_type' and 'satellite' tags
+
                         if search:
                             rpt_unit = search.group(1)
-                            elements[8] += "; rpt_type=" + rpt_type + "; satellite_type=minisatellite"
+                            elements[8] += "; rpt_type=" + rpt_type + "; satellite=minisatellite"
                     else:
-                        elements[8] += "; rpt_type=" + rpt_type + "; satellite_type=minisatellite"
+                        elements[8] += "; rpt_type=" + rpt_type + "; satellite=minisatellite"
                     
                     print(*elements, sep='\t')
 
@@ -291,11 +335,23 @@ with open(input_file) as file:
                     elements[2] = "repeat_region"
                     if "repeat_unit" in elements[8]:
                         search = re.search('repeat_unit=(.+?)$', elements[8])
+
+                        # removing 'repeat_unit' tag
+                        element_8 = elements[8].split(";")
+                        idx = 0
+                        for i in element_8:
+                            idx +=1
+                            if i.startswith("repeat_unit"):
+                                break
+                        del element_8[idx -1]                        
+                        element_8_new = ';'.join(map(str,element_8))                        
+                        elements[8] = element_8_new
+                        # adding 'rpt_type' and 'satellite' tags
                         if search:
                             rpt_unit = search.group(1)
-                            elements[8] += "; rpt_type=" + rpt_type + "; satellite_type=satellite"
+                            elements[8] += "; rpt_type=" + rpt_type + "; satellite=satellite"
                     else:
-                        elements[8] += "; rpt_type=" + rpt_type + "; satellite_type=satellite"
+                        elements[8] += "; rpt_type=" + rpt_type + "; satellite=satellite"
 
                     print(*elements, sep='\t')
 
@@ -335,14 +391,34 @@ with open(input_file) as file:
                 # helitron
                 if elements[2] == "helitron":
                     elements[2] = "mobile_element"
-                    elements[8] += "; mobile_element_type=transposon:Helitron"
+                    # removing 'ID' tag
+                    element_8 = elements[8].split(";")
+                    idx = 0
+                    for i in element_8:
+                        idx +=1
+                        if i.startswith("ID="):
+                            break
+                    del element_8[idx -1]                        
+                    element_8_new = ';'.join(map(str,element_8))                        
+                    elements[8] = element_8_new
+                    element_8 = elements[8].split(";")
+                    idx = 0
+                    for i in element_8:
+                        idx +=1
+                        if i.startswith("Parent="):
+                            break
+                    del element_8[idx -1]                        
+                    element_8_new = ';'.join(map(str,element_8))                        
+                    elements[8] = element_8_new
+
+                    elements[8] += "; mobile_element_type=transposon:Helitron; Name=helitron"
 
                     print(*elements, sep='\t')
 
                # LTR harvest
                 if elements[2] == "LTR_retrotransposon":
                     elements[2] = "mobile_element"
-                    elements[8] = "rpt_type=long_terminal_repeat; mobile_element_type=retrotransposon; rpt_family=LTR"
+                    elements[8] = "rpt_type=long_terminal_repeat; mobile_element_type=retrotransposon; rpt_family=LTR, Name=LTR retrotransposon"
 
                     print(*elements, sep='\t')
 
@@ -478,7 +554,7 @@ with open(input_file) as file:
                                 print('Add this to script under "repeat_region": ',rpt_family)
                                 raise SystemExit
 
-                        print(*elements, sep='\t')
+                        print(*elements, sep='\t') 
                         
             #else:
                 #print(line[1])
