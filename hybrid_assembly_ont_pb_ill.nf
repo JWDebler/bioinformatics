@@ -109,7 +109,7 @@ process versions {
     racon --version >> versions.txt
     echo --------------- >> versions.txt
     echo hisat2 >> versions.txt
-    hisat2 --version | head -n 1  | cut -d ' ' -f 3>> versions.txt
+    hisat2 --version | head -n 1  | cut -d ' ' -f 3 >> versions.txt
     echo --------------- >> versions.txt
     echo pilon >> versions.txt
     java -jar ${params.pilon} --version  | cut -d ' ' -f 3 >> versions.txt
@@ -199,6 +199,7 @@ process medaka {
     -o ${sampleID}_medaka_output \
     -m r941_min_sup_g507
 
+    cp ${sampleID}_medaka_output/consensus.fasta ${sampleID}.contigs.racon.medaka.fasta
     """
 }
 
