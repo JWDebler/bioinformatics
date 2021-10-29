@@ -14,7 +14,7 @@ from pathlib import Path
 
 # Things to do manually:
 
-# Telomeres: add: rpt_type=telomeric_repeat
+# currently nothing
 
 #parse commandline arguments
 parser = argparse.ArgumentParser()
@@ -64,6 +64,7 @@ trnas = {"tRNA":["tRNA-Xxx", "trnX"],
 #    os.unlink(output_file)
 
 previousLine = []
+telomere_motives = ['AGGGTT','TAGGGT','TTAGGG','GTTAGG','GGTTAG','GGGTTA','CCCTAA','ACCCTA','AACCCT','TAACCC','CTAACC','CCTAAC']
 
 with open(input_file) as file:
     input = csv.reader(file, delimiter='\t')
@@ -282,7 +283,7 @@ with open(input_file) as file:
                     if "repeat_unit" in elements[8]:
 
                         search = re.search('repeat_unit=(.+?)$', elements[8])
-
+                        
                         # removing 'repeat_unit' tag
                         element_8 = elements[8].split(";")
                         idx = 0
@@ -296,7 +297,10 @@ with open(input_file) as file:
                         # adding 'rpt_type' and 'satellite' tags
                         if search:
                             rpt_unit = search.group(1)
-                            if int(elements[4])-int(elements[3]) < len(rpt_unit):
+                            if rpt_unit in telomere_motives:
+                                elements[8] = "Name=telomere; Ontology_term=SO:0000624, SO:telomere; rpt_type=telomeric_repeat; satellite=microsatellite"
+                                #print(elements)
+                            elif int(elements[4])-int(elements[3]) < len(rpt_unit):
                                 continue
                             else:
                                 elements[8] += "; rpt_type=" + rpt_type + "; satellite=microsatellite"
@@ -559,7 +563,7 @@ with open(input_file) as file:
                                 print('Add this to script under "repeat_region": ',rpt_family)
                                 raise SystemExit
 
-                        print(*elements, sep='\t') 
+                        print(*elements, sep='\t')
         previousLine = currentLine
             #else:
                 #print(line[1])
