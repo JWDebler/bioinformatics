@@ -63,11 +63,16 @@ trnas = {"tRNA":["tRNA-Xxx", "trnX"],
 #if os.path.isfile(output_file):
 #    os.unlink(output_file)
 
+previousLine = []
 
 with open(input_file) as file:
     input = csv.reader(file, delimiter='\t')
     for line in input:
-                    
+        currentLine = line
+        #print(previousLine)
+        #print(currentLine)
+        if currentLine == previousLine:
+            continue
 
         if len(line) > 6:
             # limiting what to look for
@@ -555,7 +560,7 @@ with open(input_file) as file:
                                 raise SystemExit
 
                         print(*elements, sep='\t') 
-                        
+        previousLine = currentLine
             #else:
                 #print(line[1])
 
