@@ -187,7 +187,7 @@ process medaka {
     publishDir "${params.outdir}/06-medaka-polish", mode: 'copy', pattern: '*.fasta'
 
     input:
-    tuple sampleID, 'input.fasta', 'input.fastq.gz' from medaka
+    tuple sampleID, 'input.fasta', 'input.fastq.gz' , 'input.pacbio.fastq.gz' from medaka
 
     output:
     tuple sampleID, "${sampleID}.contigs.racon.medaka.fasta", 'input.nanopore.fastq.gz', 'input.pacbio.fastq.gz' into pilon
