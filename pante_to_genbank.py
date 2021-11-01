@@ -63,6 +63,9 @@ trnas = {"tRNA":["tRNA-Xxx", "trnX"],
 #if os.path.isfile(output_file):
 #    os.unlink(output_file)
 
+featureStart = {}
+featureStop = {}
+
 previousLine = []
 telomere_motives = ['AGGGTT','TAGGGT','TTAGGG','GTTAGG','GGTTAG','GGGTTA','CCCTAA','ACCCTA','AACCCT','TAACCC','CTAACC','CCTAAC']
 
@@ -70,8 +73,10 @@ with open(input_file) as file:
     input = csv.reader(file, delimiter='\t')
     for line in input:
         currentLine = line
-        #print(previousLine)
-        #print(currentLine)
+        if str(line[0]).startswith('##sequence-region'):
+            newLine = str(line[0]).split()
+            featureStart[newLine[1]] = newLine[2]
+            featureStop[newLine[1]] = newLine[3]
         if currentLine == previousLine:
             continue
 
@@ -192,8 +197,8 @@ with open(input_file) as file:
                         elements[8] += "; mobile_element_type=LINE:CR1 "
 
                     elif name == "LINE/L2":
-                        elements[2] = "mobile_element"
-                        elements[8] += "; mobile_element_type=LINE:L2 "
+                         elements[2] = "mobile_element"
+                         elements[8] += "; mobile_element_type=LINE:L2 "
 
                     elif name == "LINE/Jockey":
                         elements[2] = "mobile_element"
@@ -294,12 +299,20 @@ with open(input_file) as file:
                         del element_8[idx -1]                        
                         element_8_new = ';'.join(map(str,element_8))                        
                         elements[8] = element_8_new
+
                         # adding 'rpt_type' and 'satellite' tags
                         if search:
                             rpt_unit = search.group(1)
-                            if rpt_unit in telomere_motives:
+                            # telomere detection
+                            if rpt_unit in telomere_motives and featureStart[elements[0]] == (elements[3]):
                                 elements[8] = "Name=telomere; Ontology_term=SO:0000624, SO:telomere; rpt_type=telomeric_repeat; satellite=microsatellite"
-                                #print(elements)
+                                print(elements)
+
+                            elif rpt_unit in telomere_motives and featureStop[elements[0]] == (elements[4]):
+                                elements[8] = "Name=telomere; Ontology_term=SO:0000624, SO:telomere; rpt_type=telomeric_repeat; satellite=microsatellite"
+                                print(elements)
+
+
                             elif int(elements[4])-int(elements[3]) < len(rpt_unit):
                                 continue
                             else:
@@ -307,7 +320,7 @@ with open(input_file) as file:
                     else:
                         elements[8] += "; rpt_type=" + rpt_type + "; satellite=microsatellite"
                     
-                    print(*elements, sep='\t')
+                    #print(*elements, sep='\t')
 
                 
                 # minisatellite
