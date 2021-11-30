@@ -14,8 +14,8 @@ def helpMessage() {
     A pipeline for polishing genomes assembled from Oxford Nanopore reads using Racon and Medaka.
 
     ## Examples
-    nextflow run nanopore_polishing.nf \
-    --nanoporeReads "03-trimmed-fastq/*.fastq.gz"
+    nextflow run -resume /home/ubuntu/bioinformatics/hybrid_assembly_ont_ill.nf \
+    --nanoporeReads "*.nanopore.fastq.gz" --illuminaReads "*.illumina.*.fastq.gz"
     
 
     ## Parameters
