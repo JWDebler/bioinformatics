@@ -55,10 +55,10 @@ if ( params.nanoporeReads ) {
 }
 
 process versions {
-    publishDir "${params.outdir}/", mode: 'copy'
+    // publishDir "${params.outdir}/", mode: 'copy'
 
     output:
-    file 'versions.txt'
+    file 'versions.txt' into versions
 
     """
     echo canu: >> versions.txt
@@ -141,14 +141,20 @@ process medaka {
 
     tag {sampleID} 
     publishDir "${params.outdir}/06-medaka-polish", mode: 'copy', pattern: '*.fasta'
+    publishDir "${params.outdir}/", mode: 'copy', pattern: 'versions.txt'
 
     input:
     set sampleID, 'input.fasta', 'input.fastq.gz' from medaka
+    file 'versions.txt' from versions
 
     output:
     set sampleID, "${sampleID}.contigs.racon.medaka.fasta", 'input.fastq.gz' into pilon
+    file 'versions.txt'
 
     """
+    echo medaka: >> versions.txt
+    echo medaka --version >> versions.txt
+
     medaka_consensus \
     -d input.fasta \
     -i input.fastq.gz \
