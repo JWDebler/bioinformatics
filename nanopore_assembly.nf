@@ -92,6 +92,7 @@ process medaka_version {
     """
     echo medaka: >> versions.txt
     medaka --version >> versions.txt
+    echo --------------- >> versions.txt
     """
 }
 

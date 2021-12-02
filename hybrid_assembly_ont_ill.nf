@@ -72,10 +72,10 @@ if ( params.illuminaReads ) {
 }
 
 process versions {
-    publishDir "${params.outdir}/", mode: 'copy'
+    // publishDir "${params.outdir}/", mode: 'copy'
 
     output:
-    file 'versions.txt'
+    file 'versions.txt' into versions
 
     """
     echo canu: >> versions.txt
@@ -97,8 +97,28 @@ process versions {
 
 }
 
+process medaka_version {
+
+    conda '/home/ubuntu/miniconda3/envs/medaka'
+
+    tag {sampleID} 
+    publishDir "${params.outdir}/", mode: 'copy', pattern: 'versions.txt'
+
+    input:
+    file 'versions.txt' from versions
+
+    output:
+    file 'versions.txt'
+
+    """
+    echo medaka: >> versions.txt
+    medaka --version >> versions.txt
+    echo --------------- >> versions.txt
+    """
+}
+
 // genome assembly
-process Canu {
+process Canu_ont {
     tag {sampleID}
     publishDir "${params.outdir}/04-canu-assembly", mode: 'copy', pattern: '*.fasta'
     publishDir "${params.outdir}/04-canu-assembly", mode: 'copy', pattern: '*.fasta.gz'
@@ -183,7 +203,7 @@ process medaka {
 
 process hisat2_and_pilon {
   tag {sampleID}
-    publishDir "${params.outdir}/06-pilon-polish", mode: 'copy', pattern: '*.fasta'
+    publishDir "${params.outdir}/07-pilon-polish", mode: 'copy', pattern: '*.fasta'
 
     input:
     tuple sampleID, 'input.fasta', 'input.nanopore.fastq.gz', 'fwd.fastq.gz', 'rev.fastq.gz', 'unpaired.fastq.gz' from pilon.join(illuminaReadsForPolishing)
