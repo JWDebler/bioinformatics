@@ -75,6 +75,27 @@ process versions {
 
 }
 
+
+process medaka_version {
+
+    conda '/home/ubuntu/miniconda3/envs/medaka'
+
+    tag {sampleID} 
+    publishDir "${params.outdir}/", mode: 'copy', pattern: 'versions.txt'
+
+    input:
+    file 'versions.txt' from versions
+
+    output:
+    file 'versions.txt'
+
+    """
+    echo medaka: >> versions.txt
+    medaka --version >> versions.txt
+    """
+}
+
+
 // genome assembly
 process Canu {
     tag {sampleID}
@@ -141,20 +162,14 @@ process medaka {
 
     tag {sampleID} 
     publishDir "${params.outdir}/06-medaka-polish", mode: 'copy', pattern: '*.fasta'
-    publishDir "${params.outdir}/", mode: 'copy', pattern: 'versions.txt'
 
     input:
     set sampleID, 'input.fasta', 'input.fastq.gz' from medaka
-    file 'versions.txt' from versions
 
     output:
     set sampleID, "${sampleID}.contigs.racon.medaka.fasta", 'input.fastq.gz' into pilon
-    file 'versions.txt'
 
     """
-    echo medaka: >> versions.txt
-    echo medaka --version >> versions.txt
-
     medaka_consensus \
     -d input.fasta \
     -i input.fastq.gz \
