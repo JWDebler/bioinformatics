@@ -59,9 +59,6 @@ trnas = {"tRNA":["tRNA-Xxx", "trnX"],
         "histidyl_tRNA": ["tRNA-His","trnH"],
         "phenylalanyl_tRNA": ["tRNA-Phe", "trnF"]}
 
-#If file with same outputname exists, delete it first
-#if os.path.isfile(output_file):
-#    os.unlink(output_file)
 
 featureStart = {}
 featureStop = {}
@@ -306,11 +303,11 @@ with open(input_file) as file:
                             # telomere detection
                             if rpt_unit in telomere_motives and featureStart[elements[0]] == (elements[3]):
                                 elements[8] = "Name=telomere; Ontology_term=SO:0000624, SO:telomere; rpt_type=telomeric_repeat; satellite=microsatellite"
-                                print(elements)
+                                # print(elements)
 
                             elif rpt_unit in telomere_motives and featureStop[elements[0]] == (elements[4]):
                                 elements[8] = "Name=telomere; Ontology_term=SO:0000624, SO:telomere; rpt_type=telomeric_repeat; satellite=microsatellite"
-                                print(elements)
+                                # print(elements)
 
 
                             elif int(elements[4])-int(elements[3]) < len(rpt_unit):
@@ -320,7 +317,7 @@ with open(input_file) as file:
                     else:
                         elements[8] += "; rpt_type=" + rpt_type + "; satellite=microsatellite"
                     
-                    #print(*elements, sep='\t')
+                    print(*elements, sep='\t')
 
                 
                 # minisatellite
@@ -449,7 +446,7 @@ with open(input_file) as file:
                     if "repeat_family" in elements[8]:
                         search = re.search('repeat_family=(.+?)$', elements[8])
                         if search:
-                            rpt_family = search.group(1)
+                            rpt_family = search.group().split(";")[0].split("=")[1]
                             if rpt_family.lower() == "ltr/gypsy":
                                 elements[2] =  "mobile_element"
                                 elements[8] += "; mobile_element_type=retrotransposon:Gypsy"
