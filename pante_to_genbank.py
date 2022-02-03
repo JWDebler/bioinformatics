@@ -389,25 +389,27 @@ with open(input_file) as file:
                             elements[8] = elements[8].replace(anticodon_tag_old, "")
                             
                             if 'pseudo' in p:
-                                elements[2] = "trna"
-                                product = trnas[x][0]
-                                elements[8] += "; product=" + product + "; pseudo=true; pseudogene=unknown"
-                                print(*elements, sep='\t')
                                 elements[2] = "gene"
                                 gene = trnas[x][1]
                                 id = p.split("=",1)[1]
                                 elements[8] = "ID=" + id + "; gene=" + gene + "; pseudo=true; pseudogene=unknown"
                                 print(*elements, sep='\t')
-                            else:
                                 elements[2] = "trna"
                                 product = trnas[x][0]
-                                elements[8] += "; product=" + product
+                                elements[8] += "; product=" + product + "; pseudo=true; pseudogene=unknown"
                                 print(*elements, sep='\t')
+                                
+                            else:
                                 elements[2] = "gene"
                                 gene = trnas[x][1]
                                 id = p.split("=",1)[1]
                                 elements[8] = "ID=" + id + "; gene=" + gene
                                 print(*elements, sep='\t')
+                                elements[2] = "trna"
+                                product = trnas[x][0]
+                                elements[8] += "; product=" + product
+                                print(*elements, sep='\t')
+                                
 
                 # helitron
                 if elements[2] == "helitron":

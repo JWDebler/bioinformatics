@@ -3,6 +3,9 @@ import argparse
 import re
 from pathlib import Path
 
+# parses gff file created by 'parse_EC_number_after_funannotate.py' and if found adds 'product' tags to 'CDS'
+# as that seems to be what NCBI expects
+
 parser = argparse.ArgumentParser()
 parser.add_argument('-i', '--input', help='path to a "*.gff" file')
 args = parser.parse_args()
@@ -10,7 +13,7 @@ args = parser.parse_args()
 if args.input:
     input_file = Path(args.input)
 else:
-    input_file = Path("test_product.gff3")
+    #input_file = Path("test_product.gff3")
     print("No input file provided, use '-i' and supply a .gff file")
     #raise SystemExit
 
