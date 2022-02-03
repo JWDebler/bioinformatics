@@ -23,6 +23,7 @@ else:
 def scrape_ec(ec):
     url = "https://enzyme.expasy.org/EC/" + ec
     html_content = requests.get(url).text
+    requests.session().close()
     soup = BeautifulSoup(html_content, "lxml")
     ecnumber = soup.title.prettify()
     #parse only the name out of the title
