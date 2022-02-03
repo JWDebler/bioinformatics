@@ -81,7 +81,7 @@ with open(input_file) as file:
             
             # otherwise update product name
             else:
-                print(enzyme_name)
+                #print(enzyme_name) #debug
                 element_8 = elements[8].split(";")
                 idx = 0
                 idx_product = 0
