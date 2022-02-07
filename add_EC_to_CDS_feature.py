@@ -13,7 +13,7 @@ args = parser.parse_args()
 if args.input:
     input_file = Path(args.input)
 else:
-    #input_file = Path("test_product.gff3")
+    input_file = Path("test.gff")
     print("No input file provided, use '-i' and supply a .gff file")
     #raise SystemExit
 
@@ -22,11 +22,12 @@ with open(input_file) as file:
     id_product_mapper = {}
     for line in input:
         elements = []
+        
         for element in line:
             elements.append(element)
         # fill dictionary with EC number and matching ID
         if "product=" in elements[8]:
-            
+            #print(elements[8]) debug
             product_string = re.search('product=(.+?)$', elements[8])   
             id_string = re.search('ID=(.+?)$', elements[8]) 
             product=product_string.group(1).split(';')[0]
