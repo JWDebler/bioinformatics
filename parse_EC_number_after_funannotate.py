@@ -75,9 +75,9 @@ with open(input_file) as file:
             elements.append(element)
         if len(elements) < 8:
             continue
-        if "eC_number" in elements[8] or "EC_number" in elements[8] :
+        if "eC_number" in elements[8] or "EC_number" in elements[8]or "ec_number" in elements[8] or "Ec_number" in elements[8] :
             #parse EC number
-            search = re.search('[eE]C_number=(.+?)$', elements[8])
+            search = re.search('[eE][cC]_number=(.+?)$', elements[8])
             ec=search.group(1).split(';')[0]
            
             #get enzyme name
