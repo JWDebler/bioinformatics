@@ -49,8 +49,14 @@ else:
 
 #download https://ftp.expasy.org/databases/enzyme/enzyme.dat
 #and parse into a dictionary
-enzyme_url = "https://ftp.expasy.org/databases/enzyme/enzyme.dat"
-urllib.request.urlretrieve(enzyme_url, "enzyme.dat")
+
+
+
+if os.path.isfile("enzyme.dat"):
+    enzyme_file = Path("enzyme.dat") 
+else:
+    enzyme_url = "https://ftp.expasy.org/databases/enzyme/enzyme.dat"
+    urllib.request.urlretrieve(enzyme_url, "enzyme.dat")
 
 current_id = ''
 current_name = ''
@@ -79,11 +85,15 @@ with open(input_file) as file:
             #parse EC number
             search = re.search('[eE][cC]_number=(.+?)$', elements[8])
             ec=search.group(1).split(';')[0]
+
+            #print("++++++++++ ", ec)
            
             #get enzyme name
             # if EC number is incomplete (1, 1.1 or 1.1.1 instead of 1.1.1.1), don't bother looking it up
             if ec.count('.') == 3:
+                #print("++++++++++ correct size")
                 enzyme_name = enzyme_dict[ec]
+                #print("++++++++++ ", enzyme_name)
                 #enzyme_name = scrape_ec(ec) #old method
                 #print('scrape =====> all good') #debug
             else:
@@ -91,29 +101,49 @@ with open(input_file) as file:
                 #print('=====> incomplete ec') #debug
             # Check if enzyme name is blank and remove EC_number tag
             if len(enzyme_name) < 1 :
+                #print("++++++++++ too short")
                 element_8 = elements[8].split(";")
                 idx = 0
                 for i in element_8:
                     idx +=1
-                    if i.startswith("eC_number") or i.startswith("EC_number"):
-                        break
-                del element_8[idx - 1]
+                    if i.startswith("product"):
+                        idx_product = idx
+                    if i.startswith("eC_number") or i.startswith("EC_number") or i.startswith("ec_number") or i.startswith("Ec_number"):
+                        idx_EC = idx
+
+                element_8[idx_product-1] = 'product=hypothetical protein'
+                del element_8[idx_EC - 1]
+
+
+
+
+
                 element_8_new =';'.join(map(str,element_8))
                 elements[8] = element_8_new
                 print(*elements, sep='\t')
             
             # if enzyme name contains 'entry' (moved or deleted) remove EC_number tag
-            elif "entry" in enzyme_name:
+            elif "Transferred entry" in enzyme_name:
+                
+                ec = (enzyme_name[19:])
+                enzyme_name = enzyme_dict[ec]
                 element_8 = elements[8].split(";")
                 idx = 0
+                idx_product = 0
                 for i in element_8:
                     idx +=1
-                    if i.startswith("eC_number") or i.startswith("EC_number"):
-                        break
-                del element_8[idx - 1]
+                    if i.startswith("product"):
+                        idx_product = idx
+                    if i.startswith("eC_number") or i.startswith("EC_number") or i.startswith("ec_number") or i.startswith("Ec_number"):
+                        idx_EC = idx
+
+                element_8[idx_product-1] = 'product='+enzyme_name
+                element_8[idx_EC-1] = 'EC_number='+ec
                 element_8_new =';'.join(map(str,element_8))
                 elements[8] = element_8_new
                 print(*elements, sep='\t')
+                element_8_new =';'.join(map(str,element_8))
+                
             
             # otherwise update product name
             else:
@@ -125,7 +155,7 @@ with open(input_file) as file:
                     idx +=1
                     if i.startswith("product"):
                         idx_product = idx
-                    if i.startswith("eC_number") or i.startswith("EC_number"):
+                    if i.startswith("eC_number") or i.startswith("EC_number") or i.startswith("ec_number") or i.startswith("Ec_number"):
                         idx_EC = idx
 
                 element_8[idx_product-1] = 'product='+enzyme_name
@@ -133,5 +163,6 @@ with open(input_file) as file:
                 elements[8] = element_8_new
                 print(*elements, sep='\t')
         else:
+            #print("++++++++++ no ec")
             print(*elements, sep='\t')
             continue
