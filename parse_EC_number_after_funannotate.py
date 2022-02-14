@@ -123,7 +123,7 @@ with open(input_file) as file:
                 elements[8] = element_8_new
                 print(*elements, sep='\t')
             
-            # if enzyme name contains 'entry' (moved or deleted) remove EC_number tag
+            # if enzyme name contains 'Transferred entry' (moved) remove EC_number tag and find correct one
             elif "Transferred entry" in enzyme_name:
                 
                 ec = (enzyme_name[19:])
@@ -140,6 +140,32 @@ with open(input_file) as file:
 
                 element_8[idx_product-1] = 'product='+enzyme_name
                 element_8[idx_EC-1] = 'EC_number='+ec
+                element_8_new =';'.join(map(str,element_8))
+                elements[8] = element_8_new
+                print(*elements, sep='\t')
+                element_8_new =';'.join(map(str,element_8))
+
+            # if enzyme name contains 'Deleted entry' (deleted) remove EC_number tag
+            elif "Deleted entry" in enzyme_name:
+                
+                ec = (enzyme_name[19:])
+                enzyme_name = enzyme_dict[ec]
+                element_8 = elements[8].split(";")
+                idx = 0
+                idx_product = 0
+                for i in element_8:
+                    idx +=1
+                    if i.startswith("product"):
+                        idx_product = idx
+                        del element_8[idx_product - 1]
+                idx = 0
+                for i in element_8:
+                    idx += 1
+                    if i.startswith("eC_number") or i.startswith("EC_number") or i.startswith("ec_number") or i.startswith("Ec_number"):
+                        idx_EC = idx
+                        del element_8[idx_EC -1]
+                
+                
                 element_8_new =';'.join(map(str,element_8))
                 elements[8] = element_8_new
                 print(*elements, sep='\t')
