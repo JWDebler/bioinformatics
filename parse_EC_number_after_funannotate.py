@@ -68,8 +68,9 @@ with open(enzyme_file) as file:
     for line in lines:
         if line.startswith('ID'):
             current_id = line[4:].strip()
+            current_name = ''
         if line.startswith('DE'):
-            current_name = line[4:-2].strip().replace(",","%2C")
+            current_name = current_name + line[4:-2].strip().replace(",","%2C")
         enzyme_dict[current_id] = current_name
 
 
