@@ -45,7 +45,7 @@ params.cores = 14
 
 if ( params.genome1 ) {
     genomes = Channel
-    .fromPath(params.genomes, checkIfExists: true, type: "file")
+    .fromPath(params.genome1, checkIfExists: true, type: "file")
     .map {file -> [file.simpleName, file]}
     .tap{reference}
 } else {
@@ -55,7 +55,7 @@ if ( params.genome1 ) {
 
 if ( params.genome2 ) {
     genomes = Channel
-    .fromPath(params.genomes, checkIfExists: true, type: "file")
+    .fromPath(params.genome2, checkIfExists: true, type: "file")
     .map {file -> [file.simpleName, file]}
     .tap{query}
 } else {
