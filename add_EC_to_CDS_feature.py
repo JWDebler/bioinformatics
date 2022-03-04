@@ -48,13 +48,44 @@ with open(input_file) as file:
         elements = []
         for element in line:
             elements.append(element)
+        #check if named genes have produces, otherwise remove 'Name' tag   
+        if elements[2] == 'gene':
+            name_string = re.search('Name=(.+?)$', elements[8])
+            name=name_string.group(1).split(';')[0]
+            #print("==>", name) #debug
+            if name_string:
+                id_string = re.search('ID=(.+?)$', elements[8]) 
+                id=id_string.group(1).split(';')[0]
+                is_in_dict = 0
+                for key, value in id_product_mapper.items():
+                    if key.startswith(id):
+                         #print("==>", id, name + ' in dict') #debug
+                        is_in_dict = 1
+                if is_in_dict == 0:
+                    #print("==>", id, name + ' NOT in dict, remove') #debug
+                    #print("==>", *elements, sep='\t') #debug
+                    element_8 = elements[8].split(";")
+                    idx = 0
+                    for i in element_8:
+                        idx +=1
+                        if i.startswith("Name")or i.startswith("name"):
+                            idx_name = idx
+                    #remove name tag
+                    del element_8[idx_name - 1]
+                    #rebuilt column 8 string
+                    element_8_new =';'.join(map(str,element_8))
+                    elements[8] = element_8_new
+            
+
         if elements[2] == 'CDS':
             #print('before:', line)     #debug
             id_string = re.search('ID=(.+?)$', elements[8]) 
             id=id_string.group(1).split(';')[0]
             id = id.split('.')[0]
+            
             if id in id_product_mapper:
-                elements[8] += ';' + id_product_mapper[id]   
+                elements[8] = id_product_mapper[id][:-1] + ";" + elements[8] 
+                
             #print('after: ', elements)    #debug
             print(*elements, sep='\t')
         else:

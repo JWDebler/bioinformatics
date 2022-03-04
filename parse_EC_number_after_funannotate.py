@@ -86,23 +86,14 @@ with open(input_file) as file:
             #parse EC number
             search = re.search('[eE][cC]_number=(.+?)$', elements[8])
             ec=search.group(1).split(';')[0]
-
-            #print("++++++++++ ", ec)
-           
             #get enzyme name
             # if EC number is incomplete (1, 1.1 or 1.1.1 instead of 1.1.1.1), don't bother looking it up
             if ec.count('.') == 3:
-                #print("++++++++++ correct size")
                 enzyme_name = enzyme_dict[ec]
-                #print("++++++++++ ", enzyme_name)
-                #enzyme_name = scrape_ec(ec) #old method
-                #print('scrape =====> all good') #debug
             else:
                 enzyme_name = ''                
-                #print('=====> incomplete ec') #debug
             # Check if enzyme name is blank and remove EC_number tag
             if len(enzyme_name) < 1 :
-                #print("++++++++++ too short")
                 element_8 = elements[8].split(";")
                 idx = 0
                 for i in element_8:
@@ -113,37 +104,59 @@ with open(input_file) as file:
                         idx_EC = idx
 
                 element_8[idx_product-1] = 'product=hypothetical protein'
+                #remove EC tag
                 del element_8[idx_EC - 1]
-
-
-
-
-
+                #rebuilt column 8 string
                 element_8_new =';'.join(map(str,element_8))
                 elements[8] = element_8_new
                 print(*elements, sep='\t')
             
             # if enzyme name contains 'Transferred entry' (moved) remove EC_number tag and find correct one
             elif "Transferred entry" in enzyme_name:
-                
-                ec = (enzyme_name[19:])
+                #some ECs have been transferred (split) into several new ones. I'll just pick the first one...
+                ec = (enzyme_name[19:]).split(" ")[0]
                 enzyme_name = enzyme_dict[ec]
-                element_8 = elements[8].split(";")
-                idx = 0
-                idx_product = 0
-                for i in element_8:
-                    idx +=1
-                    if i.startswith("product"):
-                        idx_product = idx
-                    if i.startswith("eC_number") or i.startswith("EC_number") or i.startswith("ec_number") or i.startswith("Ec_number"):
-                        idx_EC = idx
+                #sometimes entries are transferred to an EC which later gets deleted, this should catch those rare cases
+                if enzyme_name == "Deleted entry":
+                    element_8 = elements[8].split(";")
+                    idx = 0
+                    idx_product = 0
+                    for i in element_8:
+                        idx +=1
+                        if i.startswith("product"):
+                            idx_product = idx
+                            del element_8[idx_product - 1]
+                    idx = 0
+                    for i in element_8:
+                        idx += 1
+                        if i.startswith("eC_number") or i.startswith("EC_number") or i.startswith("ec_number") or i.startswith("Ec_number"):
+                            idx_EC = idx
+                            del element_8[idx_EC -1]
+                    
+                    
+                    element_8_new =';'.join(map(str,element_8))
+                    elements[8] = element_8_new
+                    print(*elements, sep='\t')
+                    element_8_new =';'.join(map(str,element_8))
 
-                element_8[idx_product-1] = 'product='+enzyme_name
-                element_8[idx_EC-1] = 'EC_number='+ec
-                element_8_new =';'.join(map(str,element_8))
-                elements[8] = element_8_new
-                print(*elements, sep='\t')
-                element_8_new =';'.join(map(str,element_8))
+
+                else:
+                    element_8 = elements[8].split(";")
+                    idx = 0
+                    idx_product = 0
+                    for i in element_8:
+                        idx +=1
+                        if i.startswith("product"):
+                            idx_product = idx
+                        if i.startswith("eC_number") or i.startswith("EC_number") or i.startswith("ec_number") or i.startswith("Ec_number"):
+                            idx_EC = idx
+
+                    element_8[idx_product-1] = 'product='+enzyme_name
+                    element_8[idx_EC-1] = 'EC_number='+ec
+                    element_8_new =';'.join(map(str,element_8))
+                    elements[8] = element_8_new
+                    print(*elements, sep='\t')
+                    element_8_new =';'.join(map(str,element_8))
 
             # if enzyme name contains 'Deleted entry' (deleted) remove EC_number tag
             elif "Deleted entry" in enzyme_name:
