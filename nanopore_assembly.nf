@@ -50,7 +50,7 @@ if ( params.nanoporeReads ) {
     .map {file -> [file.simpleName, file]}
     .tap { readsForAssembly }
 } else {
-    log.info "No nanopore reads supplied, did you include '*.fastq.gz'?"
+    log.info "No nanopore reads supplied, use '--nanoporeReads' and make sure to include '*.fastq.gz'"
     exit 1
 }
 
@@ -111,8 +111,8 @@ process Canu {
 
     output:
     set sampleID, "${sampleID}.contigs.fasta", 'input.fastq.gz' into racon
-    set sampleID, "${sampleID}.correctedReads.fasta.gz" into correctedReads
-    file "${sampleID}.canu.report"
+    set sampleID, "${sampleID}.correctedReads.nanopore.fasta.gz" into correctedReads
+    file "${sampleID}.canu.nanopore.report"
 
     """
     canu \
@@ -125,8 +125,8 @@ process Canu {
     -nanopore input.fastq.gz
 
     cp ${sampleID}/*contigs.fasta ${sampleID}.contigs.fasta
-    cp ${sampleID}/*correctedReads.fasta.gz ${sampleID}.correctedReads.fasta.gz
-    cp ${sampleID}/*.report ${sampleID}.canu.report
+    cp ${sampleID}/*correctedReads.fasta.gz ${sampleID}.correctedReads.nanopore.fasta.gz
+    cp ${sampleID}/*.report ${sampleID}.canu.nanopore.report
     """
 
 }

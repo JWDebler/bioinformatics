@@ -4,6 +4,8 @@ def helpMessage() {
     A pipeline to annotate proteins with signal peptides, EffectorP Score and via interproscan
     Fasta headers need to be cleaned up, meaning no spaces. You can do that with:
     sed 's, .*\$,,g' -i file.fasta
+    or
+    sed 's/ .*//g' -i test.fasta
     Also make sure the proteome files do not contain '*' as stop codon sign.
 
     ## Examples

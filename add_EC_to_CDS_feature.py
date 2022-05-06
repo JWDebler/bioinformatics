@@ -43,17 +43,20 @@ with open(input_file) as file:
 with open(input_file) as file:   
     input = csv.reader(file, delimiter='\t')
     for line in input:
+        
         if line[0].startswith('#'):
             continue
         elements = []
         for element in line:
+           
             elements.append(element)
-        #check if named genes have produces, otherwise remove 'Name' tag   
+        #check if named genes have products, otherwise remove 'Name' tag   
         if elements[2] == 'gene':
             name_string = re.search('Name=(.+?)$', elements[8])
-            name=name_string.group(1).split(';')[0]
+            
             #print("==>", name) #debug
             if name_string:
+                name=name_string.group(1).split(';')[0]
                 id_string = re.search('ID=(.+?)$', elements[8]) 
                 id=id_string.group(1).split(';')[0]
                 is_in_dict = 0

@@ -9,10 +9,14 @@ def helpMessage() {
     
 
     ## Parameters
-    --genomes <glob>
+    --genome1 <glob>
         Required
-        A glob of the fasta genomes to be annotated.
-        The basename of the file is used as the genome name.
+        Reference genome fasta file
+
+    --genome2 <glob>
+        Required
+        Query genome fasta file
+
 
     --cores <int>
         Optional
@@ -22,9 +26,6 @@ def helpMessage() {
         Default: `results_genemark`
         The directory to store the results in.
 
-    --species <string>
-        Default "Alentis"
-        Species to use for Augustus
 
     ## Exit codes
     - 0: All ok.
@@ -66,20 +67,84 @@ if ( params.genome2 ) {
 reference
 .merge(query)
 .set {reference_and_query}
-.view()
 
-return
 
 process extract_contigs {
     tag {sampleID}
 
     input:
-    set sampleID, 'genome.fasta' from reference_and_query
+    tuple sample1, 'reference.fasta' , sample2, 'query.fasta' from reference_and_query
 
     output:
-    set sampleID, "${sampleID}.fasta" into contigsForGenemark, contigsForAugustus //dos2unixed
+    tuple sample1, "reference.fasta.split/*.fasta" into sample1_split
+    tuple sample2, "query.fasta.split/*.fasta" into sample2_split
 
     """
-    dos2unix -n genome.fasta ${sampleID}.fasta
+    seqkit split -i reference.fasta
+    seqkit split -i query.fasta
     """
+}
+
+s1 = sample1_split.flatMap { k, f -> f.collect { fs -> [k, fs] } }.map {sampleID, filename -> [sampleID, filename.baseName.tokenize('_')[-1], filename]}
+s2 = sample2_split.flatMap { k, f -> f.collect { fs -> [k, fs] } }.map {sampleID, filename -> [sampleID, filename.baseName.tokenize('_')[-1], filename]}
+
+
+s1.merge(s2)
+.set {minimap_input}
+
+process minimap {
+
+    tag {sampleID}
+    publishDir "${params.outdir}/", mode: 'copy', pattern: '*.bam'
+
+    input:
+    tuple sample1, id1, fasta1, sample2, id2, fasta2 from minimap_input
+
+    output:
+    tuple sample1, id1, fasta1, sample2, id2, fasta2, "${sample1}_${sample2}_ctg_${id1}.bam" into minimap_output
+
+    """
+    minimap2 -ax asm5 -t ${params.cores} --eqx ${fasta1} ${fasta2} | samtools sort -O BAM - > ${sample1}_${sample2}_ctg_${id1}.bam
+    """
+}
+
+process syri {
+
+    conda '/home/ubuntu/miniconda3/envs/plotsr'
+    tag {sampleID}
+    publishDir "${params.outdir}/", mode: 'copy', pattern: '*.out'
+
+    input:
+    tuple sample1, id1, fasta1, sample2, id2, fasta2, "${sample1}_${sample2}_ctg_${id1}.bam" from minimap_output
+
+    output:
+    tuple sample1, id1, fasta1, sample2, id2, fasta2, "${sample1}_${sample2}_ctg_${id1}_syri.out" into syri_output
+
+    """
+    /opt/syri/syri/bin/syri -c ${sample1}_${sample2}_ctg_${id1}.bam -r ${fasta1} -q ${fasta2} -F B --prefix ${sample1}_${sample2}_ctg_${id1}_
+
+    """
+}
+
+process plotsr {
+
+    conda '/home/ubuntu/miniconda3/envs/plotsr'
+    tag {sampleID}
+    publishDir "${params.outdir}/", mode: 'copy', pattern: '*.png'
+
+    input:
+    tuple sample1, id1, fasta1, sample2, id2, fasta2, "${sample1}_${sample2}_ctg_${id1}_syri.out" from syri_output
+
+    output:
+    file "${sample1}_${sample2}_ctg_${id1}.png"
+
+    """
+    echo ${fasta1}'\t'${sample1}'\t'lw:1.5> genomes.txt
+    echo ${fasta2}'\t'${sample2}'\t'lw:1.5 >> genomes.txt
+
+    plotsr --sr ${sample1}_${sample2}_ctg_${id1}_syri.out -W 20 -H 2 --genomes genomes.txt -o ${sample1}_${sample2}_ctg_${id1}.png
+
+    """
+
+
 }

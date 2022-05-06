@@ -131,8 +131,8 @@ process Canu_ont {
 
     output:
     tuple sampleID, "${sampleID}.contigs.fasta", 'input.nanopore.fastq.gz' into racon
-    tuple sampleID, "${sampleID}.correctedReads.fasta.gz" into correctedReads
-    file "${sampleID}.canu.report"
+    tuple sampleID, "${sampleID}.correctedReads.nanopore.fasta.gz" into correctedReads
+    file "${sampleID}.canu.nanopore.report"
 
     """
     canu \
@@ -145,8 +145,8 @@ process Canu_ont {
     -nanopore input.nanopore.fastq.gz \
 
     cp ${sampleID}/*contigs.fasta ${sampleID}.contigs.fasta
-    cp ${sampleID}/*correctedReads.fasta.gz ${sampleID}.correctedReads.fasta.gz
-    cp ${sampleID}/*.report ${sampleID}.canu.report
+    cp ${sampleID}/*correctedReads.fasta.gz ${sampleID}.correctedReads.nanopore.fasta.gz
+    cp ${sampleID}/*.report ${sampleID}.canu.nanopore.report
     """
 
 }
