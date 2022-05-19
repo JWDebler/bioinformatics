@@ -509,6 +509,10 @@ with open(input_file) as file:
                                 elements[2] = "mobile_element"
                                 elements[8] += "; mobile_element_type=transposon:Charlie "
 
+                            elif rpt_family.lower() == "dna/hat-tip100":
+                                elements[2] = "mobile_element"
+                                elements[8] += "; mobile_element_type=transposon:Tip100 "
+
                             elif rpt_family.lower() == "dna/ginger":
                                 elements[2] = "mobile_element"
                                 elements[8] += "; mobile_element_type=transposon:Ginger "
