@@ -211,6 +211,10 @@ with open(input_file) as file:
                     elif name == "LINE/L1":
                         elements[2] = "mobile_element"
                         elements[8] += "; mobile_element_type=LINE:L1 "
+                        
+                    elif name == "LINE/Proto2":
+                        elements[2] = "mobile_element"
+                        elements[8] += "; mobile_element_type=LINE:Proto2 "
 
                     elif name == "DNA/TIR/hAT/Restless":
                         elements[2] = "mobile_element"
