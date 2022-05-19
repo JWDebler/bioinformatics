@@ -191,6 +191,10 @@ with open(input_file) as file:
                     elif name == "LINE/RTE/X":
                         elements[2] = "mobile_element"
                         elements[8] += "; mobile_element_type=LINE:X "
+                                                                        
+                    elif name == "LINE/RTE/RTE":
+                        elements[2] = "mobile_element"
+                        elements[8] += "; mobile_element_type=LINE:RTE "
 
                     elif name == "LINE/CR1":
                         elements[2] = "mobile_element"
