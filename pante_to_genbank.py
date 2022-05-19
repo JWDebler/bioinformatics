@@ -227,6 +227,10 @@ with open(input_file) as file:
                     elif name == "LINE/Proto2":
                         elements[2] = "mobile_element"
                         elements[8] += "; mobile_element_type=LINE:Proto2 "
+                                                
+                    elif name == "PLE/Penelope":
+                        elements[2] = "mobile_element"
+                        elements[8] += "; mobile_element_type=retrotransposon:Penelope "
 
                     elif name == "DNA/TIR/hAT/Restless":
                         elements[2] = "mobile_element"
@@ -244,7 +248,7 @@ with open(input_file) as file:
                                 print("#######################################################################")
                                 print("Please fix this script and add filters for the before mentioned repeats")
                                 print("#######################################################################")
-                                print('Add this to script under "pante_protein_matches": ',name)
+                                print('Add this to script under "pante_protein_families": ',name)
                                 raise SystemExit
                     print(*elements, sep='\t')
 
