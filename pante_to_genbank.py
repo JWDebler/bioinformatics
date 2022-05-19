@@ -220,6 +220,10 @@ with open(input_file) as file:
                         elements[2] = "mobile_element"
                         elements[8] += "; mobile_element_type=transposon:P-Element "
 
+                    elif name == "DNA/TIR/PIF/Harbinger":
+                        elements[2] = "mobile_element"
+                        elements[8] += "; mobile_element_type=transposon:PIF-like-Element Harbinger "
+
                     else:
                                 print("#######################################################################")
                                 print("Please fix this script and add filters for the before mentioned repeats")
