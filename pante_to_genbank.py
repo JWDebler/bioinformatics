@@ -176,6 +176,10 @@ with open(input_file) as file:
                         elements[2] = "mobile_element"
                         elements[8] += "; mobile_element_type=LINE:R1 "
 
+                    elif name == "LINE/R2":
+                        elements[2] = "mobile_element"
+                        elements[8] += "; mobile_element_type=LINE:R2 "
+
                     elif name == "LINE/Tad1":
                         elements[2] = "mobile_element"
                         elements[8] += "; mobile_element_type=LINE:Tad1 "
