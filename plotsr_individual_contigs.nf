@@ -130,19 +130,20 @@ process plotsr {
 
     conda '/home/ubuntu/miniconda3/envs/plotsr'
     tag {sampleID}
-    publishDir "${params.outdir}/", mode: 'copy', pattern: '*.png'
+    publishDir "${params.outdir}/", mode: 'copy'
 
     input:
     tuple sample1, id1, fasta1, sample2, id2, fasta2, "${sample1}_${sample2}_ctg_${id1}_syri.out" from syri_output
 
     output:
     file "${sample1}_${sample2}_ctg_${id1}.png"
+    file "${sample1}_${sample2}_ctg_${id1}.txt"
 
     """
-    echo ${fasta1}'\t'${sample1}'\t'lw:1.5> genomes.txt
-    echo ${fasta2}'\t'${sample2}'\t'lw:1.5 >> genomes.txt
+    echo ${fasta1}'\t'${sample1}'\t'lw:1.5> ${sample1}_${sample2}_ctg_${id1}.txt
+    echo ${fasta2}'\t'${sample2}'\t'lw:1.5 >> ${sample1}_${sample2}_ctg_${id1}.txt
 
-    plotsr --sr ${sample1}_${sample2}_ctg_${id1}_syri.out -W 20 -H 2 --genomes genomes.txt -o ${sample1}_${sample2}_ctg_${id1}.png
+    plotsr --sr ${sample1}_${sample2}_ctg_${id1}_syri.out -W 20 -H 2 --genomes ${sample1}_${sample2}_ctg_${id1}.txt -o ${sample1}_${sample2}_ctg_${id1}.png
 
     """
 
