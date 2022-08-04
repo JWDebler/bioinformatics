@@ -74,7 +74,7 @@ process busco {
     file "short_summary*.txt" into busco_output
     """
     cp ${sampleID}.fasta ./${sampleID}.local.fasta
-    docker run -v \$(pwd):/busco_wd ezlabgva/busco:v5.4.2_cv1 busco \
+    docker run -v \$(pwd):/busco_wd ezlabgva/busco:v5.4.1_cv1 busco \
     -i ${sampleID}.local.fasta \
     -o ${sampleID} \
     -l ${params.database} \
@@ -101,7 +101,7 @@ process plotBuscoSummaries {
     """
     mkdir input_derp
     cp $all_busco_outputs input_derp/
-    docker run -v \$(pwd)/input_derp:/busco_wd ezlabgva/busco:v5.4.2_cv1 generate_plot.py -wd .
+    docker run -v \$(pwd)/input_derp:/busco_wd ezlabgva/busco:v5.4.1_cv1 generate_plot.py -wd .
     cp input_derp/busco_figure.png .
     """
 }l
