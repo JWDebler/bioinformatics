@@ -410,13 +410,13 @@ with open(input_file) as file:
                             #to overwrite the anticodon tag
                             anticodon_tag = re.search('anticodon=[A-Z]{3};', elements[8])
                             anticodon_tag_old = anticodon_tag.group()
-                            elements[8] = elements[8].replace(anticodon_tag_old, "")
+                            elements[8] = elements[8].replace(anticodon_tag_old, "anticodon" + anticodon_tag)
                             
                             if 'pseudo' in p:
                                 elements[2] = "gene"
                                 gene = trnas[x][1]
                                 id = p.split("=",1)[1]
-                                elements[8] = "ID=" + id + "; gene=" + gene + "; pseudo=true; pseudogene=unknown"
+                                elements[8] = "ID=gene." + id + "; gene=" + gene + "; pseudo=true; pseudogene=unknown"
                                 print(*elements, sep='\t')
                                 elements[2] = "trna"
                                 product = trnas[x][0]
@@ -427,7 +427,7 @@ with open(input_file) as file:
                                 elements[2] = "gene"
                                 gene = trnas[x][1]
                                 id = p.split("=",1)[1]
-                                elements[8] = "ID=" + id + "; gene=" + gene
+                                elements[8] = "ID=gene." + id + "; gene=" + gene
                                 print(*elements, sep='\t')
                                 elements[2] = "trna"
                                 product = trnas[x][0]
