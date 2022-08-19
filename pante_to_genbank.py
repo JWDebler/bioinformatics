@@ -416,11 +416,12 @@ with open(input_file) as file:
                                 elements[2] = "gene"
                                 gene = trnas[x][1]
                                 id = p.split("=",1)[1]
-                                elements[8] = "ID=gene." + id + "; gene=" + gene + "; pseudo=true; pseudogene=unknown"
+                                id1 = id.split("_",1)[1]
+                                elements[8] = "ID=gene." + id1 + "; gene=" + gene + "; pseudo=true; pseudogene=unknown"
                                 print(*elements, sep='\t')
                                 elements[2] = "trna"
                                 product = trnas[x][0]
-                                elements[8] += "; product=" + product + "; pseudo=true; pseudogene=unknown"
+                                elements[8] = "ID=trna." + id1 + "; product=" + product + "; pseudo=true; pseudogene=unknown"
                                 print(*elements, sep='\t')
                                 
                             else:
@@ -432,7 +433,7 @@ with open(input_file) as file:
                                 print(*elements, sep='\t')
                                 elements[2] = "trna"
                                 product = trnas[x][0]
-                                elements[8] += "; product=" + product
+                                elements[8] = "ID=trna." + id1 + "; product=" + product
                                 print(*elements, sep='\t')
                                 
 
