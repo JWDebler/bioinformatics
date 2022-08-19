@@ -417,7 +417,7 @@ with open(input_file) as file:
                                 gene = trnas[x][1]
                                 id = p.split("=",1)[1]
                                 id1 = id.split("_",1)[0]
-                                elements[8] = "ID=gene." + id1 + "; gene=" + gene + "; pseudo=true; pseudogene=unknown"
+                                elements[8] = "ID=trna_gene." + id1 + "; gene=" + gene + "; pseudo=true; pseudogene=unknown"
                                 print(*elements, sep='\t')
                                 elements[2] = "trna"
                                 product = trnas[x][0]
@@ -429,7 +429,7 @@ with open(input_file) as file:
                                 gene = trnas[x][1]
                                 id = p.split("=",1)[1]
                                 id1 = id.split("_",1)[1]
-                                elements[8] = "ID=gene." + id1 + "; gene=" + gene
+                                elements[8] = "ID=trna_gene." + id1 + "; gene=" + gene
                                 print(*elements, sep='\t')
                                 elements[2] = "trna"
                                 product = trnas[x][0]
