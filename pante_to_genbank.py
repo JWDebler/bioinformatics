@@ -408,9 +408,9 @@ with open(input_file) as file:
                             p = parent.group(0)
 
                             #to overwrite the anticodon tag
-                            anticodon_tag = re.search('anticodon=[A-Z]{3};', elements[8])
-                            anticodon_tag_old = anticodon_tag.group()
-                            elements[8] = elements[8].replace(anticodon_tag_old, "anticodon" + anticodon_tag)
+                            #anticodon_tag = re.search('anticodon=[A-Z]{3};', elements[8])
+                            #anticodon_tag_old = anticodon_tag.group()
+                            #elements[8] = elements[8].replace(anticodon_tag_old, "anticodon" + anticodon_tag)
                             
                             if 'pseudo' in p:
                                 elements[2] = "gene"
