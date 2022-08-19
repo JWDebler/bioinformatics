@@ -258,7 +258,7 @@ with open(input_file) as file:
                         rRNA_parent = re.search('Parent=(.*[0-9]+)$', elements[8])
                         rRNA_p = rRNA_parent.group(1)
                         elements[2] = "gene"
-                        elements[8] = "Name==5S rRNA; ID=" + rRNA_p
+                        elements[8] = "Name=5S rRNA; ID=" + rRNA_p
                         print(*elements, sep='\t')
                         elements[2] = "rRNA"
                         elements[8] = "Name=5S rRNA; product=5S ribosomal RNA; Parent=" + rRNA_p
