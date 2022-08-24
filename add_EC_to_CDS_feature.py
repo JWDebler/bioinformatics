@@ -35,8 +35,14 @@ with open(input_file) as file:
             id_string = re.search('ID=(.+?)$', elements[8]) 
             product=product_string.group(1).split(';')[0]
             id=id_string.group(1).split(';')[0]
-            #print(product, id) debug
+            #print(product, id) #debug
             id_product_mapper[id] = 'product='+product+';'
+
+#print(id_product_mapper)
+
+for key, value in list(id_product_mapper.items()):
+    if value == "product=hypothetical protein;":
+        del id_product_mapper[key]
 
 #print(id_product_mapper)
 
@@ -54,7 +60,7 @@ with open(input_file) as file:
         if elements[2] == 'gene':
             name_string = re.search('Name=(.+?)$', elements[8])
             
-            #print("==>", name) #debug
+            #print("==>", name_string) #debug
             if name_string:
                 name=name_string.group(1).split(';')[0]
                 id_string = re.search('ID=(.+?)$', elements[8]) 
@@ -64,20 +70,22 @@ with open(input_file) as file:
                     if key.startswith(id):
                          #print("==>", id, name + ' in dict') #debug
                         is_in_dict = 1
-                if is_in_dict == 0:
-                    #print("==>", id, name + ' NOT in dict, remove') #debug
-                    #print("==>", *elements, sep='\t') #debug
-                    element_8 = elements[8].split(";")
-                    idx = 0
-                    for i in element_8:
-                        idx +=1
-                        if i.startswith("Name")or i.startswith("name"):
-                            idx_name = idx
-                    #remove name tag
-                    del element_8[idx_name - 1]
-                    #rebuilt column 8 string
-                    element_8_new =';'.join(map(str,element_8))
-                    elements[8] = element_8_new
+                #print(id)
+                
+            if is_in_dict == 0:
+                #print("==>", id, name + ' NOT in dict, remove') #debug
+                #print("==>", *elements, sep='\t') #debug
+                element_8 = elements[8].split(";")
+                idx = 0
+                for i in element_8:
+                    idx +=1
+                    if i.startswith("Name")or i.startswith("name"):
+                        idx_name = idx
+                #remove name tag
+                del element_8[idx_name - 1]
+                #rebuilt column 8 string
+                element_8_new =';'.join(map(str,element_8))
+                elements[8] = element_8_new
             
 
         if elements[2] == 'CDS':
@@ -85,9 +93,10 @@ with open(input_file) as file:
             id_string = re.search('ID=(.+?)$', elements[8]) 
             id=id_string.group(1).split(';')[0]
             id = id.split('.')[0]
-            
+            #print(id)
             if id in id_product_mapper:
-                elements[8] = id_product_mapper[id][:-1] + ";" + elements[8] 
+                if "product" not in (elements[8]):
+                    elements[8] = id_product_mapper[id][:-1] + ";" + elements[8] 
                 
             #print('after: ', elements)    #debug
             print(*elements, sep='\t')
