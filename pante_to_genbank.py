@@ -421,7 +421,7 @@ with open(input_file) as file:
                                 print(*elements, sep='\t')
                                 elements[2] = "trna"
                                 product = trnas[x][0]
-                                elements[8] = "ID=trna." + id1 + "; Parent=gene." + id1 + ";product=" + product + "; pseudo=true; pseudogene=unknown" + ";+ anticodon_tag_old 
+                                elements[8] = "ID=trna." + id1 + "; Parent=gene." + id1 + ";product=" + product + "; pseudo=true; pseudogene=unknown" + anticodon_tag_old 
                                 print(*elements, sep='\t')
                                 
                             else:
