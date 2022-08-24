@@ -78,6 +78,7 @@ with open(input_file) as file:
                 #print("==>", *elements, sep='\t') #debug
                 element_8 = elements[8].split(";")
                 idx = 0
+                idx_name = 0
                 for i in element_8:
                     idx +=1
                     if i.startswith("Name")or i.startswith("name"):
