@@ -21,7 +21,8 @@ with open(input_file) as file:
     input = csv.reader(file, delimiter='\t')
     id_product_mapper = {}
     for line in input:
-        if line[0].startswith('#'):
+        
+        if len(line) < 3:
             continue
         elements = []
         
@@ -50,7 +51,7 @@ with open(input_file) as file:
     input = csv.reader(file, delimiter='\t')
     for line in input:
         
-        if line[0].startswith('#'):
+        if len(line) < 3:
             continue
         elements = []
         for element in line:
