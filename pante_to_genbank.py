@@ -417,11 +417,11 @@ with open(input_file) as file:
                                 gene = trnas[x][1]
                                 id = p.split("=",1)[1]
                                 id1 = id.split("_",1)[0]
-                                elements[8] = "ID=trna_gene." + id1 + "; gene=" + gene + "; pseudo=true; pseudogene=unknown" + ";anticodon=" + anticodon_tag_old 
+                                elements[8] = "ID=trna_gene." + id1 + "; gene=" + gene + "; pseudo=true; pseudogene=unknown" + anticodon_tag_old 
                                 print(*elements, sep='\t')
                                 elements[2] = "trna"
                                 product = trnas[x][0]
-                                elements[8] = "ID=trna." + id1 + "; Parent=gene." + id1 + ";product=" + product + "; pseudo=true; pseudogene=unknown" + ";anticodon=" + anticodon_tag_old 
+                                elements[8] = "ID=trna." + id1 + "; Parent=gene." + id1 + ";product=" + product + "; pseudo=true; pseudogene=unknown" + ";+ anticodon_tag_old 
                                 print(*elements, sep='\t')
                                 
                             else:
@@ -429,11 +429,11 @@ with open(input_file) as file:
                                 gene = trnas[x][1]
                                 id = p.split("=",1)[1]
                                 id1 = id.split("_",1)[1]
-                                elements[8] = "ID=trna_gene." + id1 + "; gene=" + gene + ";anticodon=" + anticodon_tag_old 
+                                elements[8] = "ID=trna_gene." + id1 + "; gene=" + gene + anticodon_tag_old 
                                 print(*elements, sep='\t')
                                 elements[2] = "trna"
                                 product = trnas[x][0]
-                                elements[8] = "ID=trna." + id1 + "; Parent=gene." + id1 + ";product=" + product + ";anticodon=" + anticodon_tag_old 
+                                elements[8] = "ID=trna." + id1 + "; Parent=gene." + id1 + ";product=" + product + anticodon_tag_old 
                                 print(*elements, sep='\t')
                                 
 
