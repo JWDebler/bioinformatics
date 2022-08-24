@@ -324,7 +324,7 @@ with open(input_file) as file:
                         if search:
                             rpt_unit = search.group(1)
                             # telomere detection
-                            if rpt_unit in telomere_motives and int(featureStart[elements[0]]) + 1000 > int((elements[3])):
+                            if rpt_unit in telomere_motives and int(featureStart[elements[0]] + 1000) > int((elements[3])):
                                 elements[8] = "Name=telomere; Ontology_term=SO:0000624, SO:telomere; rpt_type=telomeric_repeat; satellite=microsatellite"
                                 # print(elements)
 
