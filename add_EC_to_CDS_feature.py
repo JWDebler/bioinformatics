@@ -21,7 +21,7 @@ with open(input_file) as file:
     input = csv.reader(file, delimiter='\t')
     id_product_mapper = {}
     for line in input:
-        
+
         if len(line) < 3:
             continue
         elements = []
@@ -60,7 +60,7 @@ with open(input_file) as file:
         #check if named genes have products, otherwise remove 'Name' tag   
         if elements[2] == 'gene':
             name_string = re.search('Name=(.+?)$', elements[8])
-            
+            is_in_dict = 0
             #print("==>", name_string) #debug
             if name_string:
                 name=name_string.group(1).split(';')[0]
