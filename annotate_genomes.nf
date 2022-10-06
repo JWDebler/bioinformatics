@@ -177,6 +177,8 @@ process extractProteinsFromGenemark {
 
 //pull proteins out of augustus annotation
 process extractProteinsFromAugustus {
+    
+  conda '/home/ubuntu/miniconda3/envs/agat'
   tag {sampleID}
   publishDir "${params.outdir}", mode: 'copy', pattern: '*.proteins.fasta'
 
