@@ -519,6 +519,10 @@ with open(input_file) as file:
                                 elements[2] = "mobile_element"
                                 elements[8] += "; mobile_element_type=transposon:CMC-EnSpm "
 
+                            elif rpt_family.lower() == "dna/crypton-v":
+                                elements[2] = "mobile_element"
+                                elements[8] += "; mobile_element_type=transposon:Crypton-V "
+
                             elif rpt_family.lower() == "dna/mule-mudr":
                                 elements[2] = "mobile_element"
                                 elements[8] += "; mobile_element_type=transposon:MULE-MuDR "
