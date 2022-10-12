@@ -519,9 +519,45 @@ with open(input_file) as file:
                                 elements[2] = "mobile_element"
                                 elements[8] += "; mobile_element_type=transposon:CMC-EnSpm "
 
+                            elif rpt_family.lower() == "dna/crypton":
+                                elements[2] = "mobile_element"
+                                elements[8] += "; mobile_element_type=transposon:Crypton "
+
+                            elif rpt_family.lower() == "dna/crypton-a":
+                                elements[2] = "mobile_element"
+                                elements[8] += "; mobile_element_type=transposon:Crypton-A "
+
+                            elif rpt_family.lower() == "dna/crypton-c":
+                                elements[2] = "mobile_element"
+                                elements[8] += "; mobile_element_type=transposon:Crypton-C "
+
+                            elif rpt_family.lower() == "dna/crypton-f":
+                                elements[2] = "mobile_element"
+                                elements[8] += "; mobile_element_type=transposon:Crypton-F "
+
+                            elif rpt_family.lower() == "dna/crypton-h":
+                                elements[2] = "mobile_element"
+                                elements[8] += "; mobile_element_type=transposon:Crypton-H "
+
+                            elif rpt_family.lower() == "dna/crypton-i":
+                                elements[2] = "mobile_element"
+                                elements[8] += "; mobile_element_type=transposon:Crypton-I "
+
+                            elif rpt_family.lower() == "dna/crypton-r":
+                                elements[2] = "mobile_element"
+                                elements[8] += "; mobile_element_type=transposon:Crypton-R "
+
+                            elif rpt_family.lower() == "dna/crypton-s":
+                                elements[2] = "mobile_element"
+                                elements[8] += "; mobile_element_type=transposon:Crypton-S "
+
                             elif rpt_family.lower() == "dna/crypton-v":
                                 elements[2] = "mobile_element"
                                 elements[8] += "; mobile_element_type=transposon:Crypton-V "
+
+                            elif rpt_family.lower() == "dna/crypton-x":
+                                elements[2] = "mobile_element"
+                                elements[8] += "; mobile_element_type=transposon:Crypton-X "
 
                             elif rpt_family.lower() == "dna/mule-mudr":
                                 elements[2] = "mobile_element"
