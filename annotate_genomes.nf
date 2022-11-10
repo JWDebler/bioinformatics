@@ -143,6 +143,9 @@ process annotation_genemark {
 //Convert genemark GTF to GFF with fixed CDS phase
 
 process genemarkGTFtoGFF {
+
+    conda '/home/ubuntu/miniconda3/envs/agat'
+
     tag {sampleID}
     publishDir "${params.outdir}", mode: 'copy', pattern: '*.gff3'
 
@@ -161,6 +164,9 @@ process genemarkGTFtoGFF {
 
 //pull proteins out of genemark annotation
 process extractProteinsFromGenemark {
+
+  conda '/home/ubuntu/miniconda3/envs/agat'
+
   tag {sampleID}
   publishDir "${params.outdir}", mode: 'copy', pattern: '*.proteins.fasta'
 
@@ -179,6 +185,7 @@ process extractProteinsFromGenemark {
 process extractProteinsFromAugustus {
     
   conda '/home/ubuntu/miniconda3/envs/agat'
+  
   tag {sampleID}
   publishDir "${params.outdir}", mode: 'copy', pattern: '*.proteins.fasta'
 
