@@ -22,7 +22,7 @@ if args.input:
 else:
     print("No input file provided, use '-i' and supply a .gff file")
     input_file = "index.html"
-    #raise SystemExit
+    raise SystemExit
 
 outputformat = 1 # 1 = BED, 2 = GFF
 if args.gff:
