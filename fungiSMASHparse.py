@@ -11,9 +11,9 @@ from pathlib import Path
 
 #parse commandline arguments
 parser = argparse.ArgumentParser(description='Parses fungiSHMASH index.html file for location of clusters. By default looks for index.html file in current directory')
-parser.add_argument('--input', help='path to "index.html" file downloaded from fungiSMASH')
-parser.add_argument('--gff', help='output in GFF format')
-parser.add_argument('--bed', help='output in BED format (default)')
+parser.add_argument('-i', '--input', help='path to "index.html" file downloaded from fungiSMASH')
+parser.add_argument('-g', '--gff',action='store_true', help='output in GFF format')
+parser.add_argument('-b', '--bed',action='store_true', help='output in BED format (default)')
 
 args = parser.parse_args()
 
