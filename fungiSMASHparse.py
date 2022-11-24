@@ -53,4 +53,4 @@ for element in regions:
     if outputformat == 1 :
         print(chromosome,"\t", start, "\t",stop, "\t",clustertype)
     else:
-        print(chromosome,"\t", "fungiSHMASH", "\t","cluster", "\t",start, "\t",stop, "\t",".", "\t","+", "\t","0", "\t","NAME="+clustertype)
+        print(chromosome,"fungiSHMASH","cluster",start,stop,".","+","0","NAME="+clustertype)
