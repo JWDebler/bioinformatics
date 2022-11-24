@@ -10,10 +10,10 @@ from pathlib import Path
 # It outputs them in BED (default) or GFF3 format
 
 #parse commandline arguments
-parser = argparse.ArgumentParser()
-parser.add_argument('-i', '--input', help='path to "index.html" file downloaded from fungiSMASH')
-parser.add_argument('-g', '--gff', help='output in GFF format')
-parser.add_argument('-b', '--bed', help='output in BED format (default)')
+parser = argparse.ArgumentParser(description='Parses fungiSHMASH index.html file for location of clusters. By default looks for index.html file in current directory')
+parser.add_argument('-i', help='path to "index.html" file downloaded from fungiSMASH')
+parser.add_argument('-g', help='output in GFF format')
+parser.add_argument('-b', help='output in BED format (default)')
 
 args = parser.parse_args()
 
