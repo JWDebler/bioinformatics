@@ -17,14 +17,18 @@ parser.add_argument('-b', '--bed',action='store_true', help='output in BED forma
 
 args = parser.parse_args()
 
+input_file = "index.html" #default filename
+
 if args.input:
     input_file = Path(args.input)
 else:
-    print("No input file provided, use '-i' and supply a .gff file")
-    input_file = "index.html"
+    print("No input file provided, use '-i' and supply the index.html file provided by fungiSMASH")
+    #input_file = "index.html"
     raise SystemExit
 
-outputformat = 1 # 1 = BED, 2 = GFF
+outputformat = 1 # 1 = BED (default)
+                 # 2 = GFF
+
 if args.gff:
     outputformat = 2
 
