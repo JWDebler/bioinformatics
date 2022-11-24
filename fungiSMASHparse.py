@@ -51,6 +51,6 @@ for element in regions:
     start = content[element+8].split(' ')[9].replace(",","")
     stop = content[element+8].split(' ')[11].replace(",","")
     if outputformat == 1 :
-        print(chromosome,"\t", start, "\t",stop, "\t",clustertype)
+        print(chromosome + "\t" + start + "\t" + stop + "\t" + clustertype)
     else:
-        print(chromosome,"fungiSHMASH","cluster",start,stop,".","+","0","NAME="+clustertype)
+        print(chromosome + "\t" + "fungiSHMASH" + "\t" + "cluster" + "\t" + start + "\t" + stop + "\t" + "." + "\t" + "+" + "\t" + "0" +  "\t" + "NAME="+clustertype)
