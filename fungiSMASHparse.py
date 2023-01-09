@@ -8,6 +8,7 @@ from pathlib import Path
 # This script extracts the secondary metabolite clusters predicted by fungiSMASH 
 # https://fungismash.secondarymetabolites.org/
 # It outputs them in BED (default) or GFF3 format
+# This is now updated for fungiSMASH 7 index.html as formatting seems to have changed from some spaces to tabs
 
 #parse commandline arguments
 parser = argparse.ArgumentParser(description='Parses fungiSHMASH index.html file for location of clusters. By default looks for index.html file in current directory')
@@ -23,8 +24,8 @@ if args.input:
     input_file = Path(args.input)
 else:
     print("No input file provided, use '-i' and supply the index.html file provided by fungiSMASH")
-    #input_file = "index.html"
-    raise SystemExit
+    input_file = "index.html"
+    #raise SystemExit
 
 outputformat = 1 # 1 = BED (default)
                  # 2 = GFF
@@ -46,11 +47,15 @@ with open(input_file) as file:
             regions.append(linenumber)
 
 for element in regions:
-    chromosome = content[element].split(' ')[8]
-    clustertype = content[element].split(' ')[13]
-    start = content[element+8].split(' ')[9].replace(",","")
-    stop = content[element+8].split(' ')[11].replace(",","")
+    #print(content[element].split(' ')[7])
+    chromosome = content[element].split(' ')[2] #P9424_ctg_01
+    clustertype = content[element].split(' ')[7] #T1PKS etc
+
+    # find line that has "Location: x - x ..." and remove the commas from the number
+    start = content[element+8].split(' ')[1].replace(",","")
+    stop = content[element+8].split(' ')[3].replace(",","")
+
     if outputformat == 1 :
         print(chromosome + "\t" + start + "\t" + stop + "\t" + clustertype)
     else:
-        print(chromosome + "\t" + "fungiSHMASH" + "\t" + "cluster" + "\t" + start + "\t" + stop + "\t" + "." + "\t" + "+" + "\t" + "0" +  "\t" + "NAME="+clustertype)
+        print(chromosome + "\t" + "fungiSHMASH7" + "\t" + "cluster" + "\t" + start + "\t" + stop + "\t" + "." + "\t" + "+" + "\t" + "0" +  "\t" + "NAME="+clustertype)
