@@ -601,6 +601,10 @@ with open(input_file) as file:
                                 elements[2] = "mobile_element"
                                 elements[8] += "; mobile_element_type=LINE:penelope "
 
+                            elif rpt_family.lower() == "line/cre":
+                                elements[2] = "mobile_element"
+                                elements[8] += "; mobile_element_type=LINE:CRE "
+
                             elif rpt_family.lower() == "line/i-jockey":
                                 elements[2] = "mobile_element"
                                 elements[8] += "; mobile_element_type=LINE:I-Jockey "
