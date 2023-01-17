@@ -521,6 +521,10 @@ with open(input_file) as file:
                                 elements[2] = "mobile_element"
                                 elements[8] += "; mobile_element_type=transposon:TcMar-Tc4"
 
+                            elif rpt_family.lower() == "dna/tcmar-mariner":
+                                elements[2] = "mobile_element"
+                                elements[8] += "; mobile_element_type=transposon:Tc1-Mariner"
+
                             elif rpt_family.lower() == "dna/cmc-enspm":
                                 elements[2] = "mobile_element"
                                 elements[8] += "; mobile_element_type=transposon:CMC-EnSpm "
