@@ -605,6 +605,10 @@ with open(input_file) as file:
                                 elements[2] = "mobile_element"
                                 elements[8] += "; mobile_element_type=transposon:Ginger-2 "
 
+                            elif rpt_family.lower() == "line/l1-zorro":
+                                elements[2] = "mobile_element"
+                                elements[8] += "; mobile_element_type=LINE:Zorro "
+
                             elif rpt_family.lower() == "line/penelope":
                                 elements[2] = "mobile_element"
                                 elements[8] += "; mobile_element_type=LINE:penelope "
