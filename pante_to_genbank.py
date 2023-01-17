@@ -496,7 +496,11 @@ with open(input_file) as file:
 
                             elif rpt_family.lower() == "ltr/copia":
                                 elements[2] =  "mobile_element"
-                                elements[8] += "; mobile_element_type=retrotransposon:Copia"
+                                elements[8] += "; mobile_element_type=retrotransposon:Ty1-Copia"
+
+                            elif rpt_family.lower() == "ltr/pao":
+                                elements[2] =  "mobile_element"
+                                elements[8] += "; mobile_element_type=retrotransposon:Bel-Pao"
 
                             elif rpt_family.lower() == "ltr":
                                 elements[8] += "; rpt_type=long_terminal_repeat; rpt_family=LTR"
