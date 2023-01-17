@@ -577,6 +577,10 @@ with open(input_file) as file:
                                 elements[2] = "mobile_element"
                                 elements[8] += "; mobile_element_type=transposon:MULE-MuDR "
 
+                            elif rpt_family.lower() == "dna/mule-f":
+                                elements[2] = "mobile_element"
+                                elements[8] += "; mobile_element_type=transposon:MULE-F "
+
                             elif rpt_family.lower() == "dna/merlin":
                                 elements[2] = "mobile_element"
                                 elements[8] += "; mobile_element_type=transposon:Merlin  "
