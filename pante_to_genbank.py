@@ -573,6 +573,10 @@ with open(input_file) as file:
                                 elements[2] = "mobile_element"
                                 elements[8] += "; mobile_element_type=transposon:Merlin  "
 
+                            elif rpt_family.lower() == "dna/pif-harbinger":
+                                elements[2] = "mobile_element"
+                                elements[8] += "; mobile_element_type=transposon:PIF-Harbinger  "
+
                             elif rpt_family.lower() == "dna/hat-ac":
                                 elements[2] = "mobile_element"
                                 elements[8] += "; mobile_element_type=transposon:Activator "
