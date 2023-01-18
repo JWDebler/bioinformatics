@@ -28,7 +28,7 @@ if args.input:
     input_file = Path(args.input)
 else:
     print("No input file provided, use '-i' and supply a .gff file")
-    input_file = "ArME14_pante.gff3"
+    input_file = "test_repeats.gff3"
     #raise SystemExit
 
 #if args.output:
@@ -326,11 +326,11 @@ with open(input_file) as file:
                         if search:
                             rpt_unit = search.group(1)
                             # telomere detection
-                            if rpt_unit in telomere_motives and int(featureStart[elements[0]]) + 5000 > int(elements[3]):
+                            if rpt_unit in telomere_motives: # and int(featureStart[elements[0]]) + 5000 > int(elements[3]):
                                 elements[8] = "Name=telomere; Ontology_term=SO:0000624, SO:telomere; rpt_type=telomeric_repeat; satellite=microsatellite"
                                 # print(elements)
 
-                            elif rpt_unit in telomere_motives and int(featureStop[elements[0]]) - 5000  < int(elements[4]):
+                            elif rpt_unit in telomere_motives: # and int(featureStop[elements[0]]) - 5000  < int(elements[4]):
                                 elements[8] = "Name=telomere; Ontology_term=SO:0000624, SO:telomere; rpt_type=telomeric_repeat; satellite=microsatellite"
                                 # print(elements)
 
@@ -490,220 +490,221 @@ with open(input_file) as file:
                         search = re.search('repeat_family=(.+?)$', elements[8])
                         if search:
                             rpt_family = search.group().split(";")[0].split("=")[1]
+                            
                             if rpt_family.lower() == "ltr/gypsy":
                                 elements[2] =  "mobile_element"
-                                elements[8] += "; mobile_element_type=retrotransposon:Gypsy"
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=retrotransposon:Gypsy"
 
                             elif rpt_family.lower() == "ltr/copia":
                                 elements[2] =  "mobile_element"
-                                elements[8] += "; mobile_element_type=retrotransposon:Ty1-Copia"
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=retrotransposon:Ty1-Copia"
 
                             elif rpt_family.lower() == "ltr/pao":
                                 elements[2] =  "mobile_element"
-                                elements[8] += "; mobile_element_type=retrotransposon:Bel-Pao"
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=retrotransposon:Bel-Pao"
 
                             elif rpt_family.lower() == "ltr":
-                                elements[8] += "; rpt_type=long_terminal_repeat; rpt_family=LTR"
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; rpt_type=long_terminal_repeat; rpt_family=LTR"
 
                             elif rpt_family.lower() == "dna/tcmar-fot1":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:TcMar-Fot1"
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:TcMar-Fot1"
 
                             elif rpt_family.lower() == "dna/tcmar-tc1":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:TcMar-Tc1"
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:TcMar-Tc1"
 
                             elif rpt_family.lower() == "dna/tcmar-tc2":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:TcMar-Tc2"
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:TcMar-Tc2"
 
                             elif rpt_family.lower() == "dna/tcmar-tc4":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:TcMar-Tc4"
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:TcMar-Tc4"
 
                             elif rpt_family.lower() == "dna/tcmar-ant1":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:TcMar-Ant1"
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:TcMar-Ant1"
 
                             elif rpt_family.lower() == "dna/tcmar-mariner":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:Tc1-Mariner"
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:Tc1-Mariner"
 
                             elif rpt_family.lower() == "dna/cmc-enspm":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:CMC-EnSpm "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:CMC-EnSpm "
 
                             elif rpt_family.lower() == "dna/crypton":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:Crypton "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:Crypton "
 
                             elif rpt_family.lower() == "dna/crypton-a":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:Crypton-A "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:Crypton-A "
 
                             elif rpt_family.lower() == "dna/crypton-c":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:Crypton-C "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:Crypton-C "
 
                             elif rpt_family.lower() == "dna/crypton-f":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:Crypton-F "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:Crypton-F "
 
                             elif rpt_family.lower() == "dna/crypton-h":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:Crypton-H "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:Crypton-H "
 
                             elif rpt_family.lower() == "dna/crypton-i":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:Crypton-I "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:Crypton-I "
 
                             elif rpt_family.lower() == "dna/crypton-r":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:Crypton-R "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:Crypton-R "
 
                             elif rpt_family.lower() == "dna/crypton-s":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:Crypton-S "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:Crypton-S "
 
                             elif rpt_family.lower() == "dna/crypton-v":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:Crypton-V "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:Crypton-V "
 
                             elif rpt_family.lower() == "dna/crypton-x":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:Crypton-X "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:Crypton-X "
 
                             elif rpt_family.lower() == "dna/mule-mudr":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:MULE-MuDR "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:MULE-MuDR "
 
                             elif rpt_family.lower() == "dna/mule-f":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:MULE-F "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:MULE-F "
 
                             elif rpt_family.lower() == "dna/merlin":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:Merlin  "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:Merlin  "
 
                             elif rpt_family.lower() == "dna/pif-harbinger":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:PIF-Harbinger  "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:PIF-Harbinger  "
 
                             elif rpt_family.lower() == "dna/hat-ac":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:Activator "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:Activator "
 
                             elif rpt_family.lower() == "dna/hat-charlie":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:Charlie "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:Charlie "
 
                             elif rpt_family.lower() == "dna/hat-restless":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:Restless "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:Restless "
 
                             elif rpt_family.lower() == "dna/hat-tip100":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:Tip100 "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:Tip100 "
 
                             elif rpt_family.lower() == "dna/ginger":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:Ginger "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:Ginger "
 
                             elif rpt_family.lower() == "dna/ginger-2":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:Ginger-2 "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:Ginger-2 "
 
                             elif rpt_family.lower() == "line/l1-zorro":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=LINE:Zorro "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=LINE:Zorro "
 
                             elif rpt_family.lower() == "line/penelope":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=LINE:penelope "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=LINE:penelope "
 
                             elif rpt_family.lower() == "line/cre":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=LINE:CRE "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=LINE:CRE "
 
                             elif rpt_family.lower() == "line/i-jockey":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=LINE:I-Jockey "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=LINE:I-Jockey "
 
                             elif rpt_family.lower() == "line/i":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=LINE:I "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=LINE:I "
 
                             elif rpt_family.lower() == "line/l1":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=LINE:L1 "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=LINE:L1 "
 
                             elif rpt_family.lower() == "line/r1":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=LINE:R1 "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=LINE:R1 "
 
                             elif rpt_family.lower() == "line/l2":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=LINE:L2 "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=LINE:L2 "
 
                             elif rpt_family.lower() == "line/tad1":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=LINE:Tad1 "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=LINE:Tad1 "
 
                             elif rpt_family.lower() == "line/tad1?":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=LINE:Tad1 "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=LINE:Tad1 "
 
                             elif rpt_family.lower() == "artefact":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=other:Artifact  "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=other:Artifact  "
 
                             elif rpt_family.lower() == "rrna":
                                 elements[2] = "repeat_region"
-                                elements[8] += "; rpt_type=other; note=potential rRNA  "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; rpt_type=other; note=potential rRNA  "
 
                             elif rpt_family.lower() == "unknown":
                                 elements[2] = "repeat_region"
-                                elements[8] += "; rpt_type=dispersed  "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; rpt_type=dispersed  "
 
                             elif rpt_family.lower() == "unknown/centromeric":
                                 elements[2] = "repeat_region"
-                                elements[8] += "; rpt_type=centromeric_repeat  "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; rpt_type=centromeric_repeat  "
 
                             elif rpt_family.lower() == "dna":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:DNA  "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:DNA  "
 
                             elif rpt_family.lower() == "dna/p-fungi":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:P_Element-Fungi-specific_Branch  "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:P_Element-Fungi-specific_Branch  "
 
                             elif rpt_family.lower() == "dna/kolobok":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:Kolobok  "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:Kolobok  "
 
                             elif rpt_family.lower() == "dna/kolobok-e":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:Kolobok-E  "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:Kolobok-E  "
 
                             elif rpt_family.lower() == "dna/kolobok-h":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:Kolobok-H  "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:Kolobok-H  "
 
                             elif rpt_family.lower() == "dna/kolobok-hydra":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:Kolobok-Hydra-specific_Branch  "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:Kolobok-Hydra-specific_Branch  "
 
                             elif rpt_family.lower() == "dna/kolobok-t2":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:Kolobok-T2 "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:Kolobok-T2 "
                             
                             elif rpt_family.lower() == "rc/helitron":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:Helitron-1 "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:Helitron-1 "
 
                             elif rpt_family.lower() == "rc/helitron-2":
                                 elements[2] = "mobile_element"
-                                elements[8] += "; mobile_element_type=transposon:Helitron-2 "
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:Helitron-2 "
 
                             else:
                                 print("#######################################################################")
