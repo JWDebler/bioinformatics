@@ -502,6 +502,10 @@ with open(input_file) as file:
                             elif rpt_family.lower() == "ltr/pao":
                                 elements[2] =  "mobile_element"
                                 elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=retrotransposon:Bel-Pao"
+                                
+                            elif rpt_family.lower() == "ltr/ngaro":
+                                elements[2] =  "mobile_element"
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=retrotransposon:Ngaro"
 
                             elif rpt_family.lower() == "ltr":
                                 elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; rpt_type=long_terminal_repeat; rpt_family=LTR"
