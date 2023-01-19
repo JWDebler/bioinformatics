@@ -29,7 +29,7 @@ if args.input:
 else:
     print("No input file provided, use '-i' and supply a .gff file")
     input_file = "test_repeats.gff3"
-    #raise SystemExit
+    raise SystemExit
 
 #if args.output:
 #    output_file = Path(args.output)
