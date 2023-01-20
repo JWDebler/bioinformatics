@@ -420,11 +420,11 @@ with open(input_file) as file:
                                 gene = trnas[x][1]
                                 id = p.split("=",1)[1]
                                 id1 = id.split("_",1)[1]
-                                elements[8] = "ID=trna_gene." + id1 + "; gene=" + gene + "; pseudo=true; pseudogene=unknown"+ ";" + " anticodon=(seq:" + anticodon_seq+",product:"+product.split("-",1)[1]+")"
+                                elements[8] = "ID=trna_gene." + id1 + "; gene=" + gene + "; pseudo=true; pseudogene=unknown"
                                 print(*elements, sep='\t')
                                 elements[2] = "trna"
                                 product = trnas[x][0]
-                                elements[8] = "ID=trna." + id1 + "; Parent=trna_gene." + id1 + ";product=" + product + "; pseudo=true; pseudogene=unknown" 
+                                elements[8] = "ID=trna." + id1 + "; Parent=trna_gene." + id1 + ";product=" + product + "; pseudo=true; pseudogene=unknown" + ";" + "anticodon=(seq:" + anticodon_seq+",product:"+product.split("-",1)[1]+")"
                                 print(*elements, sep='\t')
                                 
                             else:
@@ -433,10 +433,10 @@ with open(input_file) as file:
                                 product = trnas[x][0]
                                 id = p.split("=",1)[1]
                                 id1 = id.split("_",1)[1]
-                                elements[8] = "Name=" + product +"; ID=trna_gene." + id1 + "; gene=" + gene  + ";" + " anticodon=(seq:" + anticodon_seq+",product:"+product.split("-",1)[1]+")"
+                                elements[8] = "Name=" + product +"; ID=trna_gene." + id1 + "; gene=" + gene 
                                 print(*elements, sep='\t')
                                 elements[2] = "trna"
-                                elements[8] = "Name=" + product +"; ID=trna." + id1 + "; Parent=trna_gene." + id1 + ";product=" + product
+                                elements[8] = "Name=" + product +"; ID=trna." + id1 + "; Parent=trna_gene." + id1 + ";product=" + product + ";" + "anticodon=(seq:" + anticodon_seq+",product:"+product.split("-",1)[1]+")"
                                 print(*elements, sep='\t')
                                 
 
