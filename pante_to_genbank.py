@@ -29,7 +29,7 @@ if args.input:
 else:
     print("No input file provided, use '-i' and supply a .gff file")
     input_file = "test_repeats.gff3"
-    raise SystemExit
+    #raise SystemExit
 
 #if args.output:
 #    output_file = Path(args.output)
@@ -412,6 +412,7 @@ with open(input_file) as file:
                             #to overwrite the anticodon tag
                             anticodon_tag = re.search('anticodon=[A-Z]{3};', elements[8])
                             anticodon_tag_old = anticodon_tag.group()
+                            anticodon_seq = anticodon_tag_old.split("=",1)[1][:3]
                             #elements[8] = elements[8].replace(anticodon_tag_old, "anticodon" + anticodon_tag)
                             
                             if 'pseudo' in p:
@@ -423,7 +424,7 @@ with open(input_file) as file:
                                 print(*elements, sep='\t')
                                 elements[2] = "trna"
                                 product = trnas[x][0]
-                                elements[8] = "ID=trna." + id1 + "; Parent=trna_gene." + id1 + ";product=" + product + "; pseudo=true; pseudogene=unknown" + ";" + anticodon_tag_old 
+                                elements[8] = "ID=trna." + id1 + "; Parent=trna_gene." + id1 + ";product=" + product + "; pseudo=true; pseudogene=unknown" + ";" + "anticodon=seq:" +  anticodon_seq+",product:"+product.split("-",1)[1]
                                 print(*elements, sep='\t')
                                 
                             else:
@@ -435,7 +436,7 @@ with open(input_file) as file:
                                 elements[8] = "Name=" + product +"; ID=trna_gene." + id1 + "; gene=" + gene 
                                 print(*elements, sep='\t')
                                 elements[2] = "trna"
-                                elements[8] = "Name=" + product +"; ID=trna." + id1 + "; Parent=trna_gene." + id1 + ";product=" + product + ";" + anticodon_tag_old 
+                                elements[8] = "Name=" + product +"; ID=trna." + id1 + "; Parent=trna_gene." + id1 + ";product=" + product + ";" + "anticodon=seq:" +  anticodon_seq+",product:"+product.split("-",1)[1]
                                 print(*elements, sep='\t')
                                 
 
