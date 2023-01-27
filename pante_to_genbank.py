@@ -31,13 +31,8 @@ if args.input:
     input_file = Path(args.input)
 else:
     print("No input file provided, use '-i' and supply a .gff file")
-    #input_file = "test_duplicate_repeats.gff3"
-    raise SystemExit
-
-#if args.output:
-#    output_file = Path(args.output)
-#else:
-#    output_file = Path(os.path.join(os.getcwd(),os.path.basename(input_file)+'.fixed.gff'))
+    input_file = "test_duplicate_repeats.gff3"
+    #raise SystemExit
 
 intervals = [] #list of contig and coordinate inverals to check against
 gff = {}
@@ -75,25 +70,129 @@ telomere_motives = ['AGGGTT','TAGGGT','TTAGGG','GTTAGG','GGTTAG','GGGTTA','CCCTA
 with open(input_file) as file:
     input = csv.reader(file, delimiter='\t')
     for line in input:
-        
         currentLine = line
-        if str(line[0]).startswith('##sequence-region'):
+        if len(line) == 0:
+            continue
+        elif str(line[0]).startswith('##sequence-region'):
             newLine = str(line[0]).split()
             featureStart[newLine[1]] = newLine[2]
             featureStop[newLine[1]] = newLine[3]
         if currentLine == previousLine:
             continue
 
+        ### tRNAs from tRNAScan-SE
         if len(line) > 6:
-            # The last field contains the attributes for the feature
+
+            if line[1] == "tRNAScan-SE":
+               
+                elements = []
+                for element in line:
+                    elements.append(element)
+
+                trna = re.search('(.*)_tRNA', elements[2]) 
+                if trna:
+                    x = trna.group()
+                    if x in trnas:
+                        parent = re.search('Parent=.*[0-9]+', elements[8])
+                        p = parent.group(0)
+
+                        #to overwrite the anticodon tag
+                        anticodon_tag = re.search('anticodon=[A-Z]{3};', elements[8])
+                        anticodon_tag_old = anticodon_tag.group()
+                        anticodon_seq = anticodon_tag_old.split("=",1)[1][:3]
+                        #elements[8] = elements[8].replace(anticodon_tag_old, "anticodon" + anticodon_tag)
+                        
+                        if 'pseudo' in p:
+                            elements[2] = "gene"
+                            gene = trnas[x][1]
+                            id = p.split("=",1)[1]
+                            id1 = id.split("_",1)[1]
+                            elements[8] = "ID=trna_gene." + id1 + "; gene=" + gene + "; pseudo=true; pseudogene=unknown"
+                            print(*elements, sep='\t')
+                            elements[2] = "trna"
+                            product = trnas[x][0]
+                            elements[8] = "ID=trna." + id1 + "; Parent=trna_gene." + id1 + ";product=" + product + "; pseudo=true; pseudogene=unknown" + ";" + "Note=Anticodon:" + anticodon_seq
+                            print(*elements, sep='\t')
+                            
+                        else:
+                            elements[2] = "gene"
+                            gene = trnas[x][1]
+                            product = trnas[x][0]
+                            id = p.split("=",1)[1]
+                            id1 = id.split("_",1)[1]
+                            elements[8] = "Name=" + product +"; ID=trna_gene." + id1 + "; gene=" + gene 
+                            print(*elements, sep='\t')
+                            elements[2] = "trna"
+                            elements[8] = "Name=" + product +"; ID=trna." + id1 + "; Parent=trna_gene." + id1 + ";product=" + product + ";" + "Note=Anticodon:" + anticodon_seq
+                            print(*elements, sep='\t')
+
+        ### rRNAs from RNAmmer
+        if len(line) > 6:
+            
+            if line[1] ==  "RNAmmer":
+                elements = []
+                for element in line:
+                    elements.append(element)
+
+                if elements[2] == "rRNA_5S":
+                    rRNA_parent = re.search('Parent=(.*[0-9]+)$', elements[8])
+                    rRNA_p = rRNA_parent.group(1)
+                    elements[2] = "gene"
+                    elements[8] = "Name=5S rRNA; ID=" + rRNA_p
+                    print(*elements, sep='\t')
+                    elements[2] = "rRNA"
+                    elements[8] = "Name=5S rRNA; product=5S ribosomal RNA; Parent=" + rRNA_p
+                    print(*elements, sep='\t')
+                elif elements[2] == "rRNA_28S":
+                    rRNA_parent = re.search('Parent=(.*[0-9]+)$', elements[8])
+                    rRNA_p = rRNA_parent.group(1)
+                    elements[2] = "gene"
+                    elements[8] = "Name=28S rRNA; ID=" + rRNA_p
+                    print(*elements, sep='\t')
+                    elements[2] = "rRNA"
+                    elements[8] = "Name=28S rRNA; product=28S ribosomal RNA; Parent=" + rRNA_p
+                    print(*elements, sep='\t')
+                elif elements[2] == "rRNA_23S":
+                    rRNA_parent = re.search('Parent=(.*[0-9]+)$', elements[8])
+                    rRNA_p = rRNA_parent.group(1)
+                    elements[2] = "gene"
+                    elements[8] = "Name=23S rRNA; ID=" + rRNA_p
+                    print(*elements, sep='\t')
+                    elements[2] = "rRNA"
+                    elements[8] = "Name=23S rRNA; product=23S ribosomal RNA; Parent=" + rRNA_p
+                    print(*elements, sep='\t')
+                elif elements[2] == "rRNA_16S":
+                    rRNA_parent = re.search('Parent=(.*[0-9]+)$', elements[8])
+                    rRNA_p = rRNA_parent.group(1)
+                    elements[2] = "gene"
+                    elements[8] = "Name=16S rRNA; ID=" + rRNA_p
+                    print(*elements, sep='\t')
+                    elements[2] = "rRNA"
+                    elements[8] = "Name=16S rRNA; product=16S ribosomal RNA; Parent=" + rRNA_p
+                    print(*elements, sep='\t')
+                elif elements[2] == "rRNA_18S":
+                    rRNA_parent = re.search('Parent=(.*[0-9]+)$', elements[8])
+                    rRNA_p = rRNA_parent.group(1)
+                    elements[2] = "gene"
+                    elements[8] = "Name=18S rRNA; ID=" + rRNA_p
+                    print(*elements, sep='\t')
+                    elements[2] = "rRNA"
+                    elements[8] = "Name=18S rRNA; product=18S ribosomal RNA; Parent=" + rRNA_p
+                    print(*elements, sep='\t')
+
+        ### TEs
+        if len(line) > 6:
+            # duplicate annotation detection
             interval = line[0] + " " + line[3] + " " + line[4]
+            # If the current interval has been seen before skip it and check the next line
+            if interval in intervals:
+                continue
 
             # limiting what to look for
-            if line[1] == "RepeatMasker" or line[1] == "EAhelitron" or line[1] == "RepeatModeler" or line[1] == "MiteFinderII" or line[1] == "LTRharvest" or line[1] == "LTRdigest" or line[1] == "tRNAScan-SE" or line[1] == "RNAmmer" or line[1] == "pante_protein_families" and interval not in intervals:
-                # Check if current interval is already in list, which means it would be a duplication
+            if line[1] == "RepeatMasker" or line[1] == "EAhelitron" or line[1] == "RepeatModeler" or line[1] == "MiteFinderII" or line[1] == "LTRharvest" or line[1] == "LTRdigest" or line[1] == "pante_protein_families":
                 
-                intervals.append(interval)
                 elements = []
+
                 for element in line:
                     elements.append(element)
 
@@ -113,6 +212,7 @@ with open(input_file) as file:
                         continue
 
                     print(*elements, sep='\t')
+                    intervals.append(interval)
 
 
                 #pante_protein_matches
@@ -262,56 +362,9 @@ with open(input_file) as file:
                                 print("#######################################################################")
                                 print('Add this to script under "pante_protein_families": ',name)
                                 raise SystemExit
+                
                     print(*elements, sep='\t')
-
-                # RNAmmer rRNA
-                if elements[1] == "RNAmmer":
-                    if elements[2] == "rRNA_5S":
-                        rRNA_parent = re.search('Parent=(.*[0-9]+)$', elements[8])
-                        rRNA_p = rRNA_parent.group(1)
-                        elements[2] = "gene"
-                        elements[8] = "Name=5S rRNA; ID=" + rRNA_p
-                        print(*elements, sep='\t')
-                        elements[2] = "rRNA"
-                        elements[8] = "Name=5S rRNA; product=5S ribosomal RNA; Parent=" + rRNA_p
-                        print(*elements, sep='\t')
-                    elif elements[2] == "rRNA_28S":
-                        rRNA_parent = re.search('Parent=(.*[0-9]+)$', elements[8])
-                        rRNA_p = rRNA_parent.group(1)
-                        elements[2] = "gene"
-                        elements[8] = "Name=28S rRNA; ID=" + rRNA_p
-                        print(*elements, sep='\t')
-                        elements[2] = "rRNA"
-                        elements[8] = "Name=28S rRNA; product=28S ribosomal RNA; Parent=" + rRNA_p
-                        print(*elements, sep='\t')
-                    elif elements[2] == "rRNA_23S":
-                        rRNA_parent = re.search('Parent=(.*[0-9]+)$', elements[8])
-                        rRNA_p = rRNA_parent.group(1)
-                        elements[2] = "gene"
-                        elements[8] = "Name=23S rRNA; ID=" + rRNA_p
-                        print(*elements, sep='\t')
-                        elements[2] = "rRNA"
-                        elements[8] = "Name=23S rRNA; product=23S ribosomal RNA; Parent=" + rRNA_p
-                        print(*elements, sep='\t')
-                    elif elements[2] == "rRNA_16S":
-                        rRNA_parent = re.search('Parent=(.*[0-9]+)$', elements[8])
-                        rRNA_p = rRNA_parent.group(1)
-                        elements[2] = "gene"
-                        elements[8] = "Name=16S rRNA; ID=" + rRNA_p
-                        print(*elements, sep='\t')
-                        elements[2] = "rRNA"
-                        elements[8] = "Name=16S rRNA; product=16S ribosomal RNA; Parent=" + rRNA_p
-                        print(*elements, sep='\t')
-                    elif elements[2] == "rRNA_18S":
-                        rRNA_parent = re.search('Parent=(.*[0-9]+)$', elements[8])
-                        rRNA_p = rRNA_parent.group(1)
-                        elements[2] = "gene"
-                        elements[8] = "Name=18S rRNA; ID=" + rRNA_p
-                        print(*elements, sep='\t')
-                        elements[2] = "rRNA"
-                        elements[8] = "Name=18S rRNA; product=18S ribosomal RNA; Parent=" + rRNA_p
-                        print(*elements, sep='\t')
-                    
+                    intervals.append(interval)
 
                 # microsatellite
                 if elements[2] == "microsatellite":
@@ -353,6 +406,7 @@ with open(input_file) as file:
                         elements[8] += "; rpt_type=" + rpt_type + "; satellite=microsatellite"
                     
                     print(*elements, sep='\t')
+                    intervals.append(interval)
 
                 
                 # minisatellite
@@ -377,10 +431,15 @@ with open(input_file) as file:
                         if search:
                             rpt_unit = search.group(1)
                             elements[8] += "; rpt_type=" + rpt_type + "; satellite=minisatellite"
+                    
+                    elif interval in intervals:
+                        continue
+
                     else:
                         elements[8] += "; rpt_type=" + rpt_type + "; satellite=minisatellite"
                     
                     print(*elements, sep='\t')
+                    intervals.append(interval)
 
 
                 # monomeric_repeat
@@ -404,51 +463,13 @@ with open(input_file) as file:
                         if search:
                             rpt_unit = search.group(1)
                             elements[8] += "; rpt_type=" + rpt_type + "; satellite=satellite"
+                    elif interval in intervals:
+                        continue
                     else:
                         elements[8] += "; rpt_type=" + rpt_type + "; satellite=satellite"
 
                     print(*elements, sep='\t')
-
-                # tRNA
-                if elements[1] == "tRNAScan-SE":
-                                        
-                    trna = re.search('(.*)_tRNA', elements[2]) 
-                    if trna:
-                        x = trna.group()
-                        if x in trnas:
-                            parent = re.search('Parent=.*[0-9]+', elements[8])
-                            p = parent.group(0)
-
-                            #to overwrite the anticodon tag
-                            anticodon_tag = re.search('anticodon=[A-Z]{3};', elements[8])
-                            anticodon_tag_old = anticodon_tag.group()
-                            anticodon_seq = anticodon_tag_old.split("=",1)[1][:3]
-                            #elements[8] = elements[8].replace(anticodon_tag_old, "anticodon" + anticodon_tag)
-                            
-                            if 'pseudo' in p:
-                                elements[2] = "gene"
-                                gene = trnas[x][1]
-                                id = p.split("=",1)[1]
-                                id1 = id.split("_",1)[1]
-                                elements[8] = "ID=trna_gene." + id1 + "; gene=" + gene + "; pseudo=true; pseudogene=unknown"
-                                print(*elements, sep='\t')
-                                elements[2] = "trna"
-                                product = trnas[x][0]
-                                elements[8] = "ID=trna." + id1 + "; Parent=trna_gene." + id1 + ";product=" + product + "; pseudo=true; pseudogene=unknown" + ";" + "Note=Anticodon:" + anticodon_seq
-                                print(*elements, sep='\t')
-                                
-                            else:
-                                elements[2] = "gene"
-                                gene = trnas[x][1]
-                                product = trnas[x][0]
-                                id = p.split("=",1)[1]
-                                id1 = id.split("_",1)[1]
-                                elements[8] = "Name=" + product +"; ID=trna_gene." + id1 + "; gene=" + gene 
-                                print(*elements, sep='\t')
-                                elements[2] = "trna"
-                                elements[8] = "Name=" + product +"; ID=trna." + id1 + "; Parent=trna_gene." + id1 + ";product=" + product + ";" + "Note=Anticodon:" + anticodon_seq
-                                print(*elements, sep='\t')
-                                
+                    intervals.append(interval)
 
                 # helitron
                 if elements[2] == "helitron":
@@ -476,24 +497,27 @@ with open(input_file) as file:
                     elements[8] = "Name=helitron; Ontology_term=SO:0000544, SO:helitron; mobile_element_type=transposon:Helitron"
 
                     print(*elements, sep='\t')
-
-               # LTR harvest
+                    intervals.append(interval)
                
                 # LTRharvest
                 if elements[2] == "LTR_retrotransposon":
                     elements[2] = "mobile_element"
                     elements[8] = "Name=LTR retrotransposon; mobile_element_type=retrotransposon; Ontology_term=SO:0000186"
                     print(*elements, sep='\t')
+                    intervals.append(interval)
                 
                 if elements[2] == "long_terminal_repeat":
                     elements[2] = "repeat_region"
                     elements[8] = "Name=LTR; rpt_type=long_terminal_repeat; rpt_family=LTR; Ontology_term=SO:0000286"
                     print(*elements, sep='\t')
+                    intervals.append(interval)
 
                 if elements[2] == "target_site_duplication":
                     elements[2] = "repeat_region"
                     elements[8] = "Name=Target site duplication; rpt_type=direct; rpt_family=LTR; Ontology_term=SO:0000434"
+                    
                     print(*elements, sep='\t')
+                    intervals.append(interval)
 
                 # repeat_region
                 if elements[2] == "repeat_region":
@@ -729,6 +753,8 @@ with open(input_file) as file:
                                 raise SystemExit
 
                         print(*elements, sep='\t')
+                        intervals.append(interval)
+                            
         previousLine = currentLine
             #else:
                 #print(line[1])
