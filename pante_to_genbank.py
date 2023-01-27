@@ -14,6 +14,9 @@ from pathlib import Path
 # https://github.com/Dfam-consortium/RepeatModeler/blob/master/RepeatClassifier
 # http://www.insdc.org/controlled-vocabulary-rpttype-qualifier
 
+# It also removes duplicate annotations at the same locus. There is not much checking, it simply keeps the
+# first annotation for each specific interval as NCBI don't seem to mind overlapping regions.  
+
 # Things to do manually:
 
 # currently nothing
@@ -28,14 +31,15 @@ if args.input:
     input_file = Path(args.input)
 else:
     print("No input file provided, use '-i' and supply a .gff file")
-    input_file = "test_repeats.gff3"
-    #raise SystemExit
+    #input_file = "test_duplicate_repeats.gff3"
+    raise SystemExit
 
 #if args.output:
 #    output_file = Path(args.output)
 #else:
 #    output_file = Path(os.path.join(os.getcwd(),os.path.basename(input_file)+'.fixed.gff'))
 
+intervals = [] #list of contig and coordinate inverals to check against
 gff = {}
 trnas = {"tRNA":["tRNA-Xxx", "trnX"], 
         "alanyl_tRNA": ["tRNA-Ala", "trnA"],
@@ -71,6 +75,7 @@ telomere_motives = ['AGGGTT','TAGGGT','TTAGGG','GTTAGG','GGTTAG','GGGTTA','CCCTA
 with open(input_file) as file:
     input = csv.reader(file, delimiter='\t')
     for line in input:
+        
         currentLine = line
         if str(line[0]).startswith('##sequence-region'):
             newLine = str(line[0]).split()
@@ -80,9 +85,17 @@ with open(input_file) as file:
             continue
 
         if len(line) > 6:
+            # The last field contains the attributes for the feature
+            interval = line[0] + " " + line[3] + " " + line[4]
+
+            # Check if current interval is already in list, which means it would be a duplication
+            if interval in intervals:
+                continue
+
             # limiting what to look for
             if line[1] == "RepeatMasker" or line[1] == "EAhelitron" or line[1] == "RepeatModeler" or line[1] == "MiteFinderII" or line[1] == "LTRharvest" or line[1] == "LTRdigest" or line[1] == "tRNAScan-SE" or line[1] == "RNAmmer" or line[1] == "pante_protein_families":
                 
+                intervals.append(interval)
                 elements = []
                 for element in line:
                     elements.append(element)
