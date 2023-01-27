@@ -88,12 +88,9 @@ with open(input_file) as file:
             # The last field contains the attributes for the feature
             interval = line[0] + " " + line[3] + " " + line[4]
 
-            # Check if current interval is already in list, which means it would be a duplication
-            if interval in intervals:
-                continue
-
             # limiting what to look for
-            if line[1] == "RepeatMasker" or line[1] == "EAhelitron" or line[1] == "RepeatModeler" or line[1] == "MiteFinderII" or line[1] == "LTRharvest" or line[1] == "LTRdigest" or line[1] == "tRNAScan-SE" or line[1] == "RNAmmer" or line[1] == "pante_protein_families":
+            if line[1] == "RepeatMasker" or line[1] == "EAhelitron" or line[1] == "RepeatModeler" or line[1] == "MiteFinderII" or line[1] == "LTRharvest" or line[1] == "LTRdigest" or line[1] == "tRNAScan-SE" or line[1] == "RNAmmer" or line[1] == "pante_protein_families" and interval not in intervals:
+                # Check if current interval is already in list, which means it would be a duplication
                 
                 intervals.append(interval)
                 elements = []
