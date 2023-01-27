@@ -106,12 +106,11 @@ with open(input_file) as file:
                             elements[2] = "gene"
                             gene = trnas[x][1]
                             id = p.split("=",1)[1]
-                            id1 = id.split("_",1)[1]
-                            elements[8] = "ID=trna_gene." + id1 + "; gene=" + gene + "; pseudo=true; pseudogene=unknown"
+                            elements[8] = "ID=trna_gene." + id + "; gene=" + gene + "; pseudo=true; pseudogene=unknown"
                             print(*elements, sep='\t')
                             elements[2] = "trna"
                             product = trnas[x][0]
-                            elements[8] = "ID=trna." + id1 + "; Parent=trna_gene." + id1 + ";product=" + product + "; pseudo=true; pseudogene=unknown" + ";" + "Note=Anticodon:" + anticodon_seq
+                            elements[8] = "ID=trna." + id + "; Parent=trna_gene." + id + ";product=" + product + "; pseudo=true; pseudogene=unknown" + ";" + "Note=Anticodon:" + anticodon_seq
                             print(*elements, sep='\t')
                             
                         else:
