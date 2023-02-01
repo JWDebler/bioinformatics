@@ -3,25 +3,19 @@ import argparse
 import re
 from pathlib import Path
 
-# I had to modify telomeric regions in my genome and needed a quick way to offset all the gene coding features
-# by the number of bases I added
-# Run by supplying a comma separated list of offsets in bp and they're respective contigs.
-# Example: Offset contig 1 by 50 bp and contig 2 by -35 bp:
-# gff3_offset.py -o 50,-35 -c ctg01,ctg02 -i input.gff
-
 #parse commandline arguments
-parser = argparse.ArgumentParser(description='Parses a GFF file and allows you to offset the location of the elements')
+parser = argparse.ArgumentParser(description='Parses a GFF file downloaded from JGI that only has CDS but not gene features')
 parser.add_argument('-i', '--input', help='path to a GFF file')
 
 args = parser.parse_args()
-input_file = "jgi.gff"
+#input_file = "jgi.gff"
 
 if args.input:
     input_file = Path(args.input)
 else:
     print("No input file provided, use '-i' and supply a GFF file")
     #input_file = "test1.gff3" #testfile
-    #raise SystemExit
+    raise SystemExit
 
 transcripts = {}
 transcript_id = 0
