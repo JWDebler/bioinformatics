@@ -3,6 +3,11 @@ import argparse
 import re
 from pathlib import Path
 
+# I downloaded a gff file from JGI which only had CDS and exon features, no gene or mRNA. 
+# Importing that into geneious displayed all the CDSs as individual entities instead as 
+# connected to each other. This script fixes that by adding the appropriate Parent tags and 
+# gene features.
+
 #parse commandline arguments
 parser = argparse.ArgumentParser(description='Parses a GFF file downloaded from JGI that only has CDS but not gene features')
 parser.add_argument('-i', '--input', help='path to a GFF file')
