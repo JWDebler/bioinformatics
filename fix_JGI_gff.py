@@ -21,10 +21,10 @@ if args.input:
 else:
     print("No input file provided, use '-i' and supply a GFF file")
     #input_file = "test1.gff3" #testfile
-    raise SystemExit
+    #raise SystemExit
 
 transcripts = {}
-
+transcript_id = 0
 # Open the GFF3 file
 with open(input_file, "r") as f:
     # Iterate over the lines in the file
@@ -35,12 +35,12 @@ with open(input_file, "r") as f:
         seqid, source, type, start, end, score, strand, phase = fields[:8]
         # The last field contains the attributes for the feature
         attributes = fields[8]
-
-        transcript = attributes.strip().split(";")[0].replace(" ","_")
+        transcript = attributes.strip().split(";")[0].replace(" ","_").replace("#","_")
         if type == 'CDS':
             exon_start = int(start)
             exon_end = int(end)
             if transcript not in transcripts:
+                transcript_id += 1
                 transcripts[transcript] = [seqid,exon_start,exon_end,strand]
                 print(seqid + "\t" + source + "\t" +  type + "\t" +  start + "\t" +  end + "\t" +  score + "\t" +  strand + "\t" +  phase  + "\t" + "ID="+transcript+";Parent="+transcript+".gene")
             else:
