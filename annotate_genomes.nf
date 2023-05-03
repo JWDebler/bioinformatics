@@ -144,7 +144,7 @@ process annotation_genemark {
 
 process genemarkGTFtoGFF {
 
-    conda '/home/ubuntu/miniconda3/envs/agat'
+    conda '/home/ubuntu/mambaforge/envs/agat'
 
     tag {sampleID}
     publishDir "${params.outdir}", mode: 'copy', pattern: '*.gff3'
@@ -165,7 +165,7 @@ process genemarkGTFtoGFF {
 //pull proteins out of genemark annotation
 process extractProteinsFromGenemark {
 
-  conda '/home/ubuntu/miniconda3/envs/agat'
+  conda '/home/ubuntu/mambaforge/envs/agat'
 
   tag {sampleID}
   publishDir "${params.outdir}", mode: 'copy', pattern: '*.proteins.fasta'
@@ -184,7 +184,7 @@ process extractProteinsFromGenemark {
 //pull proteins out of augustus annotation
 process extractProteinsFromAugustus {
     
-  conda '/home/ubuntu/miniconda3/envs/agat'
+  conda '/home/ubuntu/mambaforge/envs/agat'
   
   tag {sampleID}
   publishDir "${params.outdir}", mode: 'copy', pattern: '*.proteins.fasta'

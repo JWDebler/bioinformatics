@@ -236,11 +236,11 @@ process hisat2_and_pilon {
     """
     hisat2-build input.fasta ${sampleID}
 
-    hisat2 -x ${sampleID} -1 fwd.fastq.gz -2 rev.fastq.gz --threads ${params.cores} --max-intronlen 2000 | samtools view -b | samtools sort -o ${sampleID}.paired.bam
+    hisat2 -x ${sampleID} -1 fwd.fastq.gz -2 rev.fastq.gz --threads ${params.cores} | samtools view -b | samtools sort -o ${sampleID}.paired.bam
 
     samtools index ${sampleID}.paired.bam
 
-    hisat2 -x ${sampleID} -U unpaired.fastq.gz --threads ${params.cores} --max-intronlen 2000 | samtools view -b | samtools sort -o ${sampleID}.unpaired.bam
+    hisat2 -x ${sampleID} -U unpaired.fastq.gz --threads ${params.cores} | samtools view -b | samtools sort -o ${sampleID}.unpaired.bam
 
     samtools index ${sampleID}.unpaired.bam
 
