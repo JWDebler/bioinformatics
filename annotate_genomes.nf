@@ -156,7 +156,7 @@ process genemarkGTFtoGFF {
     set sampleID, "${sampleID}.genemark.gff3" , "input.fasta" into genemarkProt
 
     """
-    agat_convert_sp_gxf2gxf.pl -g ${sampleID}.genemark.gtf -gvo 3 -o genemark.gff
+    agat_convert_sp_gxf2gxf.pl -g ${sampleID}.genemark.gtf -o genemark.gff
     agat_sp_manage_IDs.pl -gff genemark.gff --collective -o genemark.CDS.gff
     agat_sp_fix_cds_phases.pl -g genemark.CDS.gff -f input.fasta -o ${sampleID}.genemark.gff3
     """
