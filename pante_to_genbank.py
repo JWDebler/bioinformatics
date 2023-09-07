@@ -544,6 +544,10 @@ with open(input_file) as file:
                             elif rpt_family.lower() == "ltr":
                                 elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; rpt_type=long_terminal_repeat; rpt_family=LTR"
 
+                            elif rpt_family.lower() == "dna/is3eu":
+                                elements[2] = "mobile_element"
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:IS3EU"
+
                             elif rpt_family.lower() == "dna/tcmar-fot1":
                                 elements[2] = "mobile_element"
                                 elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:TcMar-Fot1"
