@@ -747,6 +747,10 @@ with open(input_file) as file:
                             elif rpt_family.lower() == "retroposon":
                                 elements[2] = "mobile_element"
                                 elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=retrotransposon:Retroposon "
+
+                            elif rpt_family.lower() == "retroposon?":
+                                elements[2] = "mobile_element"
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=retrotransposon:Retroposon "
                             
                             elif rpt_family.lower() == "dna/tcmar-pogo":
                                 elements[2] = "mobile_element"
