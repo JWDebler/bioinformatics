@@ -552,6 +552,10 @@ with open(input_file) as file:
                                 elements[2] = "mobile_element"
                                 elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:TcMar-Tc1"
 
+                            elif rpt_family.lower() == "dna/tcmar-sagan":
+                                elements[2] = "mobile_element"
+                                elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:TcMar-Sagan"
+
                             elif rpt_family.lower() == "dna/tcmar-tc2":
                                 elements[2] = "mobile_element"
                                 elements[8] = "Name="+rpt_family+"; Ontology_term=SO:0000657, SO:repeat_region, SO:0000347; mobile_element_type=transposon:TcMar-Tc2"
