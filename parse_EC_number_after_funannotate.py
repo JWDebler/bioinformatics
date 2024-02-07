@@ -116,7 +116,7 @@ with open(input_file) as file:
             # if enzyme name contains 'Transferred entry' (moved) remove EC_number tag and find correct one
             elif "Transferred entry" in enzyme_name:
                 #some ECs have been transferred (split) into several new ones. I'll just pick the first one...
-                ec = (enzyme_name[19:]).split(" ")[0]
+                ec = (enzyme_name[19:]).split("%2C")[0]
                 enzyme_name = enzyme_dict[ec]
                 #sometimes entries are transferred to an EC which later gets deleted, this should catch those rare cases
                 if enzyme_name == "Deleted entry":
