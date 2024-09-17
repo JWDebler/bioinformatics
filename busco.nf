@@ -44,7 +44,7 @@ if (params.help) {
     exit 0
 }
 
-params.buscoversion = 'v5.4.3_cv1'
+params.buscoversion = 'v5.7.1_cv1'
 params.genomes = false
 params.outdir = "results_busco"
 params.database = "ascomycota_odb10"
