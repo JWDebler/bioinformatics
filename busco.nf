@@ -78,6 +78,7 @@ process busco {
     -i ${sampleID}.local.fasta \
     -o ${sampleID} \
     -l ${params.database} \
+    --metaeuk \
     -m ${params.mode} \
     -c ${params.cores} 
     cp ${sampleID}/short_summary*.txt .
