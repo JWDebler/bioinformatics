@@ -15,8 +15,8 @@ samplesheet="$1"
 
 # Loop through the samplesheet file
 while read -r barcode sample_name; do
-    # Skip the first two lines containing "library kit" and "flowcell"
-    if [[ $barcode == "library" ]] || [[ $barcode == "flowcell" ]]; then
+    # Skip lines that do not start with 'barcode'
+    if [[ ! $barcode =~ ^barcode ]]; then
         continue
     fi
     
